@@ -5,6 +5,7 @@ import TextInput from '@/Components/TextInput';
 import { Transition } from '@headlessui/react';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
+import MunicipalitySelect from '@/Components/MunicipalitySelect';
 
 export default function UpdateProfileInformation({
     mustVerifyEmail,
@@ -17,16 +18,16 @@ export default function UpdateProfileInformation({
 }) {
     const user = usePage().props.auth.user;
 
-   // Change this part in your code:
-const { data, setData, patch, errors, processing, recentlySuccessful } =
-    useForm({
-        // If your database uses first_name and last_name, do this:
-        name: user.name || `${user.first_name} ${user.last_name}`, 
-        email: user.email,
-        province: user.province || 'Iloilo',
-        municipality: user.municipality || '',
-        phone_number: user.phone_number || '',
-    });
+    // Change this part in your code:
+    const { data, setData, patch, errors, processing, recentlySuccessful } =
+        useForm({
+            // If your database uses first_name and last_name, do this:
+            name: user.name || `${user.first_name} ${user.last_name}`,
+            email: user.email,
+            province: user.province || 'Iloilo',
+            municipality: user.municipality || '',
+            phone_number: user.phone_number || '',
+        });
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
@@ -95,22 +96,13 @@ const { data, setData, patch, errors, processing, recentlySuccessful } =
                 <div>
                     <InputLabel htmlFor="municipality" value="Municipality" />
 
-                    <select
+                    <MunicipalitySelect
                         id="municipality"
-                        className="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 dark:focus:ring-indigo-500 dark:focus:ring-offset-gray-800 rounded-md shadow-sm"
+                        className="mt-1 block w-full"
                         value={data.municipality}
                         onChange={(e) => setData('municipality', e.target.value)}
-                    >
-                        <option value="">Select Municipality</option>
-                        <option value="Leon">Leon</option>
-                        <option value="Alimodian">Alimodian</option>
-                        <option value="Santa Barbara">Santa Barbara</option>
-                        <option value="Pavia">Pavia</option>
-                        <option value="San Miguel">San Miguel</option>
-                        <option value="Oton">Oton</option>
-                        <option value="Tigbauan">Tigbauan</option>
-                        <option value="Iloilo City">Iloilo City</option>
-                    </select>
+                        required
+                    />
 
                     <InputError className="mt-2" message={errors.municipality} />
                 </div>

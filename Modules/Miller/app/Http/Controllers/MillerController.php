@@ -105,8 +105,10 @@ class MillerController extends Controller
      */
     public function processedInventory(): Response
     {
-        $inventory = \App\Models\FinishedRiceStock::where('miller_id', auth()->id())
-            ->latest()
+        $inventory = \App\Models\FinishedRiceStock::where('finished_rice_stocks.miller_id', auth()->id())
+            ->leftJoin('miller_delivery_settings', 'finished_rice_stocks.miller_id', '=', 'miller_delivery_settings.miller_id')
+            ->select('finished_rice_stocks.*', 'miller_delivery_settings.base_delivery_fee as actual_delivery_fee')
+            ->latest('finished_rice_stocks.created_at')
             ->get();
 
         return Inertia::render('Miller::ProcessedInventory', [
@@ -121,14 +123,12 @@ class MillerController extends Controller
     {
         $request->validate([
             'price_per_sack' => 'required|numeric|min:1', 
-            'delivery_fee' => 'required|numeric|min:0',
         ]);
         
         $stock = \App\Models\FinishedRiceStock::where('miller_id', auth()->id())->findOrFail($id);
 
         $stock->update([
             'price_per_sack' => $request->price_per_sack,
-            'delivery_fee' => $request->delivery_fee,
         ]);
 
         return redirect()->route('miller.processed_inventory')->with('message', 'Rice is now listed in the Retailer Marketplace!');
@@ -301,7 +301,13 @@ class MillerController extends Controller
                 ]
             );
 
-        auth()->user()->update(['municipality_id' => $request->municipality_id]);
+        // Sync both ID and Name
+        $muniRec = \Illuminate\Support\Facades\DB::table('municipalities')->find($request->municipality_id);
+        
+        auth()->user()->update([
+            'municipality_id' => $request->municipality_id,
+            'municipality' => $muniRec?->name ?? auth()->user()->municipality
+        ]);
 
         return redirect()->back()->with('message', 'Shipping settings updated successfully!');
     }

@@ -75,44 +75,54 @@ export default function MillerOrders({ auth, orders }: any) {
                                             </td>
                                             <td className="p-4">
                                                 <div className="flex gap-2 justify-center flex-wrap">
-                                                    {/* Step 1: Mark as Ready for Pickup (for all pending orders) */}
+                                                    {/* STEP 1: DYNAMIC ACTIONS BASED ON SHIPPING METHOD */}
                                                     {(order.status === 'pending_preparation' || order.status === 'pending_pickup') && (
-                                                        <button
-                                                            onClick={() => handleReadyForPickup(order.id)}
-                                                            className="px-3 py-1.5 bg-green-500 text-black text-[10px] font-black uppercase border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-green-600 active:shadow-none active:translate-x-[1px] active:translate-y-[1px]"
-                                                        >
-                                                            ✅ Ready for Pickup
-                                                        </button>
+                                                        <>
+                                                            {order.shipping_method === 'delivery' ? (
+                                                                <button
+                                                                    onClick={() => handleDispatch(order.id)}
+                                                                    className="px-3 py-1.5 bg-blue-600 text-white text-[10px] font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-blue-700 active:shadow-none active:translate-x-[1px] active:translate-y-[1px] flex items-center gap-2"
+                                                                >
+                                                                    🚚 Dispatch for Delivery
+                                                                </button>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={() => handleReadyForPickup(order.id)}
+                                                                    className="px-3 py-1.5 bg-green-500 text-black text-[10px] font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-green-600 active:shadow-none active:translate-x-[1px] active:translate-y-[1px] flex items-center gap-2"
+                                                                >
+                                                                    ✅ Ready for Pickup
+                                                                </button>
+                                                            )}
+                                                        </>
                                                     )}
-                                                    {/* Step 2a: Dispatch for DELIVERY orders */}
-                                                    {order.status === 'ready_for_pickup' && order.shipping_method === 'delivery' && (
-                                                        <button
-                                                            onClick={() => handleDispatch(order.id)}
-                                                            className="px-3 py-1.5 bg-blue-500 text-white text-[10px] font-black uppercase border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-blue-600 active:shadow-none active:translate-x-[1px] active:translate-y-[1px]"
-                                                        >
-                                                            🚚 Dispatch Delivery
-                                                        </button>
-                                                    )}
-                                                    {/* Step 2b: Mark Delivered for PICKUP orders (retailer picked it up) */}
-                                                    {order.status === 'ready_for_pickup' && order.shipping_method === 'pickup' && (
+
+                                                    {/* STEP 2: FINALIZE FROM READY STATE */}
+                                                    {order.status === 'ready_for_pickup' && (
                                                         <button
                                                             onClick={() => handleMarkDelivered(order.id)}
-                                                            className="px-3 py-1.5 bg-gray-700 text-white text-[10px] font-black uppercase border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-800 active:shadow-none active:translate-x-[1px] active:translate-y-[1px]"
+                                                            className="px-3 py-1.5 bg-slate-900 text-white text-[10px] font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-black active:shadow-none active:translate-x-[1px] active:translate-y-[1px] flex items-center gap-2"
                                                         >
-                                                            📦 Mark as Picked Up
+                                                            📦 Confirm Picked Up
                                                         </button>
                                                     )}
-                                                    {/* Step 3: Mark Delivered for DELIVERY in-transit orders */}
+
+                                                    {/* STEP 3: FINALIZE FROM IN TRANSIT */}
                                                     {order.status === 'in_transit' && (
                                                         <button
                                                             onClick={() => handleMarkDelivered(order.id)}
-                                                            className="px-3 py-1.5 bg-gray-700 text-white text-[10px] font-black uppercase border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-800 active:shadow-none active:translate-x-[1px] active:translate-y-[1px]"
+                                                            className="px-3 py-1.5 bg-slate-900 text-white text-[10px] font-black uppercase border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-black active:shadow-none active:translate-x-[1px] active:translate-y-[1px] flex items-center gap-2"
                                                         >
-                                                            ✅ Mark Delivered
+                                                            🏁 Mark as Delivered
                                                         </button>
                                                     )}
+
                                                     {order.status === 'delivered' && (
-                                                        <span className="text-xs text-gray-400 font-bold italic">Completed</span>
+                                                        <div className="flex items-center gap-1 text-green-600 font-black text-[10px] uppercase">
+                                                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                                            </svg>
+                                                            Processed
+                                                        </div>
                                                     )}
                                                 </div>
                                             </td>

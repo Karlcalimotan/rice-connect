@@ -3,72 +3,97 @@ import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 const iloiloNeighbors: { [key: string]: string[] } = {
-  "Passi City": ["San Enrique", "Dueñas", "Dumarao", "Calinog", "Mina", "Bingawan"],
-  "San Enrique": ["Passi City", "Dueñas", "Banate", "Barotac Nuevo"],
-  "Dueñas": ["Passi City", "San Enrique", "Dingle", "Pototan"],
-  "Calinog": ["Passi City", "Bingawan", "Lambunao"],
-  "Bingawan": ["Calinog", "Passi City"],
-  "Lambunao": ["Calinog", "Janiuay", "Badiangan", "Maasin"],
-  "Badiangan": ["Lambunao", "Janiuay", "Mina", "Pototan"],
-  "Janiuay": ["Lambunao", "Badiangan", "Maasin", "Mina"],
-  "Maasin": ["Janiuay", "Lambunao", "Alimodian", "Cabatuan"],
-  "Pototan": ["Dueñas", "Dingle", "Barotac Nuevo", "Mina", "Badiangan", "New Lucena", "Zarraga"],
-  "Dingle": ["Dueñas", "Pototan", "Barotac Nuevo", "Anilao"],
-  "Mina": ["Pototan", "Badiangan", "Janiuay", "Cabatuan"],
-  "Cabatuan": ["Mina", "Maasin", "Janiuay", "New Lucena", "Santa Barbara", "Alimodian"],
-  "New Lucena": ["Cabatuan", "Pototan", "Santa Barbara", "Zarraga"],
-  "Santa Barbara": ["Cabatuan", "New Lucena", "Pavia", "Zarraga", "San Miguel", "Alimodian"],
-  "Zarraga": ["New Lucena", "Pototan", "Santa Barbara", "Leganes", "Dumangas", "Barotac Nuevo"],
-  "Pavia": ["Santa Barbara", "San Miguel", "Iloilo City", "Leganes"],
-  "Leganes": ["Pavia", "Iloilo City", "Zarraga", "Dumangas"],
-  "Iloilo City": ["Pavia", "Leganes", "Oton", "San Miguel"],
-  "Oton": ["Iloilo City", "San Miguel", "Tigbauan"],
-  "San Miguel": ["Oton", "Iloilo City", "Pavia", "Santa Barbara", "Alimodian", "Leon"],
-  "Alimodian": ["San Miguel", "Santa Barbara", "Cabatuan", "Maasin", "Leon"],
-  "Leon": ["San Miguel", "Alimodian", "Tigbauan", "Tubungan"],
-  "Tigbauan": ["Oton", "Leon", "Guimbal", "Tubungan"],
-  "Guimbal": ["Tigbauan", "Tubungan", "Igbaras", "Miagao"],
-  "Tubungan": ["Leon", "Tigbauan", "Guimbal", "Igbaras"],
-  "Igbaras": ["Guimbal", "Tubungan", "Miagao"],
-  "Miagao": ["Guimbal", "Igbaras", "San Joaquin"],
-  "San Joaquin": ["Miagao"],
-  "Dumangas": ["Zarraga", "Leganes", "Barotac Nuevo"],
-  "Barotac Nuevo": ["Zarraga", "Pototan", "Dingle", "Anilao", "Banate", "Dumangas", "San Enrique"],
-  "Anilao": ["Barotac Nuevo", "Dingle", "Banate"],
-  "Banate": ["Anilao", "Barotac Nuevo", "San Enrique", "Barotac Viejo"],
-  "Barotac Viejo": ["Banate", "San Rafael", "Ajuy"],
-  "San Rafael": ["Barotac Viejo", "Lemery"],
-  "Ajuy": ["Barotac Viejo", "Lemery", "Sara", "Concepcion"],
-  "Sara": ["Ajuy", "Lemery", "San Dionisio", "Concepcion"],
-  "Lemery": ["Sara", "Ajuy", "San Rafael"],
-  "Concepcion": ["Ajuy", "Sara"],
-  "San Dionisio": ["Sara", "Batad"],
-  "Batad": ["San Dionisio", "Balasan", "Estancia"],
-  "Balasan": ["Batad", "Estancia", "Carles"],
-  "Estancia": ["Batad", "Balasan", "Carles"],
-  "Carles": ["Balasan", "Estancia"]
+    "Passi City": ["San Enrique", "Dueñas", "Dumarao", "Calinog", "Mina", "Bingawan"],
+    "San Enrique": ["Passi City", "Dueñas", "Banate", "Barotac Nuevo"],
+    "Dueñas": ["Passi City", "San Enrique", "Dingle", "Pototan"],
+    "Calinog": ["Passi City", "Bingawan", "Lambunao"],
+    "Bingawan": ["Calinog", "Passi City"],
+    "Lambunao": ["Calinog", "Janiuay", "Badiangan", "Maasin"],
+    "Badiangan": ["Lambunao", "Janiuay", "Mina", "Pototan"],
+    "Janiuay": ["Lambunao", "Badiangan", "Maasin", "Mina"],
+    "Maasin": ["Janiuay", "Lambunao", "Alimodian", "Cabatuan"],
+    "Pototan": ["Dueñas", "Dingle", "Barotac Nuevo", "Mina", "Badiangan", "New Lucena", "Zarraga"],
+    "Dingle": ["Dueñas", "Pototan", "Barotac Nuevo", "Anilao"],
+    "Mina": ["Pototan", "Badiangan", "Janiuay", "Cabatuan"],
+    "Cabatuan": ["Mina", "Maasin", "Janiuay", "New Lucena", "Santa Barbara", "Alimodian"],
+    "New Lucena": ["Cabatuan", "Pototan", "Santa Barbara", "Zarraga"],
+    "Santa Barbara": ["Cabatuan", "New Lucena", "Pavia", "Zarraga", "San Miguel", "Alimodian"],
+    "Zarraga": ["New Lucena", "Pototan", "Santa Barbara", "Leganes", "Dumangas", "Barotac Nuevo"],
+    "Pavia": ["Santa Barbara", "San Miguel", "Iloilo City", "Leganes"],
+    "Leganes": ["Pavia", "Iloilo City", "Zarraga", "Dumangas"],
+    "Iloilo City": ["Pavia", "Leganes", "Oton", "San Miguel"],
+    "Oton": ["Iloilo City", "San Miguel", "Tigbauan"],
+    "San Miguel": ["Oton", "Iloilo City", "Pavia", "Santa Barbara", "Alimodian", "Leon"],
+    "Alimodian": ["San Miguel", "Santa Barbara", "Cabatuan", "Maasin", "Leon"],
+    "Leon": ["San Miguel", "Alimodian", "Tigbauan", "Tubungan"],
+    "Tigbauan": ["Oton", "Leon", "Guimbal", "Tubungan"],
+    "Guimbal": ["Tigbauan", "Tubungan", "Igbaras", "Miagao"],
+    "Tubungan": ["Leon", "Tigbauan", "Guimbal", "Igbaras"],
+    "Igbaras": ["Guimbal", "Tubungan", "Miagao"],
+    "Miagao": ["Guimbal", "Igbaras", "San Joaquin"],
+    "San Joaquin": ["Miagao"],
+    "Dumangas": ["Zarraga", "Leganes", "Barotac Nuevo"],
+    "Barotac Nuevo": ["Zarraga", "Pototan", "Dingle", "Anilao", "Banate", "Dumangas", "San Enrique"],
+    "Anilao": ["Barotac Nuevo", "Dingle", "Banate"],
+    "Banate": ["Anilao", "Barotac Nuevo", "San Enrique", "Barotac Viejo"],
+    "Barotac Viejo": ["Banate", "San Rafael", "Ajuy"],
+    "San Rafael": ["Barotac Viejo", "Lemery"],
+    "Ajuy": ["Barotac Viejo", "Lemery", "Sara", "Concepcion"],
+    "Sara": ["Ajuy", "Lemery", "San Dionisio", "Concepcion"],
+    "Lemery": ["Sara", "Ajuy", "San Rafael"],
+    "Concepcion": ["Ajuy", "Sara"],
+    "San Dionisio": ["Sara", "Batad"],
+    "Batad": ["San Dionisio", "Balasan", "Estancia"],
+    "Balasan": ["Batad", "Estancia", "Carles"],
+    "Estancia": ["Batad", "Balasan", "Carles"],
+    "Carles": ["Balasan", "Estancia"]
 };
 
-// BFS BFS SHORT-PATH JUMP CALCULATOR
-function calculateJumps(startMuni: string, endMuni: string): number {
-    if (!startMuni || !endMuni) return 3;
-    if (startMuni === endMuni) return 0;
+// NORMALIZATION HELPER TO MATCH NAMES FLEXIBLY
+function normalizeMuni(name: any): string {
+    const s = (name || "").toString().toLowerCase()
+        .replace(" city", "")
+        .replace(" municipality", "")
+        .trim();
     
-    // Normalize names (Capitalize first letters if needed, but the list is specific)
-    const start = startMuni.trim();
-    const end = endMuni.trim();
+    // Find matching key in neighbors
+    return Object.keys(iloiloNeighbors).find(key => {
+        const k = key.toLowerCase()
+            .replace(" city", "")
+            .replace(" municipality", "")
+            .trim();
+        return k === s;
+    }) || s;
+}
 
-    if (!iloiloNeighbors[start] || !iloiloNeighbors[end]) return 3;
+// BFS BFS SHORT-PATH DISTANCE CALCULATOR
+function calculateDistance(startMuni: any, endMuni: any): number {
+    const start = normalizeMuni(startMuni);
+    const end = normalizeMuni(endMuni);
+
+    // 1. Safety Guard: If either is null/empty, or missing from graph, return default jump
+    if (!start || !end || !iloiloNeighbors[start] || !iloiloNeighbors[end]) {
+        return 1; // Default to 1 jump to result in ₱150 base fee
+    }
+
+    // 2. Same location check
+    if (start === end) return 0;
 
     let queue: [string, number][] = [[start, 0]];
     let visited = new Set([start]);
 
     while (queue.length > 0) {
-        let [current, dist] = queue.shift()!;
+        let node = queue.shift();
+        if (!node) break;
+        let [current, dist] = node;
         
         if (current === end) return dist;
 
-        for (let neighbor of iloiloNeighbors[current]) {
+        // Safety: ensure current exists in graph
+        if (!iloiloNeighbors[current]) continue;
+
+        const neighbors = iloiloNeighbors[current] || [];
+        for (let neighbor of neighbors) {
             if (!visited.has(neighbor)) {
                 visited.add(neighbor);
                 queue.push([neighbor, dist + 1]);
@@ -76,7 +101,7 @@ function calculateJumps(startMuni: string, endMuni: string): number {
         }
     }
 
-    return 3; // Fallback for island or disconnected clusters
+    return 1; // Fallback if no path found
 }
 
 export default function Marketplace({ auth, available_rice, retailer_municipality }: any) {
@@ -95,7 +120,7 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
         setShippingMethods(prev => ({ ...prev, [variety]: method }));
     };
 
-    const SACK_WEIGHT = 50; 
+    const SACK_WEIGHT = 50;
 
     return (
         <AuthenticatedLayout auth={auth}>
@@ -110,7 +135,7 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
                         </h2>
                         <p className="text-gray-500 font-bold uppercase tracking-widest text-xs mt-2">Connect with local millers</p>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {available_rice.length > 0 ? (
                             available_rice.map((item: any) => {
@@ -118,25 +143,28 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
                                 const selectedSacks = orderQuantities[variety] || 0;
                                 const totalWeight = selectedSacks * SACK_WEIGHT;
                                 const pricePerSack = Number(item.price_per_sack) || 0;
-                                
+
                                 // NEW DYNAMIC DISTANCE LOGIC (BFS)
                                 const millerMuni = item.miller_location || "Iloilo City";
                                 const retailerMuni = retailer_municipality || "Iloilo City";
-                                
-                                const jumps = calculateJumps(millerMuni, retailerMuni);
-                                
+
+                                const jumps = calculateDistance(millerMuni, retailerMuni);
+
                                 let millerDeliveryCharge = 0;
                                 if (jumps === 0) {
                                     millerDeliveryCharge = 0;
                                 } else {
-                                    // Fee = 150 + (Jumps - 1) * 50
-                                    millerDeliveryCharge = 150 + (jumps - 1) * 50;
+                                    const base = Number(item.base_delivery_fee) || 150;
+                                    const extra = Number(item.extra_fee_per_municipality) || 50;
+                                    // Step-Based: Increases at 2, 4, 6 jumps
+                                    millerDeliveryCharge = base + Math.floor(jumps / 2) * extra;
                                 }
-                                
+
                                 const currentMethod = shippingMethods[variety] || 'pickup';
-                                const deliveryFee = currentMethod === 'delivery' ? millerDeliveryCharge : 0;
-                                const totalPrice = ((selectedSacks || 0) * (pricePerSack || 0)) + deliveryFee;
-                                
+                                // FINAL FAIL-SAFE: Force numeric 0 if math fails
+                                const deliveryFee = Number(currentMethod === 'delivery' ? millerDeliveryCharge : 0) || 0;
+                                const totalPrice = (((selectedSacks || 0) * (pricePerSack || 0)) + deliveryFee) || 0;
+
                                 const maxSacks = Number(item.total_sacks) || 0;
 
                                 return (
@@ -168,37 +196,35 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
                                                     <div className="bg-blue-600 h-full" style={{ width: '100%' }}></div>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className="space-y-3">
                                                 <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Quantity (Sacks)</label>
-                                                <input 
-                                                    type="number" 
+                                                <input
+                                                    type="number"
                                                     min="0"
                                                     max={maxSacks}
                                                     placeholder="0"
                                                     className="w-full border-4 border-black p-3 font-black text-xl focus:ring-0 focus:border-blue-700 placeholder-gray-300"
                                                     onChange={(e) => handleSackChange(variety, e.target.value)}
                                                 />
-                                                
+
                                                 {/* Shipping Method Selection */}
                                                 <div className="mt-4 p-3 border-2 border-black bg-gray-50">
                                                     <p className="text-[10px] font-black uppercase mb-2">Shipping Method</p>
                                                     <div className="flex gap-2">
-                                                        <button 
+                                                        <button
                                                             type="button"
                                                             onClick={() => handleShippingChange(variety, 'pickup')}
-                                                            className={`flex-1 py-2 text-[10px] font-black uppercase border-2 border-black transition-all ${
-                                                                currentMethod === 'pickup' ? 'bg-black text-white' : 'bg-white text-black'
-                                                            }`}
+                                                            className={`flex-1 py-2 text-[10px] font-black uppercase border-2 border-black transition-all ${currentMethod === 'pickup' ? 'bg-black text-white' : 'bg-white text-black'
+                                                                }`}
                                                         >
                                                             🏪 Pickup
                                                         </button>
-                                                        <button 
+                                                        <button
                                                             type="button"
                                                             onClick={() => handleShippingChange(variety, 'delivery')}
-                                                            className={`flex-1 py-2 text-[10px] font-black uppercase border-2 border-black transition-all ${
-                                                                currentMethod === 'delivery' ? 'bg-black text-white' : 'bg-white text-black'
-                                                            }`}
+                                                            className={`flex-1 py-2 text-[10px] font-black uppercase border-2 border-black transition-all ${currentMethod === 'delivery' ? 'bg-black text-white' : 'bg-white text-black'
+                                                                }`}
                                                         >
                                                             🚚 Delivery (+₱{millerDeliveryCharge})
                                                         </button>
@@ -212,7 +238,7 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
                                                             <span className="text-xl font-black text-gray-900">₱{totalPrice.toLocaleString()}</span>
                                                         </div>
                                                         <p className="text-[10px] font-bold text-yellow-700 uppercase">
-                                                            {totalWeight}kg • {currentMethod === 'delivery' ? `Delivery: ₱${millerDeliveryCharge}` : 'For Pickup'}
+                                                            {totalWeight}kg • {currentMethod === 'delivery' ? `Delivery: ₱${millerDeliveryCharge} (${jumps} jumps from ${millerMuni} to ${retailerMuni})` : 'For Pickup'}
                                                         </p>
                                                     </div>
                                                 )}
@@ -220,13 +246,12 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
                                         </div>
 
                                         <div className="p-6 bg-gray-50 border-t-4 border-black">
-                                            <button 
+                                            <button
                                                 disabled={selectedSacks === 0 || selectedSacks > maxSacks}
-                                                className={`w-full font-black py-4 border-4 border-black uppercase transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] flex items-center justify-center gap-2 ${
-                                                    selectedSacks > 0 
-                                                    ? 'bg-green-500 text-black hover:bg-green-600' 
-                                                    : 'bg-gray-200 text-gray-400 cursor-not-allowed opacity-50'
-                                                }`}
+                                                className={`w-full font-black py-4 border-4 border-black uppercase transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] flex items-center justify-center gap-2 ${selectedSacks > 0
+                                                        ? 'bg-green-500 text-black hover:bg-green-600'
+                                                        : 'bg-gray-200 text-gray-400 cursor-not-allowed opacity-50'
+                                                    }`}
                                                 onClick={() => {
                                                     router.post(route('retailer.order'), {
                                                         rice_variety: variety,

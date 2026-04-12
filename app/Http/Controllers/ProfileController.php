@@ -38,9 +38,17 @@ class ProfileController extends Controller
     $user->first_name = $nameParts[0] ?? '';
     $user->last_name = $nameParts[1] ?? '';
 
-    // 2. Fill the other fields (email, municipality, etc.)
-    // We use except(['name']) so it doesn't try to save to a 'name' column
+    // 2. Fill other fields and SYNC Municipality ID
     $user->fill($request->safe()->except(['name']));
+
+    if ($request->has('municipality')) {
+        $muniRec = \Illuminate\Support\Facades\DB::table('municipalities')
+            ->where('name', $request->municipality)
+            ->first();
+        if ($muniRec) {
+            $user->municipality_id = $muniRec->id;
+        }
+    }
 
     if ($user->isDirty('email')) {
         $user->email_verified_at = null;

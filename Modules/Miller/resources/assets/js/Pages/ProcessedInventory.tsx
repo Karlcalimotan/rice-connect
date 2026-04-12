@@ -113,7 +113,7 @@ export default function ProcessedInventory({ auth, inventory }: { auth: any; inv
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-[10px] font-black uppercase text-gray-400">Delivery Fee</span>
-                                                    <span className="font-black text-blue-600">₱{Number(item.delivery_fee).toLocaleString()}</span>
+                                                    <span className="font-black text-blue-600">₱{(Number(item.actual_delivery_fee) || 150).toLocaleString()}</span>
                                                 </div>
                                             </>
                                         )}

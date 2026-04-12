@@ -11,11 +11,11 @@ interface Settings {
     extra_fee_per_municipality: string;
 }
 
-export default function ShippingSettings({ auth, settings, municipalities, current_municipality_id }: { 
-    auth: any; 
-    settings: Settings|null; 
+export default function ShippingSettings({ auth, settings, municipalities, current_municipality_id }: {
+    auth: any;
+    settings: Settings | null;
     municipalities: Municipality[];
-    current_municipality_id: number|null;
+    current_municipality_id: number | null;
 }) {
     const { data, setData, patch, processing, errors } = useForm({
         base_delivery_fee: settings?.base_delivery_fee ?? '150.00',
@@ -45,7 +45,7 @@ export default function ShippingSettings({ auth, settings, municipalities, curre
                             {/* Home Municipality */}
                             <div>
                                 <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 italic">🏠 Miller's Home Municipality</label>
-                                <select 
+                                <select
                                     className="w-full border-4 border-black p-4 font-bold text-lg focus:ring-0 focus:border-blue-600 bg-gray-50"
                                     value={data.municipality_id}
                                     onChange={e => setData('municipality_id', e.target.value)}
@@ -67,7 +67,7 @@ export default function ShippingSettings({ auth, settings, municipalities, curre
                                     <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 italic">🚚 Base Delivery Fee (Step 1)</label>
                                     <div className="relative">
                                         <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-400">₱</span>
-                                        <input 
+                                        <input
                                             type="number"
                                             className="w-full border-4 border-black p-4 pl-10 font-bold text-lg focus:ring-0 focus:border-blue-600 bg-gray-50"
                                             value={data.base_delivery_fee}
@@ -85,7 +85,7 @@ export default function ShippingSettings({ auth, settings, municipalities, curre
                                     <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 italic">➕ Extra Fee per Municipality</label>
                                     <div className="relative">
                                         <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-400">₱</span>
-                                        <input 
+                                        <input
                                             type="number"
                                             className="w-full border-4 border-black p-4 pl-10 font-bold text-lg focus:ring-0 focus:border-blue-600 bg-gray-50"
                                             value={data.extra_fee_per_municipality}
@@ -118,7 +118,7 @@ export default function ShippingSettings({ auth, settings, municipalities, curre
                                 </div>
                             </div>
 
-                            <button 
+                            <button
                                 type="submit"
                                 disabled={processing}
                                 className="w-full bg-blue-700 text-white font-black py-4 border-4 border-black hover:bg-blue-800 uppercase transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"

@@ -5,16 +5,7 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-
-const ILOILO_MUNICIPALITIES = [
-    "Passi City", "San Enrique", "Dueñas", "Calinog", "Bingawan", "Lambunao", 
-    "Badiangan", "Janiuay", "Maasin", "Pototan", "Dingle", "Mina", "Cabatuan", 
-    "New Lucena", "Santa Barbara", "Zarraga", "Pavia", "Leganes", "Iloilo City", 
-    "Oton", "San Miguel", "Alimodian", "Leon", "Tigbauan", "Guimbal", "Tubungan", 
-    "Igbaras", "Miagao", "San Joaquin", "Dumangas", "Barotac Nuevo", "Anilao", 
-    "Banate", "Barotac Viejo", "San Rafael", "Ajuy", "Sara", "Lemery", "Concepcion", 
-    "San Dionisio", "Batad", "Balasan", "Estancia", "Carles"
-].sort();
+import MunicipalitySelect from '@/Components/MunicipalitySelect';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -106,19 +97,13 @@ export default function Register() {
                 {/* Municipality */}
                 <div className="mt-4">
                     <InputLabel htmlFor="municipality" value="Municipality" />
-                    <select
+                    <MunicipalitySelect
                         id="municipality"
                         name="municipality"
                         value={data.municipality}
-                        className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                         onChange={(e) => setData('municipality', e.target.value)}
                         required
-                    >
-                        <option value="">Select Municipality</option>
-                        {ILOILO_MUNICIPALITIES.map((muni) => (
-                            <option key={muni} value={muni}>{muni}</option>
-                        ))}
-                    </select>
+                    />
                     <InputError message={errors.municipality} className="mt-2" />
                 </div>
 

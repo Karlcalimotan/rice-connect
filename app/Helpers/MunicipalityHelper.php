@@ -59,23 +59,25 @@ class MunicipalityHelper
     public static function calculateFee($millerId, $retailerMunicipalityId)
     {
         $miller = DB::table('users')->where('id', $millerId)->first();
-        $retailer = DB::table('municipalities')->where('id', $retailerMunicipalityId)->first();
-
-        if (!$miller || !$retailer) {
-            return 250.00; // Default 3 jumps
-        }
-
-        $start = trim($miller->municipality);
-        $end = trim($retailer->name);
-
-        if ($start === $end) {
-            return 0.00;
-        }
-
-        // BFS for shortest path
-        $jumps = self::bfs($start, $end);
         
-        return 150.00 + ($jumps - 1) * 50.00;
+        $start = $miller?->municipality ?: 'Iloilo City';
+        $retailerMuniRec = DB::table('municipalities')->find($retailerMunicipalityId);
+        $end = $retailerMuniRec?->name ?: 'Iloilo City';
+
+        // BFS for shortest path (Guarantee numeric result)
+        $jumps = (int) self::bfs($start, $end);
+        
+        // If same town, 0 fee. If missing or disconnected, at least 1 jump.
+        if ($start === $end) return 0.00;
+        if ($jumps === 0) $jumps = 1;
+
+        // Fetch Miller settings for custom rates
+        $settings = DB::table('miller_delivery_settings')->where('miller_id', $millerId)->first();
+        $base = $settings ? (float) $settings->base_delivery_fee : 150.00;
+        $extra = $settings ? (float) $settings->extra_fee_per_municipality : 50.00;
+
+        // Step-Based: Base + floor((jumps-1)/2)*Extra
+        return $base + floor(($jumps - 1) / 2) * $extra;
     }
 
     protected static function bfs($start, $end)
@@ -92,6 +94,11 @@ class MunicipalityHelper
 
             if ($current === $end) {
                 return $dist;
+            }
+
+            // Safety: If current muni is not in neighbors list, skip it
+            if (!isset(self::$iloiloNeighbors[$current])) {
+                continue;
             }
 
             foreach (self::$iloiloNeighbors[$current] as $neighbor) {

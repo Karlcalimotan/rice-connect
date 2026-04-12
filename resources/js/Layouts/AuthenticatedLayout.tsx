@@ -11,20 +11,27 @@ export default function Authenticated({
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user as any;
 
-    // State for the Hidden Sidebar
+    // State for the Sidebar (Mobile)
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+    // Only close sidebar on link clicks if we are on mobile
+    const handleNavClick = () => {
+        if (window.innerWidth < 1024) {
+            setIsSidebarOpen(false);
+        }
+    };
+
     return (
-        <div className="min-h-screen bg-gray-100 flex">
+        <div className="h-screen bg-gray-100 flex overflow-hidden">
             {/* --- 1. THE HIDDEN SIDEBAR (Slides in from left) --- */}
             <div 
-                className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-2xl transform ${
-                    isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                } transition-transform duration-300 ease-in-out border-r border-gray-200`}
+                className={`fixed lg:sticky lg:top-0 lg:h-screen lg:flex lg:flex-col inset-y-0 left-0 z-50 w-64 bg-white shadow-2xl lg:shadow-none transform transition-transform duration-300 ease-in-out border-r border-gray-200 ${
+                    isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+                } lg:block`}
             >
                 <div className="flex h-16 items-center justify-between px-6 border-b bg-green-50">
                     <span className="text-xl font-black text-green-700 uppercase tracking-tighter">Rice Connect</span>
-                    <button onClick={() => setIsSidebarOpen(false)} className="text-gray-500 hover:text-black text-2xl font-bold">✕</button>
+                    <button onClick={() => setIsSidebarOpen(false)} className="text-gray-500 hover:text-black text-2xl font-bold lg:hidden">✕</button>
                 </div>
 
                 <nav className="p-4 space-y-2">
@@ -33,7 +40,7 @@ export default function Authenticated({
                         href={route('dashboard')} 
                         active={route().current('dashboard')} 
                         className="w-full"
-                        onClick={() => setIsSidebarOpen(false)}
+                        onClick={handleNavClick}
                     >
                         Dashboard
                     </NavLink>
@@ -48,7 +55,7 @@ export default function Authenticated({
                                 href={route('farmer.harvest')} 
                                 active={route().current('farmer.harvest')} 
                                 className="w-full"
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 My Harvest Log
                             </NavLink>
@@ -56,7 +63,7 @@ export default function Authenticated({
                                 href={route('farmer.harvest.create')} 
                                 active={route().current('farmer.harvest.create')} 
                                 className="w-full"
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 Post New Batch
                             </NavLink>
@@ -71,7 +78,7 @@ export default function Authenticated({
                                 href={route('miller.marketplace')} 
                                 active={route().current('miller.marketplace')} 
                                 className="w-full"
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 MARKET PLACE
                             </NavLink>
@@ -79,7 +86,7 @@ export default function Authenticated({
                                 href={route('miller.incoming')} 
                                 active={route().current('miller.incoming')} 
                                 className="w-full"
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 Incoming Palay
                             </NavLink>
@@ -87,7 +94,7 @@ export default function Authenticated({
                                 href={route('miller.inventory')} 
                                 active={route().current('miller.inventory')} 
                                 className="w-full"
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 Inventory
                             </NavLink>
@@ -95,7 +102,7 @@ export default function Authenticated({
                                 href={route('miller.processed_inventory')} 
                                 active={route().current('miller.processed_inventory')}
                                 className="w-full uppercase font-bold text-sm"
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 Finished Rice
                             </NavLink>
@@ -103,7 +110,7 @@ export default function Authenticated({
                                 href={route('miller.orders')} 
                                 active={route().current('miller.orders')}
                                 className="w-full"
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 📋 Customer Orders
                             </NavLink>
@@ -111,7 +118,7 @@ export default function Authenticated({
                                 href={route('miller.shipping_settings')} 
                                 active={route().current('miller.shipping_settings')}
                                 className="w-full"
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 🚚 Shipping Settings
                             </NavLink>
@@ -128,7 +135,7 @@ export default function Authenticated({
                                 href={route('retailer.marketplace')} 
                                 active={route().current('retailer.marketplace')}
                                 className="w-full text-left" 
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 MARKET PLACE
                             </NavLink>
@@ -136,7 +143,7 @@ export default function Authenticated({
                                 href={route('retailer.purchases')} 
                                 active={route().current('retailer.purchases')}
                                 className="w-full text-left" 
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 📦 My Purchases
                             </NavLink>
@@ -153,7 +160,7 @@ export default function Authenticated({
                                 href={route('admin.dashboard')} 
                                 active={route().current('admin.dashboard')}
                                 className="w-full text-left" 
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 🔍 Observer Dashboard
                             </NavLink>
@@ -161,7 +168,7 @@ export default function Authenticated({
                                 href={route('admin.municipalities')} 
                                 active={route().current('admin.municipalities')}
                                 className="w-full text-left" 
-                                onClick={() => setIsSidebarOpen(false)}
+                                onClick={handleNavClick}
                             >
                                 🚚 Municipalities
                             </NavLink>
@@ -172,10 +179,10 @@ export default function Authenticated({
 
             {/* --- 2. MAIN CONTENT AREA --- */}
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-                <nav className="border-b border-gray-200 bg-white sticky top-0 z-30">
+                <nav className="border-b border-gray-200 bg-white sticky top-0 z-50">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <div className="flex h-16 justify-between items-center">
-                            <div className="flex items-center">
+                        <div className="flex h-16 justify-between items-center lg:justify-end">
+                            <div className="flex items-center lg:hidden">
                                 {/* THE HAMBURGER BUTTON (☰) */}
                                 <button
                                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -214,17 +221,17 @@ export default function Authenticated({
                     </div>
                 </nav>
 
-                {/* Header Title Section */}
-                {header && (
-                    <header className="bg-white border-b border-gray-100">
-                        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                            <h1 className="text-2xl font-black uppercase tracking-tight text-gray-900">{header}</h1>
-                        </div>
-                    </header>
-                )}
-
                 <main className="flex-1 overflow-y-auto bg-gray-50">
-                    <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+                    {/* Header Title Section inside scrollable area */}
+                    {header && (
+                        <header className="bg-white border-b border-gray-100">
+                            <div className="mx-auto max-w-7xl p-4 md:p-8 lg:p-10 lg:py-6 flex justify-center text-center">
+                                <h1 className="text-2xl font-black uppercase tracking-tight text-gray-900">{header}</h1>
+                            </div>
+                        </header>
+                    )}
+
+                    <div className="mx-auto max-w-7xl p-4 md:p-8 lg:p-10">
                         {children}
                     </div>
                 </main>
@@ -233,7 +240,7 @@ export default function Authenticated({
             {/* Sidebar Overlay */}
             {isSidebarOpen && (
                 <div 
-                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity lg:hidden"
                     onClick={() => setIsSidebarOpen(false)}
                 ></div>
             )}

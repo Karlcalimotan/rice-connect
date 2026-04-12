@@ -23,13 +23,15 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="Retailer Marketplace" />
-            <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="bg-gray-50">
                 <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center gap-2 mb-8">
-                        <div className="w-2 h-8 bg-blue-600 border border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900">
+                    {/* Centered Premium Title */}
+                    <div className="flex flex-col items-center justify-center mb-12 text-center pt-4">
+                        <div className="w-20 h-2 bg-blue-600 border-2 border-black mb-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"></div>
+                        <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-gray-900 drop-shadow-[4px_4px_0px_rgba(29,78,216,0.1)]">
                             Rice Marketplace
                         </h2>
+                        <p className="text-gray-500 font-bold uppercase tracking-widest text-xs mt-2">Connect with local millers</p>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

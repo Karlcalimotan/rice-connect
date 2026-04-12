@@ -2,7 +2,84 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function Marketplace({ auth, available_rice, retailer_municipality_index }: any) {
+const iloiloNeighbors: { [key: string]: string[] } = {
+  "Passi City": ["San Enrique", "Dueñas", "Dumarao", "Calinog", "Mina", "Bingawan"],
+  "San Enrique": ["Passi City", "Dueñas", "Banate", "Barotac Nuevo"],
+  "Dueñas": ["Passi City", "San Enrique", "Dingle", "Pototan"],
+  "Calinog": ["Passi City", "Bingawan", "Lambunao"],
+  "Bingawan": ["Calinog", "Passi City"],
+  "Lambunao": ["Calinog", "Janiuay", "Badiangan", "Maasin"],
+  "Badiangan": ["Lambunao", "Janiuay", "Mina", "Pototan"],
+  "Janiuay": ["Lambunao", "Badiangan", "Maasin", "Mina"],
+  "Maasin": ["Janiuay", "Lambunao", "Alimodian", "Cabatuan"],
+  "Pototan": ["Dueñas", "Dingle", "Barotac Nuevo", "Mina", "Badiangan", "New Lucena", "Zarraga"],
+  "Dingle": ["Dueñas", "Pototan", "Barotac Nuevo", "Anilao"],
+  "Mina": ["Pototan", "Badiangan", "Janiuay", "Cabatuan"],
+  "Cabatuan": ["Mina", "Maasin", "Janiuay", "New Lucena", "Santa Barbara", "Alimodian"],
+  "New Lucena": ["Cabatuan", "Pototan", "Santa Barbara", "Zarraga"],
+  "Santa Barbara": ["Cabatuan", "New Lucena", "Pavia", "Zarraga", "San Miguel", "Alimodian"],
+  "Zarraga": ["New Lucena", "Pototan", "Santa Barbara", "Leganes", "Dumangas", "Barotac Nuevo"],
+  "Pavia": ["Santa Barbara", "San Miguel", "Iloilo City", "Leganes"],
+  "Leganes": ["Pavia", "Iloilo City", "Zarraga", "Dumangas"],
+  "Iloilo City": ["Pavia", "Leganes", "Oton", "San Miguel"],
+  "Oton": ["Iloilo City", "San Miguel", "Tigbauan"],
+  "San Miguel": ["Oton", "Iloilo City", "Pavia", "Santa Barbara", "Alimodian", "Leon"],
+  "Alimodian": ["San Miguel", "Santa Barbara", "Cabatuan", "Maasin", "Leon"],
+  "Leon": ["San Miguel", "Alimodian", "Tigbauan", "Tubungan"],
+  "Tigbauan": ["Oton", "Leon", "Guimbal", "Tubungan"],
+  "Guimbal": ["Tigbauan", "Tubungan", "Igbaras", "Miagao"],
+  "Tubungan": ["Leon", "Tigbauan", "Guimbal", "Igbaras"],
+  "Igbaras": ["Guimbal", "Tubungan", "Miagao"],
+  "Miagao": ["Guimbal", "Igbaras", "San Joaquin"],
+  "San Joaquin": ["Miagao"],
+  "Dumangas": ["Zarraga", "Leganes", "Barotac Nuevo"],
+  "Barotac Nuevo": ["Zarraga", "Pototan", "Dingle", "Anilao", "Banate", "Dumangas", "San Enrique"],
+  "Anilao": ["Barotac Nuevo", "Dingle", "Banate"],
+  "Banate": ["Anilao", "Barotac Nuevo", "San Enrique", "Barotac Viejo"],
+  "Barotac Viejo": ["Banate", "San Rafael", "Ajuy"],
+  "San Rafael": ["Barotac Viejo", "Lemery"],
+  "Ajuy": ["Barotac Viejo", "Lemery", "Sara", "Concepcion"],
+  "Sara": ["Ajuy", "Lemery", "San Dionisio", "Concepcion"],
+  "Lemery": ["Sara", "Ajuy", "San Rafael"],
+  "Concepcion": ["Ajuy", "Sara"],
+  "San Dionisio": ["Sara", "Batad"],
+  "Batad": ["San Dionisio", "Balasan", "Estancia"],
+  "Balasan": ["Batad", "Estancia", "Carles"],
+  "Estancia": ["Batad", "Balasan", "Carles"],
+  "Carles": ["Balasan", "Estancia"]
+};
+
+// BFS BFS SHORT-PATH JUMP CALCULATOR
+function calculateJumps(startMuni: string, endMuni: string): number {
+    if (!startMuni || !endMuni) return 3;
+    if (startMuni === endMuni) return 0;
+    
+    // Normalize names (Capitalize first letters if needed, but the list is specific)
+    const start = startMuni.trim();
+    const end = endMuni.trim();
+
+    if (!iloiloNeighbors[start] || !iloiloNeighbors[end]) return 3;
+
+    let queue: [string, number][] = [[start, 0]];
+    let visited = new Set([start]);
+
+    while (queue.length > 0) {
+        let [current, dist] = queue.shift()!;
+        
+        if (current === end) return dist;
+
+        for (let neighbor of iloiloNeighbors[current]) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push([neighbor, dist + 1]);
+            }
+        }
+    }
+
+    return 3; // Fallback for island or disconnected clusters
+}
+
+export default function Marketplace({ auth, available_rice, retailer_municipality }: any) {
     const [orderQuantities, setOrderQuantities] = useState<{ [key: string]: number }>({});
     const [shippingMethods, setShippingMethods] = useState<{ [key: string]: string }>({});
 
@@ -42,19 +119,18 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
                                 const totalWeight = selectedSacks * SACK_WEIGHT;
                                 const pricePerSack = Number(item.price_per_sack) || 0;
                                 
-                                // Specific Municipality Logic
-                                const mIndex = item.miller_municipality_index ?? 1;
-                                const rIndex = retailer_municipality_index ?? 1;
-                                const distanceSteps = Math.abs(mIndex - rIndex);
+                                // NEW DYNAMIC DISTANCE LOGIC (BFS)
+                                const millerMuni = item.miller_location || "Iloilo City";
+                                const retailerMuni = retailer_municipality || "Iloilo City";
+                                
+                                const jumps = calculateJumps(millerMuni, retailerMuni);
                                 
                                 let millerDeliveryCharge = 0;
-                                if (distanceSteps === 0) {
+                                if (jumps === 0) {
                                     millerDeliveryCharge = 0;
-                                } else if (distanceSteps === 1) {
-                                    millerDeliveryCharge = Number(item.base_delivery_fee) || 150;
                                 } else {
-                                    millerDeliveryCharge = (Number(item.base_delivery_fee) || 150) + 
-                                                         ((distanceSteps - 1) * (Number(item.extra_fee_per_municipality) || 50));
+                                    // Fee = 150 + (Jumps - 1) * 50
+                                    millerDeliveryCharge = 150 + (jumps - 1) * 50;
                                 }
                                 
                                 const currentMethod = shippingMethods[variety] || 'pickup';

@@ -31,16 +31,31 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $allowedMunicipalities = [
+            "Passi City", "San Enrique", "Dueñas", "Calinog", "Bingawan", "Lambunao", 
+            "Badiangan", "Janiuay", "Maasin", "Pototan", "Dingle", "Mina", "Cabatuan", 
+            "New Lucena", "Santa Barbara", "Zarraga", "Pavia", "Leganes", "Iloilo City", 
+            "Oton", "San Miguel", "Alimodian", "Leon", "Tigbauan", "Guimbal", "Tubungan", 
+            "Igbaras", "Miagao", "San Joaquin", "Dumangas", "Barotac Nuevo", "Anilao", 
+            "Banate", "Barotac Viejo", "San Rafael", "Ajuy", "Sara", "Lemery", "Concepcion", 
+            "San Dionisio", "Batad", "Balasan", "Estancia", "Carles"
+        ];
+
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'contact' => 'required|string|max:20',
             'role' => 'required|string|in:farmer,miller,retailer',
-            'municipality' => 'nullable|string|max:255',
-           'province' => 'nullable|string|max:255',
+            'municipality' => ['required', 'string', \Illuminate\Validation\Rule::in($allowedMunicipalities)],
+            'province' => 'required|string|in:Iloilo',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        // Find Municipality ID for linking
+        $municipality = \Illuminate\Support\Facades\DB::table('municipalities')
+            ->where('name', $request->municipality)
+            ->first();
 
         $user = User::create([
             'first_name' => $request->first_name,
@@ -49,9 +64,22 @@ class RegisteredUserController extends Controller
             'contact' => $request->contact,
             'role' => $request->role,
             'municipality' => $request->municipality,
-            'province' => $request->province ?? 'Iloilo',
+            'municipality_id' => $municipality?->id,
+            'province' => 'Iloilo',
             'password' => Hash::make($request->password),
         ]);
+
+        // Auto-initialize Miller Delivery Settings
+        if ($request->role === 'miller') {
+            \Illuminate\Support\Facades\DB::table('miller_delivery_settings')->insert([
+                'miller_id' => $user->id,
+                'base_delivery_fee' => 150.00,
+                'extra_fee_per_municipality' => 50.00,
+                'municipality_id' => $municipality?->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         event(new Registered($user));
 

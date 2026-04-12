@@ -52,7 +52,7 @@ class RetailerController extends Controller
 
         return Inertia::render('Retailer::Marketplace', [
             'available_rice' => $listings,
-            'retailer_municipality_index' => $retailerMun ? $retailerMun->distance_index : 1 // Default distance to 1 as requested to avoid NaN
+            'retailer_municipality' => $retailerMun ? $retailerMun->name : 'Iloilo City'
         ]);
     }
 

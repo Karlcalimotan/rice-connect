@@ -30,6 +30,7 @@ class User extends Authenticatable
         'phone_number',
         'password',
         'town_id',
+        'municipality_id',
     ];
 
     public function town()

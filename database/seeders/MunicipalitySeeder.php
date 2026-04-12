@@ -11,17 +11,22 @@ class MunicipalitySeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Specific Municipalities
-        $munData = [
-            ['name' => 'Leon', 'distance_index' => 1],
-            ['name' => 'Alimodian', 'distance_index' => 2],
-            ['name' => 'San Miguel', 'distance_index' => 3],
-            ['name' => 'Santa Barbara', 'distance_index' => 4],
-            ['name' => 'Pavia', 'distance_index' => 5],
+        // 1. All Iloilo Municipalities
+        $munNames = [
+            "Passi City", "San Enrique", "Dueñas", "Calinog", "Bingawan", "Lambunao", 
+            "Badiangan", "Janiuay", "Maasin", "Pototan", "Dingle", "Mina", "Cabatuan", 
+            "New Lucena", "Santa Barbara", "Zarraga", "Pavia", "Leganes", "Iloilo City", 
+            "Oton", "San Miguel", "Alimodian", "Leon", "Tigbauan", "Guimbal", "Tubungan", 
+            "Igbaras", "Miagao", "San Joaquin", "Dumangas", "Barotac Nuevo", "Anilao", 
+            "Banate", "Barotac Viejo", "San Rafael", "Ajuy", "Sara", "Lemery", "Concepcion", 
+            "San Dionisio", "Batad", "Balasan", "Estancia", "Carles"
         ];
         
-        foreach ($munData as $m) {
-            DB::table('municipalities')->updateOrInsert(['name' => $m['name']], $m);
+        foreach ($munNames as $index => $name) {
+            DB::table('municipalities')->updateOrInsert(
+                ['name' => $name], 
+                ['name' => $name, 'distance_index' => $index + 1, 'updated_at' => now()]
+            );
         }
 
         $municipalities = DB::table('municipalities')->get();

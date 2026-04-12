@@ -20,9 +20,22 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
         'email',
+        'contact',
+        'role',
+        'municipality',
+        'province',
+        'phone_number',
         'password',
+        'town_id',
     ];
+
+    public function town()
+    {
+        return $this->belongsTo(\App\Models\Town::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

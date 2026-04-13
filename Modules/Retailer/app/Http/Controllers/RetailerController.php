@@ -102,7 +102,9 @@ class RetailerController extends Controller
                 'total_weight' => $decrementKg,
                 'total_price' => $totalPrice,
                 'shipping_method' => $request->shipping_method,
-                'delivery_charge' => $deliveryCharge,
+                'delivery_fee' => $deliveryCharge, // DB uses delivery_fee
+                'delivery_status' => 'Pending',
+                'delivery_type' => 'rice',
                 'status' => 'pending_preparation',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -136,6 +138,22 @@ class RetailerController extends Controller
         return Inertia::render('Retailer::MyPurchases', [
             'orders' => $orders
         ]);
+    }
+
+    /**
+     * Retailer confirms they have received the rice.
+     */
+    public function confirmReceived($id)
+    {
+        \App\Models\Order::where('retailer_id', auth()->id())
+            ->findOrFail($id)
+            ->update([
+                'delivery_status' => 'Completed',
+                'status' => 'delivered',
+                'updated_at' => now()
+            ]);
+
+        return redirect()->back()->with('message', 'Delivery confirmed and completed!');
     }
 
     // Standard CRUD methods (Create, Show, Edit, Update, Destroy) 

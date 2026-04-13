@@ -5,10 +5,7 @@ export default function CreateHarvest({ auth }: any) {
     // 1. Added price_per_kg and condition to the form state
     const { data, setData, post, processing, errors, reset } = useForm({
         rice_variety: '',
-        number_of_bags: '',
-        total_weight: '',
         harvest_date: '',
-        price_per_kg: '',
         condition: 'fresh', // Default to Fresh/Wet
     });
 
@@ -51,45 +48,6 @@ export default function CreateHarvest({ auth }: any) {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Number of Bags */}
-                                <div className="space-y-2">
-                                    <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Number of Bags</label>
-                                    <input 
-                                        type="number" 
-                                        className="w-full border-4 border-black p-3 font-bold focus:ring-0 focus:border-green-600"
-                                        value={data.number_of_bags}
-                                        onChange={e => setData('number_of_bags', e.target.value)}
-                                        required
-                                    />
-                                </div>
-
-                                {/* Total Weight */}
-                                <div className="space-y-2">
-                                    <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Total Weight (kg)</label>
-                                    <input 
-                                        type="number" 
-                                        step="0.01"
-                                        className="w-full border-4 border-black p-3 font-bold focus:ring-0 focus:border-green-600"
-                                        value={data.total_weight}
-                                        onChange={e => setData('total_weight', e.target.value)}
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Price Per KG */}
-                                <div className="space-y-2">
-                                    <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Asking Price Per KG (₱)</label>
-                                    <input 
-                                        type="number" 
-                                        className="w-full border-4 border-black p-3 font-bold focus:ring-0 focus:border-green-600"
-                                        value={data.price_per_kg}
-                                        onChange={e => setData('price_per_kg', e.target.value)}
-                                        required
-                                    />
-                                </div>
-
                                 {/* Harvest Date */}
                                 <div className="space-y-2">
                                     <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Harvest Date</label>
@@ -100,6 +58,15 @@ export default function CreateHarvest({ auth }: any) {
                                         onChange={e => setData('harvest_date', e.target.value)}
                                         required
                                     />
+                                </div>
+
+                                {/* Location (Dynamic from User Profile) */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Location</label>
+                                    <div className="w-full border-4 border-black p-3 font-bold bg-gray-100 flex items-center justify-between">
+                                        <span>{auth.user.municipality || 'Default Farm Location'}</span>
+                                        <span className="text-[10px] bg-black text-white px-2 py-1">AUTO-FETCHED</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -139,7 +106,7 @@ export default function CreateHarvest({ auth }: any) {
                                     disabled={processing}
                                     className="w-full bg-black hover:bg-green-600 text-white hover:text-black font-black py-5 px-10 border-4 border-black shadow-[8px_8px_0px_0px_rgba(34,197,94,1)] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] uppercase tracking-widest"
                                 >
-                                    {processing ? 'PROCESSING...' : 'PUBLISH HARVEST BATCH'}
+                                    {processing ? 'PROCESSING...' : 'REQUEST PICKUP'}
                                 </button>
                             </div>
                         </form>

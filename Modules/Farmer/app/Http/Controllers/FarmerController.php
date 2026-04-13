@@ -85,10 +85,7 @@ class FarmerController extends Controller
 
     $validated = $request->validate([
         'rice_variety' => 'required|string|max:255',
-        'number_of_bags' => 'required|integer|min:1',
-        'total_weight' => 'required|numeric|min:1',
         'harvest_date' => 'required|date',
-        'price_per_kg' => 'required|numeric',
         'condition' => 'required|in:fresh,ready',
     ]);
 
@@ -104,25 +101,24 @@ class FarmerController extends Controller
 {
     $validated = $request->validate([
         'rice_variety'   => 'required|string',
-        'number_of_bags' => 'required|integer',
-        'total_weight'   => 'required|numeric',
         'harvest_date'   => 'required|date',
-        'price_per_kg'   => 'required|numeric',
-        'condition'      => 'required|in:fresh,ready', // <--- Add this validation
+        'condition'      => 'required|in:fresh,ready',
     ]);
 
-   HarvestBatch::create([
+    HarvestBatch::create([
         'user_id'        => auth()->id(),
         'rice_variety'   => $validated['rice_variety'],
-        'number_of_bags' => $validated['number_of_bags'],
-        'total_weight'   => $validated['total_weight'],
         'harvest_date'   => $validated['harvest_date'],
-        'price_per_kg'   => $validated['price_per_kg'],
-        'condition'      => $validated['condition'], // <--- Save it here
+        'condition'      => $validated['condition'],
         'status'         => 'unsold',
+        'delivery_status' => 'Pending',
+        'delivery_type'   => 'palay',
+        'total_weight'   => 0, // Placeholder as it's required in some views maybe, will be updated by Driver
+        'number_of_bags' => 0,
+        'price_per_kg'   => 0,
     ]);
 
-    return redirect()->route('farmer.harvest')->with('message', 'Harvest logged successfully!');
+    return redirect()->route('farmer.harvest')->with('message', 'Harvest logged successfully! Waiting for pickup.');
 }
     public function offers()
 {

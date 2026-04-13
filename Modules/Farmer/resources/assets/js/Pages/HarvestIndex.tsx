@@ -40,6 +40,7 @@ export default function HarvestIndex({ auth, batches }: { auth: any, batches: an
                                     <th className="p-4 font-black uppercase text-xs tracking-widest text-center">Bags</th>
                                     <th className="p-4 font-black uppercase text-xs tracking-widest text-center">Weight (kg)</th>
                                     <th className="p-4 font-black uppercase text-xs tracking-widest text-center">Harvest Date</th>
+                                    <th className="p-4 font-black uppercase text-xs tracking-widest text-center">Harvest Tracking</th>
                                     <th className="p-4 font-black uppercase text-xs tracking-widest text-center">Status</th>
                                     <th className="p-4 font-black uppercase text-xs tracking-widest text-center">Actions</th>
                                 </tr>
@@ -59,16 +60,45 @@ export default function HarvestIndex({ auth, batches }: { auth: any, batches: an
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="p-4 text-center font-bold text-gray-700">{batch.number_of_bags}</td>
-                                            <td className="p-4 text-center font-bold text-gray-700">{batch.total_weight} kg</td>
+                                            <td className="p-4 text-center font-bold text-gray-700">{batch.number_of_bags > 0 ? batch.number_of_bags : '--'}</td>
+                                            <td className="p-4 text-center font-bold text-gray-700">
+                                                {batch.actual_weight_kg > 0 ? (
+                                                    <div className="flex flex-col">
+                                                        <span>{batch.actual_weight_kg} kg</span>
+                                                        <span className="text-[10px] text-green-600 uppercase font-black">Official</span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-gray-300 italic">TBD</span>
+                                                )}
+                                            </td>
                                             <td className="p-4 text-center text-xs font-bold text-gray-500">{batch.harvest_date}</td>
+                                            <td className="p-4">
+                                                <div className="flex flex-col items-center gap-1">
+                                                    {batch.delivery_status === 'Pending' && (
+                                                        <span className="text-[9px] font-black uppercase bg-yellow-100 text-yellow-800 border-2 border-yellow-300 px-2 py-1 italic">Waiting for Driver Weight</span>
+                                                    )}
+                                                    {batch.delivery_status === 'In Transit' && batch.suggested_price_per_kg > 0 && (
+                                                        <div className="flex flex-col items-center">
+                                                            <span className="text-[9px] font-black uppercase bg-blue-100 text-blue-800 border-2 border-blue-300 px-2 py-1">Price Suggested</span>
+                                                            <span className="text-xs font-black">₱{batch.suggested_price_per_kg}/kg</span>
+                                                        </div>
+                                                    )}
+                                                    {batch.delivery_status === 'Received' && (
+                                                        <span className="text-[9px] font-black uppercase bg-green-100 text-green-800 border-2 border-green-300 px-2 py-1">Price Finalized</span>
+                                                    )}
+                                                    {!batch.delivery_status && (
+                                                        <span className="text-[9px] text-gray-400 uppercase font-bold italic">Not yet assigned</span>
+                                                    )}
+                                                </div>
+                                            </td>
                                             <td className="p-4 text-center">
                                                 <div className="flex flex-col items-center gap-1">
                                                     <span className={`px-3 py-1 border-2 border-black text-[10px] font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${
                                                         batch.status === 'pending' ? 'bg-orange-400 text-black' : 
-                                                        batch.status === 'sold' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'
+                                                        batch.status === 'sold' ? 'bg-blue-500 text-white' : 
+                                                        batch.status === 'received' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'
                                                     }`}>
-                                                        {batch.status}
+                                                        {batch.status === 'received' ? 'Sold & Delivered' : batch.status}
                                                     </span>
                                                     {batch.status === 'pending' && batch.buyer && (
                                                         <span className="text-[9px] text-gray-500 font-bold italic">
@@ -87,7 +117,7 @@ export default function HarvestIndex({ auth, batches }: { auth: any, batches: an
                                                             Accept
                                                         </button>
                                                     )}
-                                                    {batch.status !== 'sold' && batch.status !== 'delivered' && (
+                                                    {batch.status === 'unsold' && (
                                                         <Link 
                                                             href={route('farmer.harvest.edit', batch.id)}
                                                             className="px-3 py-1 bg-white text-black text-[10px] font-black uppercase border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:bg-gray-100"
@@ -107,7 +137,7 @@ export default function HarvestIndex({ auth, batches }: { auth: any, batches: an
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={6} className="p-20 text-center">
+                                        <td colSpan={7} className="p-20 text-center">
                                             <p className="text-gray-400 font-black uppercase tracking-widest">No Harvest Records Found</p>
                                         </td>
                                     </tr>

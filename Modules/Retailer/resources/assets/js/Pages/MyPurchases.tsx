@@ -1,8 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
+import DeliveryStatusStepper from '@/Components/DeliveryStatusStepper';
 
 export default function MyPurchases({ auth, orders }: any) {
-    const badgeConfig = (status: string): { bg: string; label: string } => {
+    if (typeof window !== 'undefined') window.router = router;
+
+    const badgeConfig = (status: string, delivery_status: string): { bg: string; label: string } => {
+        if (delivery_status === 'Completed') return { bg: 'bg-green-600 text-white', label: '✅ Order Completed' };
+        
         switch (status) {
             case 'pending_preparation':
                 return { bg: 'bg-yellow-400 text-black', label: '🟡 Preparing' };
@@ -12,10 +17,14 @@ export default function MyPurchases({ auth, orders }: any) {
                 return { bg: 'bg-blue-500 text-white', label: '🔵 In Transit' };
             case 'delivered':
                 return { bg: 'bg-gray-300 text-gray-700', label: '⚪ Delivered' };
-            case 'pending_pickup':
-                return { bg: 'bg-yellow-300 text-black', label: '🟡 Pending Pickup' };
             default:
                 return { bg: 'bg-gray-200 text-gray-600', label: status ? status.replace(/_/g, ' ') : 'Unknown' };
+        }
+    };
+
+    const handleConfirm = (id: number) => {
+        if (confirm('Are you sure you have received the order? This will mark the transaction as completed.')) {
+            window.router.patch(route('retailer.order.confirm_received', id));
         }
     };
 
@@ -29,43 +38,62 @@ export default function MyPurchases({ auth, orders }: any) {
                         <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900">My Purchases</h2>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                         {orders.length > 0 ? (
                             orders.map((order: any) => {
-                                const badge = badgeConfig(order.status);
+                                const badge = badgeConfig(order.status, order.delivery_status);
                                 return (
-                                    <div key={order.id} className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6">
-                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                    <div key={order.id} className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-8">
+                                        <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-8">
                                             <div className="flex-1">
                                                 <p className="text-[10px] font-black uppercase text-gray-400 mb-1">Order #{order.id}</p>
-                                                <h3 className="text-2xl font-black uppercase">{order.rice_variety}</h3>
-                                                <p className="text-sm font-bold text-gray-600 italic">
+                                                <h3 className="text-3xl font-black uppercase leading-none">{order.rice_variety}</h3>
+                                                <p className="text-lg font-bold text-gray-600 italic mt-1">
                                                     {order.sacks} Sacks ({order.total_weight}kg)
                                                 </p>
-                                                <p className="text-xs text-gray-500 mt-1">
-                                                    Miller: <strong>{order.miller_first_name} {order.miller_last_name}</strong>
-                                                </p>
+                                                <div className="mt-4 p-3 bg-gray-100 border-2 border-black inline-block">
+                                                    <p className="text-[10px] font-black uppercase text-gray-500">Milling Station</p>
+                                                    <p className="font-bold">{order.miller_first_name} {order.miller_last_name}</p>
+                                                </div>
                                             </div>
 
-                                            <div className="text-center md:text-right">
-                                                <p className="text-xs font-black uppercase text-gray-400">Total Paid</p>
-                                                <p className="text-3xl font-black text-green-600">₱{Number(order.total_price).toLocaleString()}</p>
+                                            <div className="text-left lg:text-right min-w-[200px]">
+                                                <p className="text-[10px] font-black uppercase text-gray-400">Total Investment</p>
+                                                <p className="text-4xl font-black text-green-600">₱{Number(order.total_price).toLocaleString()}</p>
                                                 {Number(order.delivery_fee) > 0 && (
-                                                    <p className="text-[10px] text-gray-400 font-bold">incl. ₱{order.delivery_fee} delivery</p>
+                                                    <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Includes ₱{order.delivery_fee} Logistics Fee</p>
                                                 )}
+                                                
+                                                <div className="mt-4 flex flex-col items-start lg:items-end gap-2">
+                                                    <span className={`px-4 py-2 border-2 border-black font-black uppercase text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${badge.bg}`}>
+                                                        {badge.label}
+                                                    </span>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] font-black uppercase bg-black text-white px-2 py-0.5">
+                                                            {order.shipping_method === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}
+                                                        </span>
+                                                        <span className="text-[10px] font-bold text-gray-400">
+                                                            {new Date(order.created_at).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
+                                        </div>
 
-                                            <div className="flex flex-col items-center md:items-end gap-2">
-                                                <span className={`px-4 py-1.5 border-2 border-black font-black uppercase text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${badge.bg}`}>
-                                                    {badge.label}
-                                                </span>
-                                                <p className="text-[10px] font-bold text-gray-400 uppercase">
-                                                    {order.shipping_method === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}
-                                                </p>
-                                                <p className="text-[10px] font-bold text-gray-500 uppercase">
-                                                    {new Date(order.created_at).toLocaleDateString()}
-                                                </p>
-                                            </div>
+                                        <div className="border-t-4 border-black pt-6">
+                                            <p className="text-[10px] font-black uppercase text-gray-400 mb-4 tracking-widest">Delivery Tracking</p>
+                                            <DeliveryStatusStepper status={order.delivery_status || 'Pending'} type="rice" />
+                                            
+                                            {order.delivery_status === 'In Transit' && (
+                                                <div className="mt-8 flex justify-center">
+                                                    <button 
+                                                        onClick={() => handleConfirm(order.id)}
+                                                        className="bg-black text-white font-black py-4 px-12 border-4 border-black shadow-[4px_4px_0px_0px_rgba(34,197,94,1)] hover:bg-green-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none uppercase tracking-widest"
+                                                    >
+                                                        Confirm & Sign Receipt
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 );

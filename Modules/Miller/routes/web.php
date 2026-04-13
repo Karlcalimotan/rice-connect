@@ -33,6 +33,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Miller Order Management (Logistics)
     Route::get('/miller/orders', [MillerController::class, 'millerOrders'])->name('miller.orders');
     Route::post('/miller/orders/{id}/ready', [MillerController::class, 'readyForPickup'])->name('miller.order.ready');
+    
+    // Unified Transport Hub
+    Route::get('/miller/transport', [MillerController::class, 'transport'])->name('miller.transport');
+    Route::post('/miller/transport/assign-driver/{id}', [MillerController::class, 'assignDriver'])->name('miller.transport.assign_driver');
+    Route::post('/miller/transport/link-driver/{id}', [MillerController::class, 'linkDriver'])->name('miller.transport.link_driver');
+    
+    // Palay Logistics (Farmer -> Miller)
+    Route::post('/miller/palay/confirm-pickup/{id}', [MillerController::class, 'confirmPickup'])->name('miller.palay.confirm_pickup');
+    Route::post('/miller/palay/finalize/{id}', [MillerController::class, 'finalizeTransaction'])->name('miller.palay.finalize');
+    
+    // Rice Logistics (Miller -> Retailer)
     Route::post('/miller/orders/{id}/dispatch', [MillerController::class, 'dispatchDelivery'])->name('miller.order.dispatch');
     Route::post('/miller/orders/{id}/delivered', [MillerController::class, 'markDelivered'])->name('miller.order.delivered');
 

@@ -43,6 +43,15 @@ class SupplyChainSeeder extends Seeder
             'password' => Hash::make('password'),
         ]);
 
+        $driver = User::create([
+            'first_name' => 'Driver',
+            'last_name' => 'Dan',
+            'email' => 'driver@example.test',
+            'role' => 'driver',
+            'contact' => '09170000004',
+            'password' => Hash::make('password'),
+        ]);
+
         // Farmer creates a harvest batch
         $batch = HarvestBatch::create([
             'user_id' => $farmer->id,

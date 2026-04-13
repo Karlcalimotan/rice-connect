@@ -31,7 +31,8 @@
             "Modules\\": "Modules/",
             "Modules\\Farmer\\": "Modules/Farmer/app/",
             "Modules\\Miller\\": "Modules/Miller/app/",
-            "Modules\\Retailer\\": "Modules/Retailer/app/"
+            "Modules\\Retailer\\": "Modules/Retailer/app/",
+            "Modules\\Driver\\": "Modules/Driver/app/"
         }
     },
     "autoload-dev": {

@@ -43,7 +43,19 @@ class HarvestBatch extends Model
         'delivery_status',
         'delivery_type',
         'hidden_from_farmer',
+        'location',
+        'accepted_miller_id',
     ];
+
+    public function acceptedMiller(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'accepted_miller_id');
+    }
+
+    public function interests()
+    {
+        return $this->hasMany(\App\Models\HarvestInterest::class, 'harvest_id');
+    }
 
     protected $casts = [
         'total_weight' => 'decimal:2',
@@ -65,9 +77,13 @@ class HarvestBatch extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function buyer()
-{
-   // Make sure this points to the main User model in the root App namespace
-    return $this->belongsTo(\App\Models\User::class, 'buyer_id');
-}
+    public function buyer(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\User::class, 'buyer_id');
+    }
+
+    public function driver(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\User::class, 'driver_id');
+    }
 }

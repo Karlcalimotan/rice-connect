@@ -65,7 +65,7 @@ export default function Authenticated({
                                 className="w-full"
                                 onClick={handleNavClick}
                             >
-                                Post New Batch
+                                Post Harvest
                             </NavLink>
                         </div>
                     )}

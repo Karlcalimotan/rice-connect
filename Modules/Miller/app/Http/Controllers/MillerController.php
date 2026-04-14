@@ -18,10 +18,9 @@ class MillerController extends Controller
     {
         $user = auth()->user();
 
-        // SYNCED: Fetching 'unsold' batches with 'condition' included
-        $batches = HarvestBatch::with('user')
-            ->where('status', 'unsold')
-            ->where('total_weight', '>', 0) // Hide empty batches
+        // Show batches that are available or already have some interest received
+        $batches = HarvestBatch::with(['user', 'interests'])
+            ->whereIn('status', ['available', 'interest_received'])
             ->whereHas('user', function($query) use ($user) {
                 $query->where('province', $user->province);
             })
@@ -41,12 +40,18 @@ class MillerController extends Controller
     {
         $batch = HarvestBatch::findOrFail($id);
     
-        $batch->update([
-            'status' => 'pending',
-            'buyer_id' => auth()->id(),
+        // 1. Record the interest in the separate table
+        \App\Models\HarvestInterest::firstOrCreate([
+            'harvest_id' => $id,
+            'miller_id' => auth()->id(),
         ]);
 
-        return redirect()->route('miller.incoming')->with('message', 'Marked as interested!');
+        // 2. Update status if it was 'available'
+        if ($batch->status === 'available') {
+            $batch->update(['status' => 'interest_received']);
+        }
+
+        return redirect()->back()->with('message', 'Interest sent! Awaiting farmer approval.');
     }
 
     public function incoming(): Response
@@ -319,10 +324,11 @@ class MillerController extends Controller
      */
     public function transport(): Response
     {
-        // 1. Palay Picking (Inbound)
-        $inbound = HarvestBatch::with('user')
-            ->where('buyer_id', auth()->id())
-            ->whereIn('delivery_status', ['Pending', 'In Transit', 'Received'])
+        // 1. Palay Picking (Inbound) - ONLY UNLOCKED AFTER A SUCCESSFUL HANDSHAKE
+        $inbound = HarvestBatch::with(['user', 'driver'])
+            ->where('accepted_miller_id', auth()->id())
+            ->whereIn('status', ['Accepted', 'sold', 'received', 'processing', 'milled', 'payment_pending', 'payment_authorized'])
+            ->whereIn('delivery_status', ['Pending', 'In Transit', 'Received', 'Payment Pending', 'Payment Authorized'])
             ->latest()
             ->get();
 
@@ -370,17 +376,26 @@ class MillerController extends Controller
     /**
      * Dispatch delivery for an order (Retailer Rice Delivery).
      */
+    /**
+     * Phase 3: Miller Dispatches (Handover to public road)
+     * Status remains 'In Transit' but internal state moves to 'dispatched'
+     */
     public function dispatchDelivery($id)
     {
-        \App\Models\Order::where('id', $id)
+        $order = \App\Models\Order::where('id', $id)
             ->where('miller_id', auth()->id())
-            ->update([
-                'delivery_status' => 'In Transit',
-                'status' => 'in_transit',
-                'updated_at' => now()
-            ]);
+            ->firstOrFail();
 
-        return redirect()->back()->with('message', 'Rice Order dispatched for delivery.');
+        if ($order->delivery_status !== 'In Transit') {
+            return redirect()->back()->withErrors('Order must be In Transit (started by driver) before dispatching.');
+        }
+
+        $order->update([
+            'status' => 'dispatched',
+            'updated_at' => now()
+        ]);
+
+        return redirect()->back()->with('message', 'Rice Order dispatched! Driver is now on the way to the retailer.');
     }
 
     /**
@@ -406,6 +421,23 @@ class MillerController extends Controller
             'municipalities' => \Illuminate\Support\Facades\DB::table('municipalities')->orderBy('distance_index')->get(),
             'current_municipality_id' => auth()->user()->municipality_id
         ]);
+    }
+
+    public function authorizePayment($id)
+    {
+        $batch = HarvestBatch::where('accepted_miller_id', auth()->id())->findOrFail($id);
+
+        if ($batch->delivery_status !== 'Payment Pending') {
+            return redirect()->back()->withErrors('Batch is not awaiting payment authorization.');
+        }
+
+        $batch->update([
+            'status' => 'payment_authorized',
+            'delivery_status' => 'Payment Authorized',
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('message', 'Payment authorized! The driver has been given the go-signal to pay the farmer and start transit.');
     }
 
     public function updateShippingSettings(Request $request)

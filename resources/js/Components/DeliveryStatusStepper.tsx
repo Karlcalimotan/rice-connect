@@ -1,16 +1,16 @@
 import React from 'react';
 
 interface DeliveryStatusStepperProps {
-    status: 'Pending' | 'In Transit' | 'Received' | 'Completed';
+    status: 'Pending' | 'In Transit' | 'Delivered' | 'Confirmed Received';
     type: 'palay' | 'rice';
 }
 
 const DeliveryStatusStepper: React.FC<DeliveryStatusStepperProps> = ({ status, type }) => {
     const steps = [
-        { key: 'Pending', label: type === 'palay' ? 'Awaiting Pickup' : 'Awaiting Dispatch' },
-        { key: 'In Transit', label: type === 'palay' ? 'In Transit' : 'Heading to Retailer' },
-        { key: 'Received', label: type === 'palay' ? 'Received (At Miller)' : 'Delivered' },
-        { key: 'Completed', label: type === 'palay' ? 'Finalized' : 'Confirmed Received' },
+        { key: 'Pending', label: type === 'palay' ? 'Awaiting Pickup' : 'Waiting for Driver' },
+        { key: 'In Transit', label: type === 'palay' ? 'Heading to Miller' : 'Heading to Retailer' },
+        { key: 'Delivered', label: type === 'palay' ? 'Arrived (At Miller)' : 'Truck Arrived' },
+        { key: 'Confirmed Received', label: type === 'palay' ? 'Finalized / Received' : 'Final Sign-off' },
     ];
 
     const getCurrentStep = () => {

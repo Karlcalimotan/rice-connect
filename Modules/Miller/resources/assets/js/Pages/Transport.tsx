@@ -42,6 +42,13 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
         router.post(route('miller.order.dispatch', id));
     };
 
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            router.reload({ only: ['inbound', 'outbound'], preserveScroll: true });
+        }, 10000);
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="Logistics & Transport" />
@@ -81,6 +88,31 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
 
                                         <DeliveryStatusStepper status={batch.delivery_status || 'Pending'} type="palay" />
 
+                                        {batch.delivery_status === 'Payment Pending' && (
+                                            <div className="mt-6 p-4 bg-yellow-50 border-4 border-black">
+                                                <p className="text-xs font-black uppercase mb-3 text-yellow-700 underline decoration-black decoration-4 offset-4">Authorization Required</p>
+                                                <div className="flex justify-between items-end mb-6 bg-white p-4 border-2 border-black">
+                                                    <div>
+                                                        <p className="text-[10px] font-black uppercase text-gray-500">Driver Logged:</p>
+                                                        <p className="text-lg font-black">{batch.actual_weight_kg} kg @ ₱{batch.suggested_price_per_kg}/kg</p>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <p className="text-[10px] font-black uppercase text-gray-500">Total to Pay Farmer:</p>
+                                                        <p className="text-lg font-black text-green-600">₱{((batch.actual_weight_kg || 0) * (batch.suggested_price_per_kg || 0)).toLocaleString()}</p>
+                                                    </div>
+                                                </div>
+                                                <button 
+                                                    onClick={() => router.post(route('miller.palay.authorize', batch.id))}
+                                                    className="w-full bg-green-500 text-black font-black py-4 uppercase hover:bg-black hover:text-white transition-all border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none translate-y-[-2px]"
+                                                >
+                                                    Authorize Payment & Start Transit
+                                                </button>
+                                                <p className="mt-4 text-[9px] font-black text-gray-400 uppercase text-center italic">
+                                                    * Clicking this sends the "Go Signal" to Driver: {batch.driver?.first_name}
+                                                </p>
+                                            </div>
+                                        )}
+
                                         {batch.delivery_status === 'Pending' && (
                                             <div className="mt-6 space-y-4">
                                                 {!batch.driver_id ? (
@@ -108,66 +140,89 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                     </div>
                                                 ) : (
                                                     <div className="p-4 bg-yellow-50 border-4 border-black border-dashed">
-                                                        <p className="text-xs font-black uppercase mb-3 text-yellow-700">Phase 2: Pickup Information</p>
-                                                        <div className="grid grid-cols-2 gap-4 mb-4">
-                                                            <div>
-                                                                <label className="block text-[10px] font-black uppercase mb-1">Actual Weight (kg)</label>
-                                                                <input 
-                                                                    type="number" 
-                                                                    className="w-full border-4 border-black p-2 font-black text-sm"
-                                                                    value={palayData.actual_weight_kg}
-                                                                    onChange={e => setPalayData('actual_weight_kg', e.target.value)}
-                                                                />
+                                                        <p className="text-xs font-black uppercase mb-3 text-yellow-700 underline decoration-black decoration-4 offset-4">Phase 2: Driver Verification</p>
+                                                        {batch.driver_id === auth.user.id ? (
+                                                            <>
+                                                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                                                    <div>
+                                                                        <label className="block text-[10px] font-black uppercase mb-1">Actual Weight (kg)</label>
+                                                                        <input 
+                                                                            type="number" 
+                                                                            className="w-full border-4 border-black p-2 font-black text-sm"
+                                                                            value={palayData.actual_weight_kg}
+                                                                            onChange={e => setPalayData('actual_weight_kg', e.target.value)}
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <label className="block text-[10px] font-black uppercase mb-1">Suggested Price (₱/kg)</label>
+                                                                        <input 
+                                                                            type="number" 
+                                                                            className="w-full border-4 border-black p-2 font-black text-sm"
+                                                                            value={palayData.suggested_price_per_kg}
+                                                                            onChange={e => setPalayData('suggested_price_per_kg', e.target.value)}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                <button 
+                                                                    onClick={() => handleConfirmPickup(batch.id)}
+                                                                    className="w-full bg-black text-white font-black py-3 uppercase hover:bg-green-600 hover:text-black transition-colors"
+                                                                >
+                                                                    Log Weight & Start Transit
+                                                                </button>
+                                                            </>
+                                                        ) : (
+                                                            <div className="flex flex-col items-center py-4">
+                                                                <span className="text-3xl animate-bounce mb-2">🚚</span>
+                                                                <p className="text-[10px] font-black text-yellow-800 uppercase tracking-widest text-center">
+                                                                    Waiting for Assigned Driver to weigh Palay at farm...
+                                                                </p>
                                                             </div>
-                                                            <div>
-                                                                <label className="block text-[10px] font-black uppercase mb-1">Suggested Price (₱/kg)</label>
-                                                                <input 
-                                                                    type="number" 
-                                                                    className="w-full border-4 border-black p-2 font-black text-sm"
-                                                                    value={palayData.suggested_price_per_kg}
-                                                                    onChange={e => setPalayData('suggested_price_per_kg', e.target.value)}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <button 
-                                                            onClick={() => handleConfirmPickup(batch.id)}
-                                                            className="w-full bg-black text-white font-black py-3 uppercase hover:bg-green-600 hover:text-black transition-colors"
-                                                        >
-                                                            Log Weight & Start Transit
-                                                        </button>
+                                                        )}
                                                     </div>
                                                 )}
                                             </div>
                                         )}
 
                                         {batch.delivery_status === 'In Transit' && (
-                                            <div className="mt-6 p-4 bg-blue-50 border-4 border-black border-dashed">
+                                            <div className="mt-6 p-4 bg-blue-50 border-4 border-black border-dashed flex flex-col items-center">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="text-2xl animate-pulse">🚚</span>
+                                                    <p className="font-black uppercase text-blue-800 tracking-widest text-xs">In Transit to Station</p>
+                                                </div>
+                                                <p className="text-[9px] font-bold text-blue-400 text-center uppercase">
+                                                    Waiting for Driver {batch.driver?.first_name} to confirm arrival at your facility.
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {batch.delivery_status === 'Received' && (
+                                            <div className="mt-6 p-4 bg-green-50 border-4 border-black border-dashed">
                                                 <div className="flex justify-between items-end mb-4">
                                                     <div>
                                                         <p className="text-[10px] font-black uppercase text-gray-500">Driver Logged:</p>
                                                         <p className="text-lg font-black">{batch.actual_weight_kg} kg @ ₱{batch.suggested_price_per_kg}/kg</p>
                                                     </div>
                                                     <div className="text-right">
-                                                        <p className="text-[10px] font-black uppercase text-gray-500">Estimate:</p>
+                                                        <p className="text-[10px] font-black uppercase text-gray-500">Authorized Total:</p>
                                                         <p className="text-lg font-black text-green-600">₱{((batch.actual_weight_kg || 0) * (batch.suggested_price_per_kg || 0)).toLocaleString()}</p>
                                                     </div>
                                                 </div>
-                                                <p className="text-xs font-black uppercase mb-3">Phase 3: Miller Finalize Price</p>
+                                                <p className="text-xs font-black uppercase mb-3 border-t-2 border-black pt-3">Phase 4: Miller Quality Check & Final Price</p>
                                                 <div className="mb-4">
                                                     <label className="block text-[10px] font-black uppercase mb-1">Final Price (₱/kg)</label>
                                                     <input 
                                                         type="number" 
-                                                        className="w-full border-4 border-black p-2 font-black text-sm"
+                                                        className="w-full border-4 border-black p-2 font-black text-sm focus:ring-0 focus:border-green-600"
                                                         value={finalizeData.final_price_per_kg}
                                                         onChange={e => setFinalizeData('final_price_per_kg', e.target.value)}
-                                                        placeholder="Enter final agreed price..."
+                                                        placeholder="Enter final value after physical inspection..."
                                                     />
                                                 </div>
                                                 <button 
                                                     onClick={() => handleFinalizeTransaction(batch.id)}
-                                                    className="w-full bg-green-500 text-black font-black py-3 uppercase hover:bg-black hover:text-white transition-colors border-4 border-black"
+                                                    className="w-full bg-black text-white font-black py-4 uppercase hover:bg-green-600 hover:text-black transition-all border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none translate-y-[-2px]"
                                                 >
-                                                    Finalize Transaction
+                                                    Finalize & Store in Inventory
                                                 </button>
                                             </div>
                                         )}
@@ -236,13 +291,26 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <button 
-                                                        onClick={() => handleDispatch(order.id)}
-                                                        className="w-full bg-black text-white font-black py-4 uppercase hover:bg-blue-600 transition-colors border-4 border-black shadow-[4px_4px_0px_0px_rgba(59,130,246,1)]"
-                                                    >
-                                                        🚚 Dispatch for Delivery
-                                                    </button>
-                                                )}
+                                                     <div className="space-y-4">
+                                                         {order.delivery_status === 'Pending' && (
+                                                             <div className="bg-yellow-100 border-4 border-black p-3 animate-pulse flex items-center justify-center gap-2">
+                                                                 <span className="text-lg">⏳</span>
+                                                                 <p className="text-xs font-black uppercase text-yellow-800">Waiting for Driver to start trip...</p>
+                                                             </div>
+                                                         )}
+                                                         <button 
+                                                             onClick={() => handleDispatch(order.id)}
+                                                             disabled={order.delivery_status !== 'In Transit' || order.status === 'dispatched'}
+                                                             className={`w-full font-black py-4 uppercase transition-all border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
+                                                                 (order.delivery_status === 'In Transit' && order.status !== 'dispatched')
+                                                                 ? 'bg-blue-600 text-white hover:bg-black hover:shadow-none translate-x-[4px] translate-y-[4px]'
+                                                                 : 'bg-gray-200 text-gray-400 cursor-not-allowed grayscale'
+                                                             }`}
+                                                         >
+                                                             🚚 {order.status === 'dispatched' ? 'Already Dispatched' : (order.delivery_status === 'In Transit' ? 'Dispatch for Delivery' : 'Locked: Driver Must Start')}
+                                                         </button>
+                                                     </div>
+                                                 )}
                                             </div>
                                         )}
 

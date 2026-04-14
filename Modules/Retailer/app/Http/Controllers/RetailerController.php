@@ -145,15 +145,20 @@ class RetailerController extends Controller
      */
     public function confirmReceived($id)
     {
-        \App\Models\Order::where('retailer_id', auth()->id())
-            ->findOrFail($id)
-            ->update([
-                'delivery_status' => 'Completed',
-                'status' => 'delivered',
-                'updated_at' => now()
-            ]);
+        $order = \App\Models\Order::where('retailer_id', auth()->id())
+            ->findOrFail($id);
 
-        return redirect()->back()->with('message', 'Delivery confirmed and completed!');
+        if ($order->delivery_status !== 'Delivered') {
+            return redirect()->back()->withErrors('Cannot confirm receipt until the order is officially Delivered.');
+        }
+
+        $order->update([
+            'delivery_status' => 'Confirmed Received',
+            'status' => 'completed',
+            'updated_at' => now()
+        ]);
+
+        return redirect()->back()->with('message', 'Delivery confirmed and signed! Order completed.');
     }
 
     // Standard CRUD methods (Create, Show, Edit, Update, Destroy) 

@@ -1,12 +1,14 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
 import DeliveryStatusStepper from '@/Components/DeliveryStatusStepper';
+import React, { useEffect } from 'react';
 
 export default function MyPurchases({ auth, orders }: any) {
     if (typeof window !== 'undefined') window.router = router;
 
     const badgeConfig = (status: string, delivery_status: string): { bg: string; label: string } => {
-        if (delivery_status === 'Completed') return { bg: 'bg-green-600 text-white', label: '✅ Order Completed' };
+        if (delivery_status === 'Confirmed Received') return { bg: 'bg-green-600 text-white', label: '✅ Order Completed' };
+        if (delivery_status === 'Delivered') return { bg: 'bg-yellow-400 text-black', label: '🚚 Arrived / Handover' };
         
         switch (status) {
             case 'pending_preparation':
@@ -15,18 +17,23 @@ export default function MyPurchases({ auth, orders }: any) {
                 return { bg: 'bg-green-400 text-black', label: '🟢 Ready for Pickup' };
             case 'in_transit':
                 return { bg: 'bg-blue-500 text-white', label: '🔵 In Transit' };
-            case 'delivered':
-                return { bg: 'bg-gray-300 text-gray-700', label: '⚪ Delivered' };
             default:
                 return { bg: 'bg-gray-200 text-gray-600', label: status ? status.replace(/_/g, ' ') : 'Unknown' };
         }
     };
 
     const handleConfirm = (id: number) => {
-        if (confirm('Are you sure you have received the order? This will mark the transaction as completed.')) {
+        if (confirm('Are you sure you have received the order? This will mark the transaction as completed and verify the quality.')) {
             window.router.patch(route('retailer.order.confirm_received', id));
         }
     };
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            router.reload({ only: ['orders'], preserveScroll: true });
+        }, 10000);
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <AuthenticatedLayout auth={auth}>
@@ -84,14 +91,23 @@ export default function MyPurchases({ auth, orders }: any) {
                                             <p className="text-[10px] font-black uppercase text-gray-400 mb-4 tracking-widest">Delivery Tracking</p>
                                             <DeliveryStatusStepper status={order.delivery_status || 'Pending'} type="rice" />
                                             
-                                            {order.delivery_status === 'In Transit' && (
+                                            {/* DO NOT show the button if the truck is still moving or driver hasn't arrived */}
+                                            {order.delivery_status === 'Delivered' ? (
                                                 <div className="mt-8 flex justify-center">
                                                     <button 
                                                         onClick={() => handleConfirm(order.id)}
-                                                        className="bg-black text-white font-black py-4 px-12 border-4 border-black shadow-[4px_4px_0px_0px_rgba(34,197,94,1)] hover:bg-green-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none uppercase tracking-widest"
+                                                        className="bg-black text-white font-black py-4 px-12 border-4 border-black shadow-[8px_8px_0px_0px_rgba(34,197,94,1)] hover:bg-green-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none uppercase tracking-widest animate-pulse"
                                                     >
-                                                        Confirm & Sign Receipt
+                                                        CONFIRM & SIGN RECEIPT
                                                     </button>
+                                                </div>
+                                            ) : (
+                                                <div className="mt-8 flex justify-center">
+                                                    <div className="bg-gray-100 border-4 border-black p-4 flex items-center gap-3 w-full max-w-md justify-center">
+                                                        <p className="font-bold uppercase text-gray-600 text-sm tracking-tighter">
+                                                            {order.delivery_status === 'In Transit' ? "🚚 Heading to your location..." : "🏪 Pending Driver Pickup"}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>

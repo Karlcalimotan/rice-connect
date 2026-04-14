@@ -41,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Palay Logistics (Farmer -> Miller)
     Route::post('/miller/palay/confirm-pickup/{id}', [MillerController::class, 'confirmPickup'])->name('miller.palay.confirm_pickup');
+    Route::post('/miller/palay/authorize/{id}', [MillerController::class, 'authorizePayment'])->name('miller.palay.authorize');
     Route::post('/miller/palay/finalize/{id}', [MillerController::class, 'finalizeTransaction'])->name('miller.palay.finalize');
     
     // Rice Logistics (Miller -> Retailer)

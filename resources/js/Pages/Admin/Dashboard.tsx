@@ -6,9 +6,9 @@ export default function AdminDashboard({ auth, users, batches, orders }: any) {
     const [activeTab, setActiveTab] = useState<'users' | 'batches' | 'orders'>('users');
 
     const tabs = [
-        { key: 'users', label: '👥 Users', count: users.length },
-        { key: 'batches', label: '🌾 Harvest Batches', count: batches.length },
-        { key: 'orders', label: '📦 Orders', count: orders.length },
+        { key: 'users', label: 'Users', count: users.length },
+        { key: 'batches', label: 'Harvest Batches', count: batches.length },
+        { key: 'orders', label: 'Orders', count: orders.length },
     ] as const;
 
     const statusColor = (status: string) => {
@@ -31,35 +31,40 @@ export default function AdminDashboard({ auth, users, batches, orders }: any) {
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="Admin Dashboard" />
-            <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="p-6 bg-transparent min-h-screen">
                 <div className="max-w-7xl mx-auto">
-                    {/* Header */}
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-2 h-10 bg-red-600 border border-black"></div>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                         <div>
-                            <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="w-1.5 h-6 bg-emerald-700 rounded-full shadow-[0_0_15px_rgba(4,120,87,0.4)]"></div>
+                                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-800/60">Observer Instance</p>
+                            </div>
+                            <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
                                 Admin Dashboard
                             </h2>
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                                Observer Mode — Read Only
-                            </p>
+                        </div>
+                        <div className="px-6 py-3 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center gap-3">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest leading-none">Global Sync Active</span>
                         </div>
                     </div>
 
                     {/* Tab Navigation */}
-                    <div className="flex gap-2 mb-6">
+                    <div className="flex flex-wrap gap-4 mb-12">
                         {tabs.map(tab => (
                             <button
                                 key={tab.key}
                                 onClick={() => setActiveTab(tab.key)}
-                                className={`px-5 py-3 font-black uppercase text-xs border-4 border-black transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${
+                                className={`px-8 py-5 font-black uppercase text-[10px] tracking-[0.2em] rounded-[2rem] transition-all duration-500 flex items-center gap-4 ${
                                     activeTab === tab.key
-                                        ? 'bg-black text-white'
-                                        : 'bg-white text-black hover:bg-gray-100'
+                                        ? 'bg-emerald-950 text-white shadow-2xl shadow-emerald-200 -translate-y-1'
+                                        : 'bg-white/40 text-emerald-950/60 hover:bg-white/60 border border-white/40'
                                 }`}
                             >
                                 {tab.label}
-                                <span className="ml-2 px-2 py-0.5 bg-red-500 text-white text-[10px] border border-black">
+                                <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black ${
+                                    activeTab === tab.key ? 'bg-emerald-500 text-white' : 'bg-emerald-100 text-emerald-600'
+                                }`}>
                                     {tab.count}
                                 </span>
                             </button>
@@ -68,38 +73,38 @@ export default function AdminDashboard({ auth, users, batches, orders }: any) {
 
                     {/* Users Table */}
                     {activeTab === 'users' && (
-                        <div className="bg-white border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] overflow-x-auto">
+                        <div className="bg-white/40 border border-white/50 rounded-[2.5rem] shadow-2xl overflow-hidden backdrop-saturate-150">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="border-b-4 border-black bg-gray-100">
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">ID</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Name</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Email</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Role</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Location</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Contact</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Joined</th>
+                                    <tr className="bg-red-800/10 border-b border-white/20">
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">ID</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Name</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Email</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Role</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Location</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Contact</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Joined</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-white/10 text-gray-700">
                                     {users.map((user: any) => (
-                                        <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50">
-                                            <td className="p-3 text-xs font-bold text-gray-400">#{user.id}</td>
-                                            <td className="p-3 font-bold text-sm">{user.first_name} {user.last_name}</td>
-                                            <td className="p-3 text-xs text-gray-600">{user.email}</td>
-                                            <td className="p-3">
-                                                <span className={`px-2 py-0.5 border-2 border-black text-[10px] font-black uppercase shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] ${
-                                                    user.role === 'admin' ? 'bg-red-400' :
-                                                    user.role === 'farmer' ? 'bg-green-400' :
-                                                    user.role === 'miller' ? 'bg-blue-400' :
-                                                    'bg-yellow-400'
+                                        <tr key={user.id} className="hover:bg-white/20 transition-colors">
+                                            <td className="p-6 text-xs font-bold opacity-40">#{user.id}</td>
+                                            <td className="p-6 font-bold text-sm">{user.first_name} {user.last_name}</td>
+                                            <td className="p-6 text-xs">{user.email}</td>
+                                            <td className="p-6">
+                                                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm ${
+                                                    user.role === 'admin' ? 'bg-red-500 text-white' :
+                                                    user.role === 'farmer' ? 'bg-emerald-500 text-white' :
+                                                    user.role === 'miller' ? 'bg-blue-500 text-white' :
+                                                    'bg-amber-500 text-white'
                                                 }`}>
                                                     {user.role}
                                                 </span>
                                             </td>
-                                            <td className="p-3 text-xs text-gray-600">{user.municipality}, {user.province}</td>
-                                            <td className="p-3 text-xs text-gray-600">{user.contact}</td>
-                                            <td className="p-3 text-[10px] text-gray-400">{user.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}</td>
+                                            <td className="p-6 text-xs">{user.municipality}, {user.province}</td>
+                                            <td className="p-6 text-xs">{user.contact}</td>
+                                            <td className="p-6 text-[10px] font-bold opacity-60 tracking-tighter">{user.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -109,24 +114,24 @@ export default function AdminDashboard({ auth, users, batches, orders }: any) {
 
                     {/* Batches Table */}
                     {activeTab === 'batches' && (
-                        <div className="bg-white border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] overflow-x-auto">
+                        <div className="bg-white/40 border border-white/50 rounded-[2.5rem] shadow-2xl overflow-hidden backdrop-saturate-150">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="border-b-4 border-black bg-gray-100">
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">ID</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Variety</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Farmer</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Buyer (Miller)</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Weight</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Sacks</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Status</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Visibility</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest text-center">Actions</th>
+                                    <tr className="bg-red-800/10 border-b border-white/20">
+                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-red-800">ID</th>
+                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-red-800">Variety</th>
+                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-red-800">Farmer</th>
+                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-red-800">Buyer (Miller)</th>
+                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-red-800">Weight</th>
+                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-red-800">Sacks</th>
+                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-red-800">Status</th>
+                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-red-800">Visibility</th>
+                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-red-800 text-center">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-white/10 text-gray-700">
                                     {batches.map((batch: any) => (
-                                        <tr key={batch.id} className={`border-b border-gray-100 hover:bg-gray-50 ${batch.hidden_from_farmer ? 'opacity-50' : ''}`}>
+                                        <tr key={batch.id} className={`hover:bg-white/20 transition-colors ${batch.hidden_from_farmer ? 'opacity-40 grayscale' : ''}`}>
                                             <td className="p-3 text-xs font-bold text-gray-400">#{batch.id}</td>
                                             <td className="p-3 font-bold text-sm uppercase">{batch.rice_variety}</td>
                                             <td className="p-3 text-xs">{batch.farmer_first_name} {batch.farmer_last_name}</td>
@@ -187,24 +192,24 @@ export default function AdminDashboard({ auth, users, batches, orders }: any) {
 
                     {/* Orders Table */}
                     {activeTab === 'orders' && (
-                        <div className="bg-white border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] overflow-x-auto">
+                        <div className="bg-white/40 border border-white/50 rounded-[2.5rem] shadow-2xl overflow-hidden backdrop-saturate-150">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="border-b-4 border-black bg-gray-100">
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">ID</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Variety</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Retailer</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Miller</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Sacks</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Total</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Shipping</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Status</th>
-                                        <th className="p-3 font-black uppercase text-[10px] tracking-widest">Date</th>
+                                    <tr className="bg-red-800/10 border-b border-white/20">
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">ID</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Variety</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Retailer</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Miller</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Sacks</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Total</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Shipping</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Status</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-widest text-red-800">Date</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-white/10 text-gray-700">
                                     {orders.map((order: any) => (
-                                        <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50">
+                                        <tr key={order.id} className="hover:bg-white/20 transition-colors">
                                             <td className="p-3 text-xs font-bold text-gray-400">#{order.id}</td>
                                             <td className="p-3 font-bold text-sm uppercase">{order.rice_variety}</td>
                                             <td className="p-3 text-xs">{order.retailer_first_name} {order.retailer_last_name}</td>

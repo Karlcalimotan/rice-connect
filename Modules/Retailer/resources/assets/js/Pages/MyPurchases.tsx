@@ -38,74 +38,102 @@ export default function MyPurchases({ auth, orders }: any) {
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="My Purchases" />
-            <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="p-6 bg-transparent min-h-screen">
                 <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center gap-2 mb-8">
-                        <div className="w-2 h-8 bg-green-600 border border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900">My Purchases</h2>
+                    <div className="glass-header">
+                        <div className="glass-header-icon"></div>
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
+                            My Purchases
+                        </h2>
                     </div>
 
-                    <div className="space-y-8">
+                    <div className="space-y-12">
                         {orders.length > 0 ? (
                             orders.map((order: any) => {
                                 const badge = badgeConfig(order.status, order.delivery_status);
                                 return (
-                                    <div key={order.id} className="bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-8">
-                                        <div className="flex flex-col lg:flex-row justify-between items-start gap-8 mb-8">
-                                            <div className="flex-1">
-                                                <p className="text-[10px] font-black uppercase text-gray-400 mb-1">Order #{order.id}</p>
-                                                <h3 className="text-3xl font-black uppercase leading-none">{order.rice_variety}</h3>
-                                                <p className="text-lg font-bold text-gray-600 italic mt-1">
-                                                    {order.sacks} Sacks ({order.total_weight}kg)
-                                                </p>
-                                                <div className="mt-4 p-3 bg-gray-100 border-2 border-black inline-block">
-                                                    <p className="text-[10px] font-black uppercase text-gray-500">Milling Station</p>
-                                                    <p className="font-bold">{order.miller_first_name} {order.miller_last_name}</p>
+                                    <div key={order.id} className="glass-card p-10 relative overflow-hidden group hover:scale-[1.01] transition-transform duration-700">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl"></div>
+
+                                        <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-10">
+                                            <div className="flex-1 space-y-4">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="px-3 py-1 rounded-lg bg-emerald-950 text-white text-[9px] font-black uppercase tracking-widest">
+                                                        Batch #{order.id}
+                                                    </span>
+                                                    <span className="text-[10px] font-bold text-emerald-950/40 uppercase tracking-tighter">
+                                                        Logged {new Date(order.created_at).toLocaleDateString()}
+                                                    </span>
+                                                </div>
+                                                <h3 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-tight">
+                                                    {order.rice_variety}
+                                                </h3>
+                                                <div className="flex items-baseline gap-2">
+                                                    <span className="text-2xl font-black text-emerald-700">{order.sacks}</span>
+                                                    <span className="text-xs font-black uppercase text-emerald-950/40 tracking-widest">Sacks Protocol Yield</span>
+                                                </div>
+                                                
+                                                <div className="mt-8 flex items-center gap-4 p-4 rounded-2xl bg-white/40 border border-white/60 w-fit">
+                                                    <div className="w-10 h-10 rounded-xl bg-emerald-950 flex items-center justify-center text-white">
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" strokeWidth="2"/></svg>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[9px] font-black uppercase text-emerald-950/40 tracking-[0.2em]">Origin Miller Hub</p>
+                                                        <p className="font-extrabold text-emerald-950">{order.miller_first_name} {order.miller_last_name}</p>
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            <div className="text-left lg:text-right min-w-[200px]">
-                                                <p className="text-[10px] font-black uppercase text-gray-400">Total Investment</p>
-                                                <p className="text-4xl font-black text-green-600">₱{Number(order.total_price).toLocaleString()}</p>
-                                                {Number(order.delivery_fee) > 0 && (
-                                                    <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Includes ₱{order.delivery_fee} Logistics Fee</p>
-                                                )}
+                                            <div className="text-left lg:text-right min-w-[280px] space-y-6">
+                                                <div>
+                                                    <p className="text-[10px] font-black uppercase text-emerald-950/40 tracking-widest mb-1">Financial Settlement</p>
+                                                    <p className="text-6xl font-black text-emerald-600 tracking-tighter leading-none">₱{Number(order.total_price).toLocaleString()}</p>
+                                                    {Number(order.delivery_fee) > 0 && (
+                                                        <p className="text-[10px] text-emerald-500 font-black uppercase mt-2 tracking-widest">Incl. ₱{order.delivery_fee} Logistics Fee</p>
+                                                    )}
+                                                </div>
                                                 
-                                                <div className="mt-4 flex flex-col items-start lg:items-end gap-2">
-                                                    <span className={`px-4 py-2 border-2 border-black font-black uppercase text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${badge.bg}`}>
+                                                <div className="flex flex-col items-start lg:items-end gap-3 pt-4 border-t border-emerald-950/5">
+                                                    <div className={`px-5 py-2.5 rounded-full font-black uppercase text-[10px] tracking-widest shadow-lg ${badge.bg}`}>
                                                         {badge.label}
-                                                    </span>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-[10px] font-black uppercase bg-black text-white px-2 py-0.5">
-                                                            {order.shipping_method === 'delivery' ? '🚚 Delivery' : '🏪 Pickup'}
-                                                        </span>
-                                                        <span className="text-[10px] font-bold text-gray-400">
-                                                            {new Date(order.created_at).toLocaleDateString()}
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        <span className="text-[9px] font-black uppercase ring-1 ring-emerald-950/10 px-3 py-1 rounded-lg text-emerald-950">
+                                                            PROTOCOL: {order.shipping_method === 'delivery' ? 'DOORSTEP DELIVERY' : 'WAREHOUSE PICKUP'}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="border-t-4 border-black pt-6">
-                                            <p className="text-[10px] font-black uppercase text-gray-400 mb-4 tracking-widest">Delivery Tracking</p>
+                                        <div className="pt-10 border-t border-emerald-950/5">
+                                            <div className="flex justify-between items-center mb-10">
+                                                <p className="text-[10px] font-black uppercase text-emerald-950/40 tracking-[0.4em]">Real-Time Logistics Sequence</p>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></div>
+                                                    <span className="text-[9px] font-black uppercase text-emerald-400">Hub Link Stable</span>
+                                                </div>
+                                            </div>
+                                            
                                             <DeliveryStatusStepper status={order.delivery_status || 'Pending'} type="rice" />
                                             
-                                            {/* DO NOT show the button if the truck is still moving or driver hasn't arrived */}
                                             {order.delivery_status === 'Delivered' ? (
-                                                <div className="mt-8 flex justify-center">
+                                                <div className="mt-12 flex justify-center">
                                                     <button 
                                                         onClick={() => handleConfirm(order.id)}
-                                                        className="bg-black text-white font-black py-4 px-12 border-4 border-black shadow-[8px_8px_0px_0px_rgba(34,197,94,1)] hover:bg-green-600 hover:text-black transition-all active:translate-x-[2px] active:translate-y-[2px] active:shadow-none uppercase tracking-widest animate-pulse"
+                                                        className="btn-2026 !px-16 !py-7 scale-105 shadow-[0_30px_60px_-15px_rgba(6,78,59,0.5)]"
                                                     >
-                                                        CONFIRM & SIGN RECEIPT
+                                                        Finalize: Confirm Acquisition
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <div className="mt-8 flex justify-center">
-                                                    <div className="bg-gray-100 border-4 border-black p-4 flex items-center gap-3 w-full max-w-md justify-center">
-                                                        <p className="font-bold uppercase text-gray-600 text-sm tracking-tighter">
-                                                            {order.delivery_status === 'In Transit' ? "🚚 Heading to your location..." : "🏪 Pending Driver Pickup"}
+                                                <div className="mt-12">
+                                                    <div className="bg-emerald-50/50 p-6 rounded-[2rem] border border-emerald-100 flex items-center gap-5">
+                                                        <div className="w-12 h-12 rounded-2xl bg-white shadow-xl flex items-center justify-center text-emerald-600">
+                                                            <svg className="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeWidth="2.5"/></svg>
+                                                        </div>
+                                                        <p className="font-extrabold uppercase text-emerald-950/50 text-xs tracking-widest">
+                                                            {order.delivery_status === 'In Transit' ? "Status: Dispatch courier is currently inbound." : "Status: Awaiting warehouse dispatch protocol."}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -115,10 +143,17 @@ export default function MyPurchases({ auth, orders }: any) {
                                 );
                             })
                         ) : (
-                            <div className="py-20 bg-white border-4 border-dashed border-gray-300 text-center">
-                                <p className="text-gray-300 text-6xl mb-4">🛒</p>
-                                <p className="text-gray-400 font-black uppercase tracking-widest text-xl">No Purchases Found</p>
-                                <p className="text-gray-300 font-bold">You haven't purchased any rice yet.</p>
+                            <div className="py-40 glass-card text-center relative overflow-hidden">
+                                <div className="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center overflow-hidden">
+                                    <p className="text-[30rem] font-black uppercase leading-none select-none">Void</p>
+                                </div>
+                                <div className="relative">
+                                    <div className="w-24 h-24 bg-emerald-500/5 rounded-full flex items-center justify-center mx-auto mb-10 border border-emerald-500/10">
+                                        <svg className="w-10 h-10 text-emerald-950/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z" strokeWidth="2"/></svg>
+                                    </div>
+                                    <p className="text-emerald-950 font-black uppercase tracking-[1em] text-sm mb-6 opacity-30">Archive Empty</p>
+                                    <p className="text-emerald-950/40 font-black uppercase tracking-[0.4em] text-xl">No Purchases Found In Sequence</p>
+                                </div>
                             </div>
                         )}
                     </div>

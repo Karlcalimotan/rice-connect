@@ -16,12 +16,9 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): Response
+    public function create(): \Illuminate\View\View
     {
-        return Inertia::render('Auth/Login', [
-            'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
-        ]);
+        return view('auth.login');
     }
 
     /**
@@ -33,13 +30,22 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+        
+        return match ($user->role) {
+            'admin'    => redirect()->route('admin.dashboard'),
+            'farmer'   => redirect()->route('farmer.dashboard'),
+            'miller'   => redirect()->route('miller.dashboard'),
+            'driver'   => redirect()->route('driver.dashboard'),
+            'retailer' => redirect()->route('retailer.dashboard'),
+            default    => redirect()->intended(route('dashboard', absolute: false)),
+        };
     }
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
 
@@ -47,6 +53,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return Inertia::location('/');
     }
 }

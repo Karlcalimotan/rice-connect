@@ -10,21 +10,22 @@ export default function Offers({ auth, offers }: any) {
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="Handshake Offers" />
-            <div className="p-8 bg-gray-50 min-h-screen">
+            <div className="p-8 bg-transparent min-h-screen">
                 <div className="max-w-4xl mx-auto">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-2 h-10 bg-yellow-400 border-2 border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter">Mill Handshake Offers</h2>
+                    <div className="flex items-center gap-2 mb-10">
+                        <div className="w-2 h-8 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]"></div>
+                        <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900 leading-none">Mill Handshake Offers</h2>
                     </div>
 
-                    {offers.length === 0 ? (
-                        <div className="bg-white border-4 border-dashed border-gray-300 p-12 text-center text-gray-400 font-bold uppercase">
-                            No active offers or interests from millers.
+                        <div className="py-24 bg-white/80 rounded-[2.5rem] border-2 border-dashed border-gray-100 text-center">
+                            <p className="text-gray-300 text-6xl mb-6 grayscale opacity-40">🤝</p>
+                            <p className="text-gray-400 font-black uppercase tracking-widest text-xl">No active offers</p>
+                            <p className="text-gray-300 font-bold">No interests from millers yet.</p>
                         </div>
                     ) : (
                         <div className="space-y-6">
                             {offers.map((batch: any) => (
-                                <div key={batch.id} className="border-4 border-black p-6 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                                <div key={batch.id} className="bg-white/10 rounded-[2.5rem] p-8 border border-white/30 shadow-2xl overflow-hidden">
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
                                             <p className="text-[10px] font-black uppercase text-gray-400">Palay Variety</p>

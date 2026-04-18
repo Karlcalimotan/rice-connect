@@ -22,125 +22,137 @@ export default function CreateHarvest({ auth }: any) {
         <AuthenticatedLayout auth={auth}>
             <Head title="Post Harvest" />
 
-            <div className="py-12 bg-gray-50 min-h-screen">
+            <div className="py-12 bg-transparent min-h-screen">
                 <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
-                    {/* Header with Neobrutalist style */}
-                    <div className="flex items-center gap-3 mb-10">
-                        <div className="w-3 h-10 bg-green-600 border-2 border-black"></div>
-                        <h2 className="text-4xl font-black uppercase tracking-tighter text-gray-900">
+                    {/* Header with 2026 style */}
+                    <div className="glass-header">
+                        <div className="glass-header-icon"></div>
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
                             Post Harvest
                         </h2>
                     </div>
 
-                    <div className="bg-white border-4 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] p-10">
-                        <form onSubmit={submit} className="space-y-8">
-                            
+                    <div className="glass-card p-12 relative overflow-hidden">
+                        {/* Decorative background element */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
+
+                        <form onSubmit={submit} className="relative space-y-12">
                             {/* Rice Variety */}
-                            <div className="space-y-2">
-                                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Rice Variety (e.g. RC218, Dinorado)</label>
+                            <div className="space-y-4">
+                                <label className="label-2026">Scientific Variety & Type</label>
                                 <input 
                                     type="text" 
-                                    className="w-full border-4 border-black p-4 font-black text-xl focus:ring-0 focus:border-green-600 placeholder-gray-200"
+                                    className="input-2026 !text-2xl"
                                     value={data.rice_variety}
                                     onChange={e => setData('rice_variety', e.target.value)}
-                                    placeholder="Enter variety..."
+                                    placeholder="e.g. Premium Dinorado"
                                     required
                                 />
-                                {errors.rice_variety && <div className="text-red-600 text-[10px] font-black italic uppercase tracking-widest">{errors.rice_variety}</div>}
+                                {errors.rice_variety && <div className="text-rose-500 text-[10px] font-black uppercase tracking-widest mt-2 ml-4">{errors.rice_variety}</div>}
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                 {/* Harvest Date */}
-                                <div className="space-y-2">
-                                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Harvest Date</label>
-                                    <div className="relative">
-                                        <input 
-                                            type="date" 
-                                            className="w-full border-4 border-black p-4 font-black text-xl focus:ring-0 focus:border-green-600"
-                                            value={data.harvest_date}
-                                            onChange={e => setData('harvest_date', e.target.value)}
-                                            required
-                                        />
-                                    </div>
+                                <div className="space-y-4">
+                                    <label className="label-2026">Extraction Date</label>
+                                    <input 
+                                        type="date" 
+                                        className="input-2026"
+                                        value={data.harvest_date}
+                                        onChange={e => setData('harvest_date', e.target.value)}
+                                        required
+                                    />
                                 </div>
 
                                 {/* Manual Pickup Location */}
-                                <div className="space-y-2">
-                                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Pickup Location / Landmark</label>
+                                <div className="space-y-4">
+                                    <label className="label-2026">Logistics Point</label>
                                     <input 
                                         type="text" 
-                                        className="w-full border-4 border-black p-4 font-black text-xl focus:ring-0 focus:border-green-600 placeholder-gray-200"
+                                        className="input-2026"
                                         value={data.location}
                                         onChange={e => setData('location', e.target.value)}
-                                        placeholder="e.g. Purok 3, Near Chapel..."
+                                        placeholder="Purok / Landmark"
                                         required
                                     />
-                                    {errors.location && <div className="text-red-600 text-[10px] font-black italic uppercase tracking-widest">{errors.location}</div>}
+                                    {errors.location && <div className="text-rose-500 text-[10px] font-black uppercase tracking-widest mt-2 ml-4">{errors.location}</div>}
                                 </div>
                             </div>
 
                             {/* Estimated Sacks */}
-                            <div className="space-y-2">
-                                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Estimated Total Sacks</label>
-                                <div className="flex items-center gap-4">
-                                    <input 
-                                        type="number" 
-                                        min="1"
-                                        className="w-full md:w-1/3 border-4 border-black p-4 font-black text-2xl focus:ring-0 focus:border-green-600 placeholder-gray-200"
-                                        value={data.total_sacks}
-                                        onChange={e => setData('total_sacks', e.target.value)}
-                                        placeholder="0"
-                                        required
-                                    />
-                                    <div className="bg-black text-white px-6 py-4 font-black uppercase tracking-widest text-sm border-2 border-black">
-                                        Sacks
+                            <div className="space-y-6">
+                                <label className="label-2026">Yield Volume Authorization</label>
+                                <div className="flex items-center gap-6">
+                                    <div className="flex-1">
+                                        <input 
+                                            type="number" 
+                                            min="1"
+                                            className="input-2026 text-center !text-3xl py-8"
+                                            value={data.total_sacks}
+                                            onChange={e => setData('total_sacks', e.target.value)}
+                                            placeholder="00"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="bg-emerald-950 text-white px-10 py-8 font-black uppercase tracking-[0.3em] text-[11px] rounded-[2rem] shadow-xl">
+                                        Unit: Sacks
                                     </div>
                                 </div>
-                                <p className="text-[10px] text-gray-400 font-bold italic tracking-wider">* This helps the Miller/Driver plan for the right truck size.</p>
-                                {errors.total_sacks && <div className="text-red-600 text-[10px] font-black italic uppercase tracking-widest">{errors.total_sacks}</div>}
+                                <p className="text-[10px] text-emerald-950/40 font-black uppercase italic tracking-widest ml-4">
+                                    * Protocol: Volume determines logistical dispatch size.
+                                </p>
+                                {errors.total_sacks && <div className="text-rose-500 text-[10px] font-black uppercase tracking-widest mt-2 ml-4">{errors.total_sacks}</div>}
                             </div>
 
                             {/* --- PALAY CONDITION SELECTION --- */}
-                            <div className="space-y-3 pt-6 border-t-2 border-gray-100">
-                                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Palay Condition (Important for Miller)</label>
-                                <div className="grid grid-cols-2 gap-6">
+                            <div className="space-y-6 pt-10 border-t border-emerald-950/5">
+                                <label className="label-2026">Atmospheric Condition</label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <button 
                                         type="button"
                                         onClick={() => setData('condition', 'fresh')}
-                                        className={`py-5 border-4 border-black font-black uppercase transition-all flex items-center justify-center gap-2 ${
+                                        className={`group relative py-8 rounded-[2rem] font-black uppercase transition-all duration-500 flex items-center justify-center gap-4 overflow-hidden ${
                                             data.condition === 'fresh' 
-                                            ? 'bg-yellow-400 text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]' 
-                                            : 'bg-white text-gray-300 border-gray-100 shadow-none'
+                                            ? 'bg-amber-100 text-amber-900 border border-amber-200 shadow-xl scale-[1.02]' 
+                                            : 'bg-white/40 text-emerald-950/20 border border-white/60 hover:bg-white/60 shadow-none'
                                         }`}
                                     >
-                                        <span className={data.condition === 'fresh' ? 'opacity-100' : 'opacity-30'}>🌾</span> Fresh / Wet
+                                        <div className={`w-2 h-2 rounded-full absolute top-4 right-4 ${data.condition === 'fresh' ? 'bg-amber-500 animate-pulse' : 'bg-transparent'}`}></div>
+                                        <span className={`text-xl ${data.condition === 'fresh' ? 'opacity-100' : 'opacity-20'}`}>
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.364 17.636l-.707.707M6.364 6.364l.707.707m11.314 11.314l.707.707" strokeWidth="2.5"/></svg>
+                                        </span> 
+                                        FRESH / WET PALAY
                                     </button>
                                     <button 
                                         type="button"
                                         onClick={() => setData('condition', 'ready')}
-                                        className={`py-5 border-4 border-black font-black uppercase transition-all flex items-center justify-center gap-2 ${
+                                        className={`group relative py-8 rounded-[2rem] font-black uppercase transition-all duration-500 flex items-center justify-center gap-4 overflow-hidden ${
                                             data.condition === 'ready' 
-                                            ? 'bg-green-500 text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]' 
-                                            : 'bg-white text-gray-300 border-gray-100 shadow-none'
+                                            ? 'bg-emerald-100 text-emerald-900 border border-emerald-200 shadow-xl scale-[1.02]' 
+                                            : 'bg-white/40 text-emerald-950/20 border border-white/60 hover:bg-white/60 shadow-none'
                                         }`}
                                     >
-                                        <span className={data.condition === 'ready' ? 'opacity-100' : 'opacity-30'}>☀️</span> Ready to Mill
+                                        <div className={`w-2 h-2 rounded-full absolute top-4 right-4 ${data.condition === 'ready' ? 'bg-emerald-500 animate-pulse' : 'bg-transparent'}`}></div>
+                                        <span className={`text-xl ${data.condition === 'ready' ? 'opacity-100' : 'opacity-20'}`}>
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeWidth="2.5"/></svg>
+                                        </span> 
+                                        READY TO MILL
                                     </button>
                                 </div>
-                                <p className="text-[10px] font-black uppercase text-gray-400 italic tracking-widest mt-2">
+                                <p className="text-[10px] font-black uppercase text-emerald-900/40 italic tracking-widest mt-4 ml-4">
                                     {data.condition === 'fresh' 
-                                        ? "* Notified as freshly harvested. Requires drying." 
-                                        : "* Notified as dried and ready for immediate milling."}
+                                        ? "SIGNAL: Requires high-temperature solar processing." 
+                                        : "SIGNAL: Qualified for immediate industrial milling."}
                                 </p>
                             </div>
 
-                            <div className="pt-10">
+                            <div className="pt-12">
                                 <button 
                                     type="submit" 
                                     disabled={processing}
-                                    className="w-full bg-black text-white font-black py-6 px-10 border-b-[8px] border-green-500 hover:bg-gray-900 transition-all uppercase tracking-[0.3em] text-xl active:border-b-0 active:translate-y-2"
+                                    className="btn-2026 w-full !text-lg py-8 shadow-[0_25px_60px_-15px_rgba(6,78,59,0.4)]"
                                 >
-                                    {processing ? 'PROCESSING...' : 'POST HARVEST'}
+                                    {processing ? 'EXECUTING...' : 'ENVELOPE DISPATCH: POST HARVEST'}
                                 </button>
                             </div>
                         </form>

@@ -48,40 +48,46 @@ export default function Inventory({ auth, inventory }: { auth: any; inventory: V
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="Miller Inventory" />
-            <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="p-6 bg-transparent min-h-screen">
                 <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center gap-2 mb-8">
-                        <div className="w-2 h-8 bg-blue-600 border border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900">
-                            📦 My Inventory
-                        </h2>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                        <div>
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="w-1.5 h-6 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]"></div>
+                                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-800/60">Stockpile Management</p>
+                            </div>
+                            <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
+                                Hub Inventory
+                            </h2>
+                        </div>
                     </div>
 
                     {inventory.length > 0 ? (
                         <div className="space-y-8">
                             {inventory.map((group: VarietyGroup) => (
-                                <div key={group.rice_variety} className="bg-white border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
+                                <div key={group.rice_variety} className="glass-card overflow-hidden p-2">
+                                    <div className="bg-white/40 rounded-[2.5rem] overflow-hidden">
                                     {/* Variety Header */}
-                                    <div className="p-6 border-b-4 border-black bg-gray-50">
+                                    <div className="p-8 border-b border-white/20 bg-emerald-700/40">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <h3 className="text-2xl font-black uppercase text-gray-900">{group.rice_variety}</h3>
-                                                <p className="text-xs font-bold text-gray-400 uppercase mt-1">
+                                                <h3 className="text-2xl font-black uppercase text-white tracking-tighter">{group.rice_variety}</h3>
+                                                <p className="text-[10px] font-black uppercase text-emerald-100 tracking-widest mt-1 opacity-60">
                                                     {group.batch_count} batch{group.batch_count > 1 ? 'es' : ''}
                                                 </p>
                                             </div>
-                                            <div className="flex gap-6 text-center">
-                                                <div className="bg-white border-2 border-black p-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
-                                                    <p className="text-[10px] font-black uppercase text-gray-400">Total Weight</p>
-                                                    <p className="text-2xl font-black text-blue-600">{group.total_weight}<span className="text-xs text-gray-400 ml-1">kg</span></p>
+                                            <div className="flex gap-4 text-center">
+                                                <div className="bg-white/10 border border-white/20 rounded-2xl p-4 min-w-[120px]">
+                                                    <p className="text-[9px] font-black uppercase text-emerald-50 mb-1 opacity-60">Total Weight</p>
+                                                    <p className="text-2xl font-black text-white leading-none">{group.total_weight}<span className="text-xs ml-1 opacity-60 font-medium tracking-widest">KG</span></p>
                                                 </div>
-                                                <div className="bg-white border-2 border-black p-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
-                                                    <p className="text-[10px] font-black uppercase text-gray-400">Unpacked</p>
-                                                    <p className="text-2xl font-black text-orange-500">{group.total_unpacked_weight_kg || 0}<span className="text-xs text-gray-400 ml-1">kg</span></p>
+                                                <div className="bg-white/10 border border-white/20 rounded-2xl p-4 min-w-[120px]">
+                                                    <p className="text-[9px] font-black uppercase text-emerald-50 mb-1 opacity-60">Unpacked</p>
+                                                    <p className="text-2xl font-black text-white leading-none">{group.total_unpacked_weight_kg || 0}<span className="text-xs ml-1 opacity-60 font-medium tracking-widest">KG</span></p>
                                                 </div>
-                                                <div className="bg-white border-2 border-black p-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
-                                                    <p className="text-[10px] font-black uppercase text-gray-400">Sacks</p>
-                                                    <p className="text-2xl font-black text-green-600">{group.total_sacks}</p>
+                                                <div className="bg-white/10 border border-white/20 rounded-2xl p-4 min-w-[120px]">
+                                                    <p className="text-[9px] font-black uppercase text-emerald-50 mb-1 opacity-60">Sacks</p>
+                                                    <p className="text-2xl font-black text-white leading-none">{group.total_sacks}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -138,8 +144,9 @@ export default function Inventory({ auth, inventory }: { auth: any; inventory: V
                                                     )}
                                                     {batch.status === 'processing' && (
                                                         <button onClick={() => handleMillRice(batch.id)}
-                                                            className="px-3 py-1 bg-green-500 text-black text-[10px] font-black uppercase border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                                            ⚙️ Mill to Rice
+                                                            className="px-3 py-1 bg-emerald-950 text-white text-[10px] font-black uppercase rounded-lg shadow-lg flex items-center gap-2">
+                                                            <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15l-3-3m0 0l3-3m-3 3h12" strokeWidth="2"/></svg>
+                                                            MILL TO SECURE STOCK
                                                         </button>
                                                     )}
                                                 </div>
@@ -147,13 +154,13 @@ export default function Inventory({ auth, inventory }: { auth: any; inventory: V
                                         ))}
                                     </div>
                                 </div>
+                            </div>
                             ))}
                         </div>
                     ) : (
-                        <div className="py-20 bg-white border-4 border-dashed border-gray-300 text-center">
-                            <p className="text-gray-300 text-6xl mb-4">🚜</p>
-                            <p className="text-gray-400 font-black uppercase tracking-widest text-xl">Warehouse Empty</p>
-                            <p className="text-gray-300 font-bold">Buy palay from farmers to begin milling.</p>
+                        <div className="py-40 glass-card flex flex-col items-center justify-center text-center">
+                            <p className="text-emerald-950/10 font-black uppercase tracking-[1em] text-sm mb-8">STOCKPILE EMPTY</p>
+                            <p className="text-emerald-950/40 font-black uppercase tracking-[0.4em] text-xl">Operational Inactivity Detected</p>
                         </div>
                     )}
                 </div>

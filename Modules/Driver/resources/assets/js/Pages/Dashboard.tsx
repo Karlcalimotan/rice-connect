@@ -23,11 +23,11 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
         <AuthenticatedLayout auth={auth}>
             <Head title="Driver Dashboard" />
 
-            <div className="py-12 bg-gray-50 min-h-screen">
+            <div className="py-12 bg-transparent min-h-screen">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="flex items-center gap-3 mb-10">
-                        <div className="w-3 h-10 bg-blue-600 border-2 border-black"></div>
-                        <h2 className="text-4xl font-black uppercase tracking-tighter text-gray-900">
+                        <div className="w-3 h-10 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]"></div>
+                        <h2 className="text-4xl font-black uppercase tracking-tighter text-gray-900 leading-none">
                             Road Ops Dashboard
                         </h2>
                     </div>
@@ -38,10 +38,12 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                             <h3 className="text-2xl font-black uppercase text-orange-600">Palay Pickups</h3>
                             
                             {palayAssignments.length === 0 ? (
-                                <div className="p-8 border-4 border-dashed border-gray-300 text-center text-gray-400 font-bold uppercase">No pending palay pickups.</div>
+                                <div className="p-12 bg-white/80 rounded-[2rem] border-2 border-dashed border-gray-100 text-center text-gray-400 font-black uppercase tracking-widest text-xs">
+                                    No pending palay pickups.
+                                </div>
                             ) : (
                                 palayAssignments.map((batch: any) => (
-                                    <div key={batch.id} className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(234,179,8,1)]">
+                                    <div key={batch.id} className="bg-white/10 rounded-[2rem] overflow-hidden p-8 shadow-xl border border-white/30">
                                         <div className="flex justify-between items-start mb-4">
                                             <div>
                                                 <h4 className="text-xl font-black uppercase text-blue-600 leading-none">{batch.rice_variety}</h4>
@@ -146,10 +148,12 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                             <h3 className="text-2xl font-black uppercase text-blue-600">Rice Deliveries</h3>
                             
                             {riceAssignments.length === 0 ? (
-                                <div className="p-8 border-4 border-dashed border-gray-300 text-center text-gray-400 font-bold uppercase">No active rice deliveries.</div>
+                                <div className="p-12 bg-white/80 rounded-[2rem] border-2 border-dashed border-gray-100 text-center text-gray-400 font-black uppercase tracking-widest text-xs">
+                                    No active rice deliveries.
+                                </div>
                             ) : (
                                 riceAssignments.map((order: any) => (
-                                    <div key={order.id} className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(37,99,235,1)]">
+                                    <div key={order.id} className="bg-white/10 rounded-[2rem] overflow-hidden p-8 shadow-xl border border-white/30">
                                         <div className="flex justify-between items-start mb-4">
                                             <div>
                                                 <h4 className="text-xl font-black uppercase">{order.rice_variety}</h4>
@@ -195,16 +199,16 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                     </div>
 
                     {/* RECENT HISTORY */}
-                    <div className="mt-16">
-                        <h3 className="text-xl font-black uppercase mb-6 tracking-widest text-gray-400">Assignment History</h3>
-                        <div className="bg-white border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden">
+                    <div className="mt-20">
+                        <h3 className="text-[10px] font-black uppercase mb-8 tracking-[0.3em] text-emerald-600">Assignment History</h3>
+                        <div className="bg-white/30 border border-white/50 rounded-[2.5rem] overflow-hidden shadow-2xl">
                             <table className="w-full text-left">
-                                <thead className="bg-gray-100 border-b-4 border-black">
+                                <thead className="bg-emerald-700/80 backdrop-blur-md">
                                     <tr>
-                                        <th className="p-4 text-[10px] font-black uppercase">Type</th>
-                                        <th className="p-4 text-[10px] font-black uppercase">Commodity</th>
-                                        <th className="p-4 text-[10px] font-black uppercase text-center">Weight</th>
-                                        <th className="p-4 text-[10px] font-black uppercase text-center">Status</th>
+                                        <th className="p-6 text-[10px] font-black uppercase tracking-widest text-emerald-50">Type</th>
+                                        <th className="p-6 text-[10px] font-black uppercase tracking-widest text-emerald-50">Commodity</th>
+                                        <th className="p-6 text-[10px] font-black uppercase tracking-widest text-emerald-50 text-center">Weight</th>
+                                        <th className="p-6 text-[10px] font-black uppercase tracking-widest text-emerald-50 text-center">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>

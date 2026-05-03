@@ -4,6 +4,7 @@ namespace Modules\Farmer\Http\Controllers;
 
 use Modules\Farmer\Models\HarvestBatch;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia; // REQUIRED for React
@@ -120,26 +121,6 @@ class FarmerController extends Controller
     ]);
 }
 
-public function acceptOffer($id)
-{
-    $batch = HarvestBatch::where('user_id', auth()->id())->findOrFail($id);
-    
-    // Update status to 'Accepted'
-    $batch->update(['status' => 'Accepted']);
-
-    return redirect()->back()->with('message', 'Offer accepted! The Palay is now marked as Accepted.');
-}
-  public function acceptInterest($id)
-{
-    $batch = HarvestBatch::where('user_id', auth()->id())->findOrFail($id);
-
-    // Change status from 'pending' to 'Accepted'
-    $batch->update([
-        'status' => 'Accepted'
-    ]);
-
-    return redirect()->back()->with('message', 'Agreement reached! Rice successfully sold to the Miller. They will now assign a driver.');
-}
     /**
      * Phase 3 Handshake: Farmer accepts a specific Miller's interest.
      */
@@ -153,6 +134,7 @@ public function acceptOffer($id)
 
         $batch->update([
             'status' => 'Accepted',
+            'delivery_status' => 'Pending',
             'accepted_miller_id' => $request->miller_id,
             'buyer_id' => $request->miller_id, // Sync for legacy buyer-based queries
         ]);

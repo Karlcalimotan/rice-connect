@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import DeliveryStatusStepper from '@/Components/DeliveryStatusStepper';
 import React from 'react';
 
@@ -27,7 +27,7 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="flex items-center gap-3 mb-10">
                         <div className="w-3 h-10 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]"></div>
-                        <h2 className="text-4xl font-black uppercase tracking-tighter text-gray-900 leading-none">
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
                             Road Ops Dashboard
                         </h2>
                     </div>
@@ -38,23 +38,37 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                             <h3 className="text-2xl font-black uppercase text-orange-600">Palay Pickups</h3>
                             
                             {palayAssignments.length === 0 ? (
-                                <div className="p-12 bg-white/80 rounded-[2rem] border-2 border-dashed border-gray-100 text-center text-gray-400 font-black uppercase tracking-widest text-xs">
-                                    No pending palay pickups.
+                                <div className="glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                                    <span className="text-4xl mb-4 opacity-50">🌾</span>
+                                    <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No pending palay pickups.</p>
                                 </div>
                             ) : (
                                 palayAssignments.map((batch: any) => (
-                                    <div key={batch.id} className="bg-white/10 rounded-[2rem] overflow-hidden p-8 shadow-xl border border-white/30">
-                                        <div className="flex justify-between items-start mb-4">
+                                    <div key={batch.id} className="glass-card group relative p-8">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-emerald-500/10 transition-all"></div>
+                                        
+                                        <div className="relative flex justify-between items-start mb-6">
                                             <div>
-                                                <h4 className="text-xl font-black uppercase text-blue-600 leading-none">{batch.rice_variety}</h4>
-                                                <div className="mt-2 mb-3 bg-yellow-400 border-2 border-black inline-block px-3 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                                    <span className="text-xs font-black uppercase tracking-tighter">📦 EST. {batch.total_sacks ?? batch.number_of_bags} SACKS</span>
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+                                                    <h4 className="text-2xl font-black uppercase tracking-tighter text-gray-900 leading-none">{batch.rice_variety}</h4>
                                                 </div>
-                                                <p className="text-xs font-bold text-gray-500 uppercase italic leading-tight">Farmer: {batch.user?.first_name} {batch.user?.last_name}</p>
-                                                <p className="text-[10px] font-black italic tracking-wide text-gray-400">📞 {batch.user?.contact}</p>
+                                                <div className="mb-4 bg-yellow-400 border-[3px] border-black inline-block px-4 py-1.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                                    <span className="text-xs font-black uppercase tracking-widest italic">📦 EST. {batch.total_sacks ?? batch.number_of_bags} SACKS</span>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">👤</span>
+                                                        Farmer: <span className="text-gray-900">{batch.user?.first_name} {batch.user?.last_name}</span>
+                                                    </p>
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">📞</span>
+                                                        Contact: <span className="text-blue-600">{batch.user?.contact}</span>
+                                                    </p>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <span className="bg-gray-100 text-[10px] font-black px-2 py-1 border-2 border-black uppercase text-gray-600">Palay</span>
+                                                <span className="bg-black text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Palay Supply</span>
                                             </div>
                                         </div>
 
@@ -85,7 +99,7 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
 
                                                 <button 
                                                     onClick={() => router.post(route('driver.palay.finalize', batch.id))}
-                                                    className="w-full bg-black text-white font-black py-4 uppercase hover:bg-green-600 transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none"
+                                                    className="btn-2026 w-full text-center !py-4"
                                                 >
                                                     Finalize Pickup & Pay Farmer
                                                 </button>
@@ -117,7 +131,7 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                                                 </div>
                                                 <button 
                                                     onClick={() => handleLogPickup(batch.id)}
-                                                    className="w-full bg-black text-white font-black py-3 uppercase hover:bg-yellow-500 hover:text-black transition-colors"
+                                                    className="btn-2026 w-full text-center !bg-yellow-600 hover:!bg-yellow-700 !py-4"
                                                 >
                                                     Start In-Transit
                                                 </button>
@@ -128,7 +142,7 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                                             <div className="mt-6">
                                                 <button 
                                                     onClick={() => setSelectedBatch(batch)}
-                                                    className="w-full bg-blue-600 text-white font-black py-4 uppercase border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-black transition-all active:shadow-none active:translate-x-1 active:translate-y-1"
+                                                    className="btn-2026 w-full text-center !bg-blue-600 hover:!bg-blue-700 !py-4"
                                                 >
                                                     Mark as Arrived at Miller
                                                 </button>
@@ -148,20 +162,34 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                             <h3 className="text-2xl font-black uppercase text-blue-600">Rice Deliveries</h3>
                             
                             {riceAssignments.length === 0 ? (
-                                <div className="p-12 bg-white/80 rounded-[2rem] border-2 border-dashed border-gray-100 text-center text-gray-400 font-black uppercase tracking-widest text-xs">
-                                    No active rice deliveries.
+                                <div className="glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                                    <span className="text-4xl mb-4 opacity-50">📦</span>
+                                    <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No active rice deliveries.</p>
                                 </div>
                             ) : (
                                 riceAssignments.map((order: any) => (
-                                    <div key={order.id} className="bg-white/10 rounded-[2rem] overflow-hidden p-8 shadow-xl border border-white/30">
-                                        <div className="flex justify-between items-start mb-4">
+                                    <div key={order.id} className="glass-card group relative p-8">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-blue-500/10 transition-all"></div>
+
+                                        <div className="relative flex justify-between items-start mb-6">
                                             <div>
-                                                <h4 className="text-xl font-black uppercase">{order.rice_variety}</h4>
-                                                <p className="text-xs font-bold text-gray-500 uppercase italic">Retailer: {order.retailer?.first_name} {order.retailer?.last_name}</p>
-                                                <p className="text-[10px] font-black italic">📞 {order.retailer?.contact}</p>
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                    <h4 className="text-2xl font-black uppercase tracking-tighter text-gray-900 leading-none">{order.rice_variety}</h4>
+                                                </div>
+                                                <div className="space-y-1 mt-4">
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">🏬</span>
+                                                        Retailer: <span className="text-gray-900">{order.retailer?.first_name} {order.retailer?.last_name}</span>
+                                                    </p>
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">📞</span>
+                                                        Contact: <span className="text-blue-600">{order.retailer?.contact}</span>
+                                                    </p>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <span className="bg-blue-100 text-[10px] font-black px-2 py-1 border-2 border-black uppercase text-blue-700">Rice</span>
+                                                <span className="bg-blue-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Retailer Order</span>
                                             </div>
                                         </div>
 
@@ -175,7 +203,7 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                                                 </div>
                                                 <button 
                                                     onClick={() => router.post(route('driver.rice.start_trip', { id: order.id }))} 
-                                                    className="w-full bg-black text-white font-black py-4 uppercase hover:bg-blue-600 transition-colors border-4 border-black shadow-[4px_4px_0px_0px_rgba(37,99,235,1)]"
+                                                    className="btn-2026 w-full text-center !bg-blue-600 hover:!bg-blue-700 !py-4"
                                                 >
                                                     Confirm Loading & Start Trip
                                                 </button>
@@ -186,7 +214,7 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                                             <div className="mt-6">
                                                 <button 
                                                     onClick={() => handleArrive(order.id)}
-                                                    className="w-full bg-blue-600 text-white font-black py-4 uppercase border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-black transition-colors"
+                                                    className="btn-2026 w-full text-center !bg-blue-600 hover:!bg-blue-700 !py-4"
                                                 >
                                                     Mark as Delivered
                                                 </button>
@@ -201,7 +229,7 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                     {/* RECENT HISTORY */}
                     <div className="mt-20">
                         <h3 className="text-[10px] font-black uppercase mb-8 tracking-[0.3em] text-emerald-600">Assignment History</h3>
-                        <div className="bg-white/30 border border-white/50 rounded-[2.5rem] overflow-hidden shadow-2xl">
+                        <div className="glass-card overflow-hidden shadow-2xl">
                             <table className="w-full text-left">
                                 <thead className="bg-emerald-700/80 backdrop-blur-md">
                                     <tr>
@@ -240,7 +268,7 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
 
                 {/* ARRIVAL VERIFICATION MODAL */}
                 {selectedBatch && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
                         <div className="bg-white border-8 border-black w-full max-w-xl shadow-[20px_20px_0px_0px_rgba(37,99,235,1)] p-8">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-3xl font-black uppercase tracking-tighter text-gray-900 leading-none">Finalize Arrival</h3>

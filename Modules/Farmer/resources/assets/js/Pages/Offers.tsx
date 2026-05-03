@@ -14,18 +14,18 @@ export default function Offers({ auth, offers }: any) {
                 <div className="max-w-4xl mx-auto">
                     <div className="flex items-center gap-2 mb-10">
                         <div className="w-2 h-8 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900 leading-none">Mill Handshake Offers</h2>
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">Mill Handshake Offers</h2>
                     </div>
 
-                        <div className="py-24 bg-white/80 rounded-[2.5rem] border-2 border-dashed border-gray-100 text-center">
-                            <p className="text-gray-300 text-6xl mb-6 grayscale opacity-40">🤝</p>
-                            <p className="text-gray-400 font-black uppercase tracking-widest text-xl">No active offers</p>
-                            <p className="text-gray-300 font-bold">No interests from millers yet.</p>
+                    {offers.length === 0 ? (
+                        <div className="glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                            <span className="text-4xl mb-4 opacity-50">🤝</span>
+                            <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No active offers. Waiting for millers...</p>
                         </div>
                     ) : (
                         <div className="space-y-6">
                             {offers.map((batch: any) => (
-                                <div key={batch.id} className="bg-white/10 rounded-[2.5rem] p-8 border border-white/30 shadow-2xl overflow-hidden">
+                                <div key={batch.id} className="glass-card p-8 relative overflow-hidden">
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
                                             <p className="text-[10px] font-black uppercase text-gray-400">Palay Variety</p>

@@ -8,8 +8,8 @@ export default function MyOrders({ auth, orders }: any) {
             <div className="p-6 bg-gray-50 min-h-screen">
                 <div className="max-w-7xl mx-auto">
                     <div className="flex items-center gap-2 mb-8">
-                        <div className="w-2 h-8 bg-green-600 border border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900">
+                        <div className="w-2 h-8 bg-emerald-600 rounded-full"></div>
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
                             My Purchase History
                         </h2>
                     </div>
@@ -40,9 +40,9 @@ export default function MyOrders({ auth, orders }: any) {
                                 </div>
                             ))
                         ) : (
-                            <div className="py-20 bg-white border-4 border-dashed border-gray-300 text-center">
-                                <p className="text-gray-400 font-black uppercase tracking-widest text-xl">No Orders Found</p>
-                                <p className="text-gray-300 font-bold">You haven't purchased any rice yet.</p>
+                            <div className="glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                                <span className="text-4xl mb-4 opacity-50">🛒</span>
+                                <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No Orders Found. You haven't purchased any rice yet.</p>
                             </div>
                         )}
                     </div>

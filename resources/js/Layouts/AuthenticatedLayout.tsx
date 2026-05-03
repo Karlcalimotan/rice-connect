@@ -34,7 +34,7 @@ export default function Authenticated({
         <div 
             className="h-screen flex overflow-hidden selection:bg-emerald-200 selection:text-emerald-900 lush-gradient relative font-['Plus_Jakarta_Sans',sans-serif]"
             style={{
-                backgroundImage: `url('/images/rice_2026.png')`,
+                backgroundImage: `url('/images/rice_field_hero.png')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundAttachment: 'fixed'

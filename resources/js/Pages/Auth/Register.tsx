@@ -18,6 +18,8 @@ export default function Register() {
         province: 'Iloilo',
         password: '',
         password_confirmation: '',
+        vehicle_type: '',
+        license_number: '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -90,9 +92,50 @@ export default function Register() {
                         <option value="farmer">Farmer</option>
                         <option value="miller">Miller</option>
                         <option value="retailer">Retailer</option>
+                        <option value="driver">Driver (Logistics)</option>
                     </select>
                     <InputError message={errors.role} className="mt-2" />
                 </div>
+
+                {/* Driver-specific Fields */}
+                {data.role === 'driver' && (
+                    <div className="mt-4 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-lg space-y-4">
+                        <p className="text-xs font-black uppercase text-blue-800 tracking-widest">Driver Credentials</p>
+                        
+                        <div>
+                            <InputLabel htmlFor="vehicle_type" value="Vehicle Type" />
+                            <select
+                                id="vehicle_type"
+                                name="vehicle_type"
+                                value={data.vehicle_type}
+                                className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                onChange={(e) => setData('vehicle_type', e.target.value)}
+                                required
+                            >
+                                <option value="">Select Type...</option>
+                                <option value="Truck">Truck (Heavy Duty)</option>
+                                <option value="L300">L300 / Van</option>
+                                <option value="Motorcycle">Motorcycle</option>
+                                <option value="Tractor">Tractor / Trailer</option>
+                            </select>
+                            <InputError message={errors.vehicle_type} className="mt-2" />
+                        </div>
+
+                        <div>
+                            <InputLabel htmlFor="license_number" value="License Number" />
+                            <TextInput
+                                id="license_number"
+                                name="license_number"
+                                value={data.license_number}
+                                className="mt-1 block w-full"
+                                onChange={(e) => setData('license_number', e.target.value)}
+                                required
+                                placeholder="E.g. N01-XX-XXXXXX"
+                            />
+                            <InputError message={errors.license_number} className="mt-2" />
+                        </div>
+                    </div>
+                )}
 
                 {/* Municipality */}
                 <div className="mt-4">

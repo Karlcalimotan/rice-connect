@@ -65,7 +65,7 @@ export default function Authenticated({
                                 className="w-full"
                                 onClick={handleNavClick}
                             >
-                                Post New Batch
+                                Post Harvest
                             </NavLink>
                         </div>
                     )}
@@ -115,6 +115,14 @@ export default function Authenticated({
                                 📋 Customer Orders
                             </NavLink>
                             <NavLink 
+                                href={route('miller.transport')} 
+                                active={route().current('miller.transport')}
+                                className="w-full"
+                                onClick={handleNavClick}
+                            >
+                                🚚 Transport Hub
+                            </NavLink>
+                            <NavLink 
                                 href={route('miller.shipping_settings')} 
                                 active={route().current('miller.shipping_settings')}
                                 className="w-full"
@@ -146,6 +154,21 @@ export default function Authenticated({
                                 onClick={handleNavClick}
                             >
                                 📦 My Purchases
+                            </NavLink>
+                        </div>
+                    )}
+
+                    {/* DRIVER LINKS */}
+                    {user.role === 'driver' && (
+                        <div className="pt-4 space-y-1">
+                            <p className="text-[10px] font-black text-gray-400 uppercase px-3 tracking-widest mb-2">Logistics Control</p>
+                            <NavLink 
+                                href={route('driver.dashboard')} 
+                                active={route().current('driver.dashboard')} 
+                                className="w-full"
+                                onClick={handleNavClick}
+                            >
+                                Dashboard
                             </NavLink>
                         </div>
                     )}

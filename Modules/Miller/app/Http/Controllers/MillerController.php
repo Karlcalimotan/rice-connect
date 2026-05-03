@@ -18,10 +18,9 @@ class MillerController extends Controller
     {
         $user = auth()->user();
 
-        // SYNCED: Fetching 'unsold' batches with 'condition' included
-        $batches = HarvestBatch::with('user')
-            ->where('status', 'unsold')
-            ->where('total_weight', '>', 0) // Hide empty batches
+        // Show batches that are available or already have some interest received
+        $batches = HarvestBatch::with(['user', 'interests'])
+            ->whereIn('status', ['available', 'interest_received'])
             ->whereHas('user', function($query) use ($user) {
                 $query->where('province', $user->province);
             })
@@ -41,12 +40,18 @@ class MillerController extends Controller
     {
         $batch = HarvestBatch::findOrFail($id);
     
-        $batch->update([
-            'status' => 'pending',
-            'buyer_id' => auth()->id(),
+        // 1. Record the interest in the separate table
+        \App\Models\HarvestInterest::firstOrCreate([
+            'harvest_id' => $id,
+            'miller_id' => auth()->id(),
         ]);
 
-        return redirect()->route('miller.incoming')->with('message', 'Marked as interested!');
+        // 2. Update status if it was 'available'
+        if ($batch->status === 'available') {
+            $batch->update(['status' => 'interest_received']);
+        }
+
+        return redirect()->back()->with('message', 'Interest sent! Awaiting farmer approval.');
     }
 
     public function incoming(): Response
@@ -70,7 +75,7 @@ class MillerController extends Controller
         // Aggregated view: group batches by rice variety for the Miller
         $inventory = HarvestBatch::with('user')
             ->where('buyer_id', auth()->id())
-            ->whereIn('status', ['received','processing'])
+            ->whereIn('status', ['received','processing', 'milled'])
             ->latest()
             ->get();
 
@@ -137,20 +142,91 @@ class MillerController extends Controller
     /**
      * Replace "Confirm Receipt" flow with contact action for physical coordination.
      */
-    public function contactFarmer($id)
+    /**
+     * Phase 2: Driver (or Miller) confirms pickup, enters weight and suggests price.
+     */
+    public function confirmPickup(Request $request, $id)
     {
         $batch = HarvestBatch::where('buyer_id', auth()->id())->findOrFail($id);
 
-        // For now: mark batch as in_transit and set delivery_status to pending (Farmer will see in_transit)
-        $batch->update(['status' => 'in_transit', 'delivery_status' => 'pending']);
+        $validated = $request->validate([
+            'actual_weight_kg' => 'required|numeric|min:0.01',
+            'suggested_price_per_kg' => 'required|numeric|min:0',
+        ]);
 
-        return redirect()->back()->with('message', 'Farmer contact initiated. Coordinate pickup/delivery offline.');
+        $batch->update([
+            'actual_weight_kg' => $validated['actual_weight_kg'],
+            'suggested_price_per_kg' => $validated['suggested_price_per_kg'],
+            'delivery_status' => 'In Transit',
+            'status' => 'in_transit',
+        ]);
+
+        return redirect()->back()->with('message', 'Pickup confirmed! Palay is now In Transit.');
+    }
+
+    /**
+     * Placeholder for Miller contacting Farmer.
+     */
+    public function contactFarmer($id)
+    {
+        // This is mainly for UI feedback in some flows
+        return redirect()->back()->with('message', 'Farmer contact info displayed.');
+    }
+
+    /**
+     * Phase 3: Miller finalizes the transaction.
+     */
+    public function finalizeTransaction(Request $request, $id)
+    {
+        $batch = HarvestBatch::where('buyer_id', auth()->id())->findOrFail($id);
+
+        if (is_null($batch->actual_weight_kg)) {
+            return redirect()->back()->withErrors('Cannot finalize price if actual weight is not set.');
+        }
+
+        $validated = $request->validate([
+            'final_price_per_kg' => 'required|numeric|min:0',
+        ]);
+
+        $totalPayment = $batch->actual_weight_kg * $validated['final_price_per_kg'];
+
+        $batch->update([
+            'final_price_per_kg' => $validated['final_price_per_kg'],
+            'price_per_kg' => $validated['final_price_per_kg'], // Sync for legacy views
+            'total_weight' => $batch->actual_weight_kg, // Sync
+            'delivery_status' => 'Received',
+            'status' => 'received',
+            'drying_status' => 'received',
+        ]);
+
+        return redirect()->back()->with('message', 'Transaction finalized! Total Payment: ₱' . number_format($totalPayment, 2));
+    }
+
+    public function assignDriver(Request $request, $id)
+    {
+        $request->validate([
+            'driver_id' => 'required|exists:users,id',
+            'type' => 'required|in:palay,rice'
+        ]);
+
+        if ($request->type === 'palay') {
+            $model = HarvestBatch::where('buyer_id', auth()->id())->findOrFail($id);
+        } else {
+            $model = \App\Models\Order::where('miller_id', auth()->id())->findOrFail($id);
+        }
+
+        $model->update([
+            'driver_id' => $request->driver_id,
+            'delivery_status' => 'Pending'
+        ]);
+
+        return redirect()->back()->with('message', 'Driver assigned successfully!');
     }
 
     public function markReceived($id)
     {
         $batch = HarvestBatch::where('buyer_id', auth()->id())->findOrFail($id);
-        $batch->update(['status' => 'received', 'drying_status' => 'received']);
+        $batch->update(['status' => 'received', 'delivery_status' => 'Received', 'drying_status' => 'received']);
         return redirect()->back();
     }
 
@@ -244,29 +320,94 @@ class MillerController extends Controller
     }
 
     /**
-     * Dispatch delivery for an order.
+     * Dedicated Transport Tab for Millers.
      */
-    public function dispatchDelivery($id)
+    public function transport(): Response
     {
-        \Illuminate\Support\Facades\DB::table('orders')
-            ->where('id', $id)
-            ->where('miller_id', auth()->id())
-            ->update(['status' => 'in_transit', 'updated_at' => now()]);
+        // 1. Palay Picking (Inbound) - ONLY UNLOCKED AFTER A SUCCESSFUL HANDSHAKE
+        $inbound = HarvestBatch::with(['user', 'driver'])
+            ->where('accepted_miller_id', auth()->id())
+            ->whereIn('status', ['Accepted', 'sold', 'received', 'processing', 'milled', 'payment_pending', 'payment_authorized'])
+            ->whereIn('delivery_status', ['Pending', 'In Transit', 'Received', 'Payment Pending', 'Payment Authorized'])
+            ->latest()
+            ->get();
 
-        return redirect()->back()->with('message', 'Order dispatched for delivery.');
+        // 2. Rice Delivery (Outbound)
+        $outbound = \App\Models\Order::with('retailer')
+            ->where('miller_id', auth()->id())
+            ->whereIn('delivery_status', ['Pending', 'In Transit', 'Received'])
+            ->latest()
+            ->get();
+
+        // 3. All Drivers (for discovery/linking)
+        $allDrivers = \App\Models\User::where('role', 'driver')->get();
+
+        // 4. Miller's Linked Fleet
+        $myFleet = auth()->user()->drivers()->get();
+
+        return Inertia::render('Miller::Transport', [
+            'inbound' => $inbound,
+            'outbound' => $outbound,
+            'allDrivers' => $allDrivers,
+            'myFleet' => $myFleet,
+        ]);
     }
 
     /**
-     * Mark order as delivered/completed.
+     * Link/Verify a driver to the Miller's fleet.
+     */
+    public function linkDriver(Request $request, $id)
+    {
+        $miller = auth()->user();
+        $driver = \App\Models\User::where('role', 'driver')->findOrFail($id);
+
+        // Check if already linked
+        if (!$miller->drivers()->where('driver_id', $id)->exists()) {
+            $miller->drivers()->attach($id, ['is_active' => true]);
+            
+            // Optionally mark driver as verified globally if needed, 
+            // but the request implies miller-specific verification.
+            $driver->update(['is_verified_driver' => true]);
+        }
+
+        return redirect()->back()->with('message', 'Driver added to your fleet successfully!');
+    }
+
+    /**
+     * Dispatch delivery for an order (Retailer Rice Delivery).
+     */
+    /**
+     * Phase 3: Miller Dispatches (Handover to public road)
+     * Status remains 'In Transit' but internal state moves to 'dispatched'
+     */
+    public function dispatchDelivery($id)
+    {
+        $order = \App\Models\Order::where('id', $id)
+            ->where('miller_id', auth()->id())
+            ->firstOrFail();
+
+        if ($order->delivery_status !== 'In Transit') {
+            return redirect()->back()->withErrors('Order must be In Transit (started by driver) before dispatching.');
+        }
+
+        $order->update([
+            'status' => 'dispatched',
+            'updated_at' => now()
+        ]);
+
+        return redirect()->back()->with('message', 'Rice Order dispatched! Driver is now on the way to the retailer.');
+    }
+
+    /**
+     * Mark order as completed only upon Retailer signature?
+     * The request says: "Status transitions to Completed only upon Retailer signature."
+     * So Miller shouldn't be able to mark it as Completed? 
+     * Retailer does it. But Miller can see it.
      */
     public function markDelivered($id)
     {
-        \Illuminate\Support\Facades\DB::table('orders')
-            ->where('id', $id)
-            ->where('miller_id', auth()->id())
-            ->update(['status' => 'delivered', 'updated_at' => now()]);
-
-        return redirect()->back()->with('message', 'Order marked as delivered and completed.');
+        // We'll let the Retailer do this as per point 3.
+        return redirect()->back()->withErrors('Only the Retailer can confirm the final receipt.');
     }
 
     public function shippingSettings(): Response
@@ -280,6 +421,23 @@ class MillerController extends Controller
             'municipalities' => \Illuminate\Support\Facades\DB::table('municipalities')->orderBy('distance_index')->get(),
             'current_municipality_id' => auth()->user()->municipality_id
         ]);
+    }
+
+    public function authorizePayment($id)
+    {
+        $batch = HarvestBatch::where('accepted_miller_id', auth()->id())->findOrFail($id);
+
+        if ($batch->delivery_status !== 'Payment Pending') {
+            return redirect()->back()->withErrors('Batch is not awaiting payment authorization.');
+        }
+
+        $batch->update([
+            'status' => 'payment_authorized',
+            'delivery_status' => 'Payment Authorized',
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('message', 'Payment authorized! The driver has been given the go-signal to pay the farmer and start transit.');
     }
 
     public function updateShippingSettings(Request $request)

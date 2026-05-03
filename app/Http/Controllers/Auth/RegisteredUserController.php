@@ -46,10 +46,12 @@ class RegisteredUserController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'contact' => 'required|string|max:20',
-            'role' => 'required|string|in:farmer,miller,retailer',
+            'role' => 'required|string|in:farmer,miller,retailer,driver',
             'municipality' => ['required', 'string', \Illuminate\Validation\Rule::in($allowedMunicipalities)],
             'province' => 'required|string|in:Iloilo',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'vehicle_type' => 'required_if:role,driver|nullable|string',
+            'license_number' => 'required_if:role,driver|nullable|string',
         ]);
 
         // Find Municipality ID for linking
@@ -67,6 +69,9 @@ class RegisteredUserController extends Controller
             'municipality_id' => $municipality?->id,
             'province' => 'Iloilo',
             'password' => Hash::make($request->password),
+            'vehicle_type' => $request->vehicle_type,
+            'license_number' => $request->license_number,
+            'is_verified_driver' => false,
         ]);
 
         // Auto-initialize Miller Delivery Settings

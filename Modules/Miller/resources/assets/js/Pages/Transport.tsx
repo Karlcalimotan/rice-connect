@@ -74,15 +74,28 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                 <div className="p-8 border-4 border-dashed border-gray-300 text-center text-gray-400 font-bold uppercase">No inbound logistics active.</div>
                             ) : (
                                 inbound.map((batch: any) => (
-                                    <div key={batch.id} className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                                        <div className="flex justify-between items-start mb-4">
+                                    <div key={batch.id} className="group relative bg-white/70 backdrop-blur-xl rounded-[2.5rem] overflow-hidden p-8 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 hover:shadow-[0_30px_60px_rgba(5,150,105,0.15)] transition-all duration-500">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-emerald-500/10 transition-all"></div>
+                                        
+                                        <div className="relative flex justify-between items-start mb-6">
                                             <div>
-                                                <h4 className="text-xl font-black uppercase">{batch.rice_variety}</h4>
-                                                <p className="text-xs font-bold text-gray-500 uppercase italic">From: {batch.user?.municipality || 'Unknown'}</p>
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="h-2 w-2 rounded-full bg-orange-500 animate-pulse"></span>
+                                                    <h4 className="text-2xl font-black uppercase tracking-tighter text-gray-900 leading-none">{batch.rice_variety}</h4>
+                                                </div>
+                                                <div className="space-y-1 mt-4">
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">🚜</span>
+                                                        Farmer: <span className="text-gray-900">{batch.user?.first_name} {batch.user?.last_name}</span>
+                                                    </p>
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">📍</span>
+                                                        Origin: <span className="text-gray-900">{batch.user?.municipality || 'Unknown'}</span>
+                                                    </p>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <p className="font-black text-sm uppercase">Farmer: {batch.user?.first_name} {batch.user?.last_name}</p>
-                                                <p className="text-[10px] font-bold text-blue-600">{batch.user?.contact}</p>
+                                                <span className="bg-orange-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Inbound Palay</span>
                                             </div>
                                         </div>
 
@@ -109,6 +122,15 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                 </button>
                                                 <p className="mt-4 text-[9px] font-black text-gray-400 uppercase text-center italic">
                                                     * Clicking this sends the "Go Signal" to Driver: {batch.driver?.first_name}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {batch.delivery_status === 'Payment Authorized' && (
+                                            <div className="mt-6 p-5 bg-green-50 border-4 border-black border-dashed flex flex-col items-center">
+                                                <span className="text-2xl mb-2">💳</span>
+                                                <p className="text-[10px] font-black text-green-700 uppercase tracking-widest text-center">
+                                                    Payment Authorized! Waiting for Driver to finalize pickup and start transit.
                                                 </p>
                                             </div>
                                         )}
@@ -195,7 +217,7 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                             </div>
                                         )}
 
-                                        {batch.delivery_status === 'Received' && (
+                                        {(batch.delivery_status === 'Received' && !batch.final_price_per_kg) && (
                                             <div className="mt-6 p-4 bg-green-50 border-4 border-black border-dashed">
                                                 <div className="flex justify-between items-end mb-4">
                                                     <div>
@@ -227,7 +249,7 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                             </div>
                                         )}
 
-                                        {batch.delivery_status === 'Received' && (
+                                        {(batch.final_price_per_kg) && (
                                             <div className="mt-4 p-4 bg-gray-100 border-2 border-black border-dashed flex items-center justify-between">
                                                 <div>
                                                     <p className="text-[10px] font-black uppercase text-gray-500">Final Transaction:</p>
@@ -252,15 +274,28 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                 <div className="p-8 border-4 border-dashed border-gray-300 text-center text-gray-400 font-bold uppercase">No outbound deliveries.</div>
                             ) : (
                                 outbound.map((order: any) => (
-                                    <div key={order.id} className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(34,197,94,1)]">
-                                        <div className="flex justify-between items-start mb-4">
+                                    <div key={order.id} className="group relative bg-white/70 backdrop-blur-xl rounded-[2.5rem] overflow-hidden p-8 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 hover:shadow-[0_30px_60px_rgba(37,99,235,0.15)] transition-all duration-500">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-blue-500/10 transition-all"></div>
+
+                                        <div className="relative flex justify-between items-start mb-6">
                                             <div>
-                                                <h4 className="text-xl font-black uppercase">{order.rice_variety}</h4>
-                                                <p className="text-xs font-bold text-gray-500 uppercase italic">To: {order.retailer?.municipality || 'Unknown'}</p>
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+                                                    <h4 className="text-2xl font-black uppercase tracking-tighter text-gray-900 leading-none">{order.rice_variety}</h4>
+                                                </div>
+                                                <div className="space-y-1 mt-4">
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">🏬</span>
+                                                        Retailer: <span className="text-gray-900">{order.retailer?.first_name} {order.retailer?.last_name}</span>
+                                                    </p>
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">📍</span>
+                                                        To: <span className="text-gray-900">{order.retailer?.municipality || 'Unknown'}</span>
+                                                    </p>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <p className="font-black text-sm uppercase">Retailer: {order.retailer?.first_name} {order.retailer?.last_name}</p>
-                                                <p className="text-[10px] font-bold text-green-600">Qty: {order.sacks} Sacks</p>
+                                                <span className="bg-blue-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Outbound Rice</span>
                                             </div>
                                         </div>
 

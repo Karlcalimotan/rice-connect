@@ -194,7 +194,7 @@ class MillerController extends Controller
             'final_price_per_kg' => $validated['final_price_per_kg'],
             'price_per_kg' => $validated['final_price_per_kg'], // Sync for legacy views
             'total_weight' => $batch->actual_weight_kg, // Sync
-            'delivery_status' => 'Received',
+            'delivery_status' => 'Completed',
             'status' => 'received',
             'drying_status' => 'received',
         ]);

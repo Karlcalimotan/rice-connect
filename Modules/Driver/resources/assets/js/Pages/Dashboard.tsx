@@ -43,18 +43,31 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                                 </div>
                             ) : (
                                 palayAssignments.map((batch: any) => (
-                                    <div key={batch.id} className="bg-white/10 rounded-[2rem] overflow-hidden p-8 shadow-xl border border-white/30">
-                                        <div className="flex justify-between items-start mb-4">
+                                    <div key={batch.id} className="group relative bg-white/70 backdrop-blur-xl rounded-[2.5rem] overflow-hidden p-8 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 hover:shadow-[0_30px_60px_rgba(5,150,105,0.15)] transition-all duration-500">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-emerald-500/10 transition-all"></div>
+                                        
+                                        <div className="relative flex justify-between items-start mb-6">
                                             <div>
-                                                <h4 className="text-xl font-black uppercase text-blue-600 leading-none">{batch.rice_variety}</h4>
-                                                <div className="mt-2 mb-3 bg-yellow-400 border-2 border-black inline-block px-3 py-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                                                    <span className="text-xs font-black uppercase tracking-tighter">📦 EST. {batch.total_sacks ?? batch.number_of_bags} SACKS</span>
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+                                                    <h4 className="text-2xl font-black uppercase tracking-tighter text-gray-900 leading-none">{batch.rice_variety}</h4>
                                                 </div>
-                                                <p className="text-xs font-bold text-gray-500 uppercase italic leading-tight">Farmer: {batch.user?.first_name} {batch.user?.last_name}</p>
-                                                <p className="text-[10px] font-black italic tracking-wide text-gray-400">📞 {batch.user?.contact}</p>
+                                                <div className="mb-4 bg-yellow-400 border-[3px] border-black inline-block px-4 py-1.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                                    <span className="text-xs font-black uppercase tracking-widest italic">📦 EST. {batch.total_sacks ?? batch.number_of_bags} SACKS</span>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">👤</span>
+                                                        Farmer: <span className="text-gray-900">{batch.user?.first_name} {batch.user?.last_name}</span>
+                                                    </p>
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">📞</span>
+                                                        Contact: <span className="text-blue-600">{batch.user?.contact}</span>
+                                                    </p>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <span className="bg-gray-100 text-[10px] font-black px-2 py-1 border-2 border-black uppercase text-gray-600">Palay</span>
+                                                <span className="bg-black text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Palay Supply</span>
                                             </div>
                                         </div>
 
@@ -153,15 +166,28 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                                 </div>
                             ) : (
                                 riceAssignments.map((order: any) => (
-                                    <div key={order.id} className="bg-white/10 rounded-[2rem] overflow-hidden p-8 shadow-xl border border-white/30">
-                                        <div className="flex justify-between items-start mb-4">
+                                    <div key={order.id} className="group relative bg-white/70 backdrop-blur-xl rounded-[2.5rem] overflow-hidden p-8 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 hover:shadow-[0_30px_60px_rgba(37,99,235,0.15)] transition-all duration-500">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-blue-500/10 transition-all"></div>
+
+                                        <div className="relative flex justify-between items-start mb-6">
                                             <div>
-                                                <h4 className="text-xl font-black uppercase">{order.rice_variety}</h4>
-                                                <p className="text-xs font-bold text-gray-500 uppercase italic">Retailer: {order.retailer?.first_name} {order.retailer?.last_name}</p>
-                                                <p className="text-[10px] font-black italic">📞 {order.retailer?.contact}</p>
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                    <h4 className="text-2xl font-black uppercase tracking-tighter text-gray-900 leading-none">{order.rice_variety}</h4>
+                                                </div>
+                                                <div className="space-y-1 mt-4">
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">🏬</span>
+                                                        Retailer: <span className="text-gray-900">{order.retailer?.first_name} {order.retailer?.last_name}</span>
+                                                    </p>
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">📞</span>
+                                                        Contact: <span className="text-blue-600">{order.retailer?.contact}</span>
+                                                    </p>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <span className="bg-blue-100 text-[10px] font-black px-2 py-1 border-2 border-black uppercase text-blue-700">Rice</span>
+                                                <span className="bg-blue-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Retailer Order</span>
                                             </div>
                                         </div>
 

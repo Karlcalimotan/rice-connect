@@ -21,14 +21,14 @@ class DriverController extends Controller
         // 1. Inbound Palay Assignments
         $palayAssignments = HarvestBatch::with('user', 'buyer')
             ->where('driver_id', $driverId)
-            ->whereIn('delivery_status', ['Pending', 'In Transit'])
+            ->whereIn('delivery_status', ['Pending', 'In Transit', 'Payment Pending', 'Payment Authorized'])
             ->latest()
             ->get();
 
         // 2. Outbound Rice Assignments
         $riceAssignments = Order::with('retailer', 'miller')
             ->where('driver_id', $driverId)
-            ->whereIn('delivery_status', ['Pending', 'In Transit'])
+            ->whereIn('delivery_status', ['Pending', 'In Transit', 'Delivered'])
             ->latest()
             ->get();
 

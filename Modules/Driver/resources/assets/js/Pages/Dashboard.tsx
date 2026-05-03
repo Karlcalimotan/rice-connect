@@ -331,6 +331,3 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
         </AuthenticatedLayout>
     );
 }
-
-// Fixed import for router in buttons
-import { router } from '@inertiajs/react';

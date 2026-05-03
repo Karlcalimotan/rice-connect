@@ -17,6 +17,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 4. Inventory (The Miller's processed stock)
     Route::get('/miller/inventory', [MillerController::class, 'inventory'])->name('miller.inventory');
 
+
+
     // 5. General Resource (Optional: for profile or other standard Miller CRUD)
     Route::resource('millers', MillerController::class)->names('miller');
     Route::get('/miller/processed-inventory', [MillerController::class, 'processedInventory'])->name('miller.processed_inventory');

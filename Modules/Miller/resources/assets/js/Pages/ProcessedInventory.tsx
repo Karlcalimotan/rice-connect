@@ -46,11 +46,11 @@ export default function ProcessedInventory({ auth, inventory }: { auth: any; inv
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="Processed Rice" />
-            <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="p-6 bg-transparent min-h-screen">
                 <div className="max-w-7xl mx-auto">
                     <div className="flex items-center gap-2 mb-8">
                         <div className="w-2 h-8 bg-green-600 border border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter text-green-700">
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
                             Finished Rice Stock
                         </h2>
                     </div>
@@ -58,7 +58,7 @@ export default function ProcessedInventory({ auth, inventory }: { auth: any; inv
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {inventory.length > 0 ? (
                             inventory.map((item: any) => (
-                                <div key={item.id} className="border-4 border-black p-6 bg-white shadow-[8px_8px_0px_0px_rgba(0,128,0,1)] transition-all hover:translate-x-[-2px] hover:translate-y-[-2px]">
+                                <div key={item.id} className="glass-card p-6 transition-all hover:translate-x-[-2px] hover:translate-y-[-2px]">
                                     <div className="flex justify-between items-start mb-3">
                                         <div className="bg-green-600 text-white text-[10px] inline-block px-2 py-1 uppercase font-black border border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
                                             {item.status === 'for_sale' ? 'Listed for Sale' : 'Ready to List'}
@@ -67,7 +67,7 @@ export default function ProcessedInventory({ auth, inventory }: { auth: any; inv
                                     </div>
                                     <h3 className="text-2xl font-black uppercase mb-2">{item.rice_variety} <span className="text-sm text-gray-400">(Polished)</span></h3>
                                     
-                                    <div className="bg-gray-50 border-2 border-black p-3 space-y-2 mb-4">
+                                    <div className="bg-white/30 backdrop-blur-md border-2 border-black p-3 space-y-2 mb-4">
                                         <div className="flex justify-between">
                                             <span className="text-[10px] font-black uppercase text-gray-400">Net Weight</span>
                                             <span className="font-bold">{item.total_weight} kg</span>
@@ -129,7 +129,7 @@ export default function ProcessedInventory({ auth, inventory }: { auth: any; inv
                                     {!item.price_per_sack ? (
                                         <button 
                                             onClick={() => handleListForSale(item.id)}
-                                            className="w-full bg-yellow-400 text-black font-black py-3 border-4 border-black hover:bg-yellow-500 uppercase transition-all active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none"
+                                            className="btn-2026 w-full text-center !bg-yellow-600 hover:!bg-yellow-700"
                                         >
                                             💰 Set Price & List for Sale
                                         </button>
@@ -140,7 +140,7 @@ export default function ProcessedInventory({ auth, inventory }: { auth: any; inv
                                             </div>
                                             <button 
                                                 onClick={() => handleListForSale(item.id)}
-                                                className="w-full bg-yellow-400 text-black font-black py-3 border-4 border-black hover:bg-yellow-500 uppercase transition-all active:translate-y-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none text-[10px]"
+                                                className="btn-2026 w-full text-center !bg-yellow-600 hover:!bg-yellow-700"
                                             >
                                                 ✏️ Update Price
                                             </button>
@@ -149,8 +149,9 @@ export default function ProcessedInventory({ auth, inventory }: { auth: any; inv
                                 </div>
                             ))
                         ) : (
-                            <div className="col-span-full py-20 border-4 border-dashed border-gray-300 text-center text-gray-400 font-bold uppercase bg-white">
-                                No finished rice in stock. Go to your inventory to start milling!
+                            <div className="col-span-full glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                                <span className="text-4xl mb-4 opacity-50">🍚</span>
+                                <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No finished rice in stock. Go to your inventory to start milling!</p>
                             </div>
                         )}
                     </div>

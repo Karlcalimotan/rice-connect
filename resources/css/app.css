@@ -13,13 +13,11 @@
 
 @layer components {
     .glass-2026 {
-        @apply bg-white/40 border border-white/60 shadow-[0_32px_64px_-16px_rgba(6,95,70,0.1)] backdrop-blur-3xl;
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+        @apply bg-white/50 border border-white/30 shadow-[0_32px_64px_-16px_rgba(6,95,70,0.1)] backdrop-blur-[12px];
     }
     
     .glass-card {
-        @apply bg-white/30 border border-white/50 shadow-[0_20px_50px_rgba(6,95,70,0.05)] backdrop-blur-xl transition-all duration-700 rounded-[3.5rem];
-        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.02), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+        @apply bg-white/50 border border-white/10 dark:border-white/20 shadow-[0_20px_50px_rgba(6,95,70,0.05)] backdrop-blur-[12px] transition-all duration-700 rounded-[3.5rem];
     }
 
     .lush-gradient {
@@ -35,8 +33,8 @@
     }
 
     .input-2026 {
-        @apply w-full bg-white/40 border-2 border-white/60 rounded-[2rem] p-5 font-bold text-lg 
-               focus:ring-[12px] focus:ring-emerald-500/5 focus:border-emerald-500/50 focus:bg-white/90
+        @apply w-full bg-white/90 border-2 border-white/60 rounded-[2rem] p-5 font-bold text-lg 
+               focus:ring-[12px] focus:ring-emerald-500/5 focus:border-emerald-500/50 focus:bg-white
                transition-all duration-500 placeholder-emerald-900/10 text-emerald-950;
         backdrop-filter: blur(20px);
     }

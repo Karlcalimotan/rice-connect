@@ -73,7 +73,7 @@ export default function AdminDashboard({ auth, users, batches, orders }: any) {
 
                     {/* Users Table */}
                     {activeTab === 'users' && (
-                        <div className="bg-white/40 border border-white/50 rounded-[2.5rem] shadow-2xl overflow-hidden backdrop-saturate-150">
+                        <div className="glass-card shadow-2xl overflow-hidden backdrop-saturate-150">
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-red-800/10 border-b border-white/20">
@@ -114,7 +114,7 @@ export default function AdminDashboard({ auth, users, batches, orders }: any) {
 
                     {/* Batches Table */}
                     {activeTab === 'batches' && (
-                        <div className="bg-white/40 border border-white/50 rounded-[2.5rem] shadow-2xl overflow-hidden backdrop-saturate-150">
+                        <div className="glass-card shadow-2xl overflow-hidden backdrop-saturate-150">
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-red-800/10 border-b border-white/20">

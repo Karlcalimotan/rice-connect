@@ -137,7 +137,7 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
                         <h2 className="text-6xl md:text-7xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
                             Rice Marketplace
                         </h2>
-                        <div className="mt-6 px-6 py-2 bg-white/40 border border-white/60 rounded-full backdrop-blur-xl shadow-sm">
+                        <div className="mt-6 px-6 py-2 bg-white/95 border border-white/60 rounded-full backdrop-blur-xl shadow-sm">
                             <p className="text-emerald-700 font-black uppercase tracking-[0.2em] text-[10px]">Connected to {available_rice.length} Regional Hubs</p>
                         </div>
                     </div>
@@ -175,7 +175,7 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
 
                                 return (
                                 <div key={variety} className="glass-card group flex flex-col p-2">
-                                    <div className="bg-white/40 rounded-[2.5rem] p-8 flex-grow border border-white/20 transition-all duration-500 group-hover:bg-white/60">
+                                    <div className="bg-white/95 rounded-[2.5rem] p-8 flex-grow border border-white/20 transition-all duration-500 group-hover:bg-white">
                                             <div className="flex justify-between items-start mb-6">
                                                 <div className="bg-emerald-600 text-white text-[10px] px-3 py-1 rounded-full uppercase font-black tracking-widest shadow-lg shadow-emerald-100">
                                                     Polished Rice
@@ -193,7 +193,7 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
                                                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">/ Sack</span>
                                             </div>
 
-                                            <div className="bg-emerald-50/50 rounded-2xl p-4 mb-8 border border-emerald-100/50">
+                                            <div className="bg-emerald-50/90 rounded-2xl p-4 mb-8 border border-emerald-100/50">
                                                 <div className="flex justify-between text-[10px] font-black uppercase text-emerald-800 mb-2 tracking-widest">
                                                     <span>Stock Available</span>
                                                     <span className="text-emerald-600">{maxSacks} Sacks</span>
@@ -215,13 +215,13 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
                                                 />
 
                                                 {/* Shipping Method Selection */}
-                                                <div className="mt-4 p-4 rounded-2xl bg-white/40 border border-white/50">
+                                                <div className="mt-4 p-4 rounded-2xl bg-white/90 border border-white/50">
                                                     <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest mb-3">Shipping Method</p>
                                                     <div className="flex gap-4">
                                                         <button
                                                             type="button"
                                                             onClick={() => handleShippingChange(variety, 'pickup')}
-                                                            className={`flex-1 py-4 text-[10px] font-black uppercase rounded-2xl transition-all duration-500 flex items-center justify-center gap-3 ${currentMethod === 'pickup' ? 'bg-emerald-950 text-white shadow-xl' : 'bg-white/50 text-emerald-950 border border-emerald-100 hover:bg-white'
+                                                            className={`flex-1 py-4 text-[10px] font-black uppercase rounded-2xl transition-all duration-500 flex items-center justify-center gap-3 ${currentMethod === 'pickup' ? 'bg-emerald-950 text-white shadow-xl' : 'bg-white/90 text-emerald-950 border border-emerald-100 hover:bg-white'
                                                                 }`}
                                                         >
                                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" strokeWidth="2"/><path d="M9 22V12h6v10" strokeWidth="2"/></svg>
@@ -230,7 +230,7 @@ export default function Marketplace({ auth, available_rice, retailer_municipalit
                                                         <button
                                                             type="button"
                                                             onClick={() => handleShippingChange(variety, 'delivery')}
-                                                            className={`flex-1 py-4 text-[10px] font-black uppercase rounded-2xl transition-all duration-500 flex items-center justify-center gap-3 ${currentMethod === 'delivery' ? 'bg-emerald-950 text-white shadow-xl' : 'bg-white/50 text-emerald-950 border border-emerald-100 hover:bg-white'
+                                                            className={`flex-1 py-4 text-[10px] font-black uppercase rounded-2xl transition-all duration-500 flex items-center justify-center gap-3 ${currentMethod === 'delivery' ? 'bg-emerald-950 text-white shadow-xl' : 'bg-white/90 text-emerald-950 border border-emerald-100 hover:bg-white'
                                                                 }`}
                                                         >
                                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" strokeWidth="2"/></svg>

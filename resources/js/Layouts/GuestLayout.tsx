@@ -4,22 +4,23 @@ import { PropsWithChildren } from 'react';
 
 export default function Guest({ children }: PropsWithChildren) {
     return (
-        <div className="flex min-h-screen flex-col items-center pt-6 sm:justify-center sm:pt-0 lush-gradient relative font-['Plus_Jakarta_Sans',sans-serif]">
+        <div className="flex min-h-screen flex-col items-center pt-6 sm:justify-center sm:pt-0 bg-transparent relative font-['Plus_Jakarta_Sans',sans-serif]">
             {/* Architectural Network Overlay */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `radial-gradient(#065f46 1px, transparent 1px)`, backgroundSize: '32px 32px' }}></div>
-            
-            <div 
-                className="absolute inset-0 grayscale opacity-10 pointer-events-none"
-                style={{
-                    backgroundImage: `url('/images/rice_2026.png')`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                }}
-            ></div>
+            {/* GLOBAL FIXED BACKGROUND */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <img 
+                    src="/images/rice_field_hero.png" 
+                    className="w-full h-full object-cover scale-110"
+                    alt=""
+                />
+                <div className="absolute inset-0 bg-emerald-950/40 backdrop-blur-[2px]"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
+            </div>
 
             <div className="relative z-10 flex flex-col items-center">
                 <Link href="/">
-                    <ApplicationLogo className="scale-150 drop-shadow-2xl" />
+                    <img src="/favicon.png" className="w-20 h-20 object-cover rounded-2xl scale-150 drop-shadow-2xl" alt="RiceConnect Logo" />
                 </Link>
                 <div className="mt-8 text-center">
                     <h2 className="text-[10px] font-black text-emerald-900/40 uppercase tracking-[0.5em] leading-none mb-3">System Entry</h2>

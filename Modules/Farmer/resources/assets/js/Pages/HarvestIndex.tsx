@@ -116,7 +116,7 @@ export default function HarvestIndex({ auth, batches }: { auth: any, batches: an
 
                                                     {/* INTERESTED MILLERS LIST (2026 Handshake Phase) */}
                                                     {batch.status === 'interest_received' && batch.interests?.length > 0 && (
-                                                        <div className="mt-4 w-72 glass-card p-4 space-y-3">
+                                                        <div className="mt-4 w-72 bg-white/95 border border-white/40 p-4 space-y-3 rounded-3xl shadow-xl">
                                                             <div className="flex items-center gap-2 mb-3 px-1">
                                                                 <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></div>
                                                                 <p className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-800/60">Interest Signal</p>
@@ -153,7 +153,7 @@ export default function HarvestIndex({ auth, batches }: { auth: any, batches: an
                                                     
                                                     {/* DIGITAL RECEIPT (2026 GLASS STYLE) */}
                                                     {['payment_authorized', 'in_transit', 'received', 'milled', 'sold'].includes(batch.status?.toLowerCase()) && (
-                                                        <div className="mt-4 w-72 bg-white/60 border border-white/40 p-6 rounded-[2rem] shadow-xl text-left backdrop-blur-xl group hover:bg-emerald-950 transition-all duration-500">
+                                                        <div className="mt-4 w-72 bg-white/95 border border-white/40 p-6 rounded-[2rem] shadow-xl text-left backdrop-blur-xl group hover:bg-emerald-950 transition-all duration-500">
                                                             <div className="flex items-center gap-3 border-b border-emerald-100 pb-4 mb-5 group-hover:border-white/20">
                                                                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                                                                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600 group-hover:text-emerald-400">Yield Certificate</p>
@@ -185,7 +185,7 @@ export default function HarvestIndex({ auth, batches }: { auth: any, batches: an
                                                     {batch.status === 'unsold' && (
                                                         <Link 
                                                             href={route('farmer.harvest.edit', batch.id)}
-                                                            className="px-5 py-2.5 bg-white/60 text-emerald-950 text-[10px] font-black uppercase rounded-xl border border-white/80 shadow-lg hover:bg-white transition-all duration-300"
+                                                            className="px-5 py-2.5 bg-white/95 text-emerald-950 text-[10px] font-black uppercase rounded-xl border border-white/80 shadow-lg hover:bg-white transition-all duration-300"
                                                         >
                                                             Edit Record
                                                         </Link>
@@ -203,7 +203,7 @@ export default function HarvestIndex({ auth, batches }: { auth: any, batches: an
                                 ) : (
                                     <tr>
                                         <td colSpan={7} className="p-40 text-center">
-                                            <div className="inline-block px-12 py-8 bg-white/40 rounded-[3.5rem] border border-white/60 mb-8 opacity-40 text-sm font-black uppercase tracking-[1em]">PLATFORM EMPTY</div>
+                                            <div className="inline-block px-12 py-8 bg-white/90 rounded-[3.5rem] border border-white/60 mb-8 opacity-40 text-sm font-black uppercase tracking-[1em]">PLATFORM EMPTY</div>
                                             <p className="text-emerald-950/40 font-black uppercase tracking-[0.5em] text-xl">System Awaiting Input</p>
                                         </td>
                                     </tr>

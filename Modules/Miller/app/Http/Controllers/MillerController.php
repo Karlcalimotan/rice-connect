@@ -438,9 +438,7 @@ class MillerController extends Controller
         ]);
 
         return redirect()->back()->with('message', 'Payment authorized! The driver has been given the go-signal to pay the farmer and start transit.');
-    }
-
-    public function updateShippingSettings(Request $request)
+    }    public function updateShippingSettings(Request $request)
     {
         $request->validate([
             'base_delivery_fee' => 'required|numeric|min:0',

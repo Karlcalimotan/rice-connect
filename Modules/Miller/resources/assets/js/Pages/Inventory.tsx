@@ -66,7 +66,7 @@ export default function Inventory({ auth, inventory }: { auth: any; inventory: V
                         <div className="space-y-8">
                             {inventory.map((group: VarietyGroup) => (
                                 <div key={group.rice_variety} className="glass-card overflow-hidden p-2">
-                                    <div className="bg-white/40 rounded-[2.5rem] overflow-hidden">
+                                    <div className="bg-white/50 backdrop-blur-md rounded-[2.5rem] overflow-hidden">
                                     {/* Variety Header */}
                                     <div className="p-8 border-b border-white/20 bg-emerald-700/40">
                                         <div className="flex items-center justify-between">
@@ -94,9 +94,9 @@ export default function Inventory({ auth, inventory }: { auth: any; inventory: V
                                     </div>
 
                                     {/* Individual Batches */}
-                                    <div className="divide-y-2 divide-gray-100">
+                                    <div className="divide-y divide-white/10">
                                         {group.batches.map((batch: BatchDetail) => (
-                                            <div key={batch.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                                            <div key={batch.id} className="p-4 flex items-center justify-between hover:bg-white/20 transition-colors">
                                                 <div className="flex items-center gap-4">
                                                     <span className="text-xs font-black text-gray-300">#{batch.id}</span>
                                                     <div>

@@ -10,5 +10,5 @@ Route::post('/farmer/harvest', [FarmerController::class, 'store'])->name('farmer
 Route::get('/farmer/harvest/{id}/edit', [FarmerController::class, 'edit'])->name('farmer.harvest.edit');
 Route::delete('/farmer/harvest/{id}', [FarmerController::class, 'destroy'])->name('farmer.harvest.destroy');
 Route::patch('/farmer/harvest/{id}', [FarmerController::class, 'update'])->name('farmer.harvest.update');
-Route::post('/farmer/accept/{id}', [FarmerController::class, 'acceptHandshake'])->name('farmer.accept');
+Route::post('/farmer/accept/{id}', [FarmerController::class, 'acceptInterest'])->name('farmer.accept');
 });

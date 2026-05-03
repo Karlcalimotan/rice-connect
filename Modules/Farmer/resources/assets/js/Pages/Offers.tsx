@@ -1,74 +1,38 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, router } from '@inertiajs/react';
-import React from 'react';
+import { router } from '@inertiajs/react';
 
-export default function Offers({ auth, offers }: any) {
-    const handleAccept = (id: number) => {
-        router.post(route('farmer.accept', id));
-    };
+// Inside your batches.map((batch) => ...) loop:
+<div className="border-2 border-black p-4 bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-4">
+    <div className="flex justify-between items-start">
+        <h3 className="font-black text-xl uppercase">{batch.variety}</h3>
+        <span className={`px-2 py-1 border-2 border-black text-xs font-bold uppercase ${
+            batch.status === 'pending' ? 'bg-yellow-400' : 'bg-gray-200'
+        }`}>
+            {batch.status}
+        </span>
+    </div>
 
-    return (
-        <AuthenticatedLayout auth={auth}>
-            <Head title="Handshake Offers" />
-            <div className="p-8 bg-gray-50 min-h-screen">
-                <div className="max-w-4xl mx-auto">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-2 h-10 bg-yellow-400 border-2 border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter">Mill Handshake Offers</h2>
-                    </div>
+    <p className="mt-2 text-sm">Weight: <strong>{batch.weight} kg</strong></p>
 
-                    {offers.length === 0 ? (
-                        <div className="bg-white border-4 border-dashed border-gray-300 p-12 text-center text-gray-400 font-bold uppercase">
-                            No active offers or interests from millers.
-                        </div>
-                    ) : (
-                        <div className="space-y-6">
-                            {offers.map((batch: any) => (
-                                <div key={batch.id} className="border-4 border-black p-6 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div>
-                                            <p className="text-[10px] font-black uppercase text-gray-400">Palay Variety</p>
-                                            <h3 className="font-black text-3xl uppercase leading-none">{batch.rice_variety}</h3>
-                                        </div>
-                                        <span className="px-3 py-1 bg-yellow-400 border-2 border-black text-[10px] font-black uppercase tracking-widest animate-pulse">
-                                            Handshake Pending
-                                        </span>
-                                    </div>
-
-                                    <div className="bg-gray-50 border-2 border-black p-4 mb-6">
-                                        <p className="text-xs uppercase font-bold text-gray-500 mb-2">Interested Miller:</p>
-                                        <div className="flex justify-between items-end">
-                                            <div>
-                                                <p className="font-black text-xl text-green-700">{batch.buyer?.first_name} {batch.buyer?.last_name}</p>
-                                                <p className="text-xs font-bold">📍 {batch.buyer?.municipality}, {batch.buyer?.province}</p>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className="text-[10px] font-black uppercase">Batch Weight</p>
-                                                <p className="font-black text-lg">{batch.total_weight} kg</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex gap-4">
-                                        <button 
-                                            onClick={() => handleAccept(batch.id)}
-                                            className="flex-1 bg-green-500 text-black font-black py-4 border-4 border-black hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] uppercase"
-                                        >
-                                            🤝 Accept Handshake
-                                        </button>
-                                        <button 
-                                            className="flex-1 bg-white text-gray-400 font-black py-4 border-4 border-black hover:bg-red-500 hover:text-white transition-all uppercase"
-                                        >
-                                            Decline
-                                        </button>
-                                    </div>
-                                    <p className="mt-4 text-[9px] font-bold text-gray-400 uppercase italic">Note: Accepting this means you allow the miller to assign a driver to your location.</p>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+    {/* SHOW THIS SECTION ONLY IF STATUS IS PENDING */}
+    {batch.status === 'pending' && batch.buyer && (
+        <div className="mt-4 pt-4 border-t-2 border-dashed border-black">
+            <p className="text-xs uppercase font-bold text-gray-500">Incoming Offer From:</p>
+            <p className="font-black text-lg text-green-700">{batch.buyer.name}</p>
+            <p className="text-sm">📍 {batch.buyer.municipality}, {batch.buyer.province}</p>
+            
+            <div className="flex gap-2 mt-4">
+                <button 
+                    onClick={() => router.post(route('farmer.accept', batch.id))}
+                    className="flex-1 bg-green-500 text-white font-black py-2 border-2 border-black hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                >
+                    ACCEPT
+                </button>
+                <button 
+                    className="flex-1 bg-red-500 text-white font-black py-2 border-2 border-black hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+                >
+                    DECLINE
+                </button>
             </div>
-        </AuthenticatedLayout>
-    );
-}
+        </div>
+    )}
+</div>

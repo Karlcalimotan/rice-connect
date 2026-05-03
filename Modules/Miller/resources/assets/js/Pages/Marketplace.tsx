@@ -51,15 +51,11 @@ export default function Marketplace({ auth, batches, miller_town }: { auth: any,
                                     <div className="space-y-4 mb-8 bg-gray-50 p-4 border-2 border-black border-dashed">
                                         <div className="flex justify-between items-center">
                                             <span className="text-gray-500 uppercase text-[10px] font-black">Quantity</span>
-                                            <span className="font-black text-xl text-gray-900">
-                                                {batch.total_sacks > 0 ? `${batch.total_sacks} SACKS` : '--'}
-                                            </span>
+                                            <span className="font-black text-xl text-gray-900">{batch.number_of_bags} <span className="text-xs font-bold text-gray-500">BAGS</span></span>
                                         </div>
                                         <div className="flex justify-between items-center border-t border-gray-200 pt-2">
-                                            <span className="text-gray-500 uppercase text-[10px] font-black">Initial Status</span>
-                                            <span className="font-black text-xs text-blue-600 uppercase tracking-widest italic font-mono">
-                                                {batch.status}
-                                            </span>
+                                            <span className="text-gray-500 uppercase text-[10px] font-black">Total Weight</span>
+                                            <span className="font-black text-xl text-gray-900">{batch.total_weight} <span className="text-xs font-bold text-gray-500">KG</span></span>
                                         </div>
                                     </div>
 
@@ -69,35 +65,32 @@ export default function Marketplace({ auth, batches, miller_town }: { auth: any,
                                             <span className="text-xs font-black uppercase text-gray-400">Farmer:</span>
                                             <span className="font-bold text-sm text-gray-800">{batch.user?.first_name} {batch.user?.last_name}</span>
                                         </div>
-                                        <div className="flex items-start gap-2">
-                                            <div className="w-4 h-4 bg-blue-500 rounded-full flex-shrink-0 border border-white mt-1"></div>
-                                            <span className="text-xs font-black uppercase text-gray-400 mt-0.5">Pickup:</span>
-                                            <span className="font-bold text-sm text-gray-800 leading-tight">
-                                                {batch.location || `${batch.user?.municipality}, ${batch.user?.province}`}
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-4 h-4 bg-blue-500 rounded-full flex-shrink-0 border border-white"></div>
+                                            <span className="text-xs font-black uppercase text-gray-400">Origin:</span>
+                                            <span className="font-bold text-sm text-gray-800">{batch.user?.municipality}, {batch.user?.province}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-4 h-4 bg-yellow-400 rounded-full flex-shrink-0 border border-white"></div>
+                                            <span className="text-xs font-black uppercase text-gray-400">Harvest:</span>
+                                            <span className="font-bold text-sm text-gray-800">
+                                                {new Date(batch.harvest_date).toLocaleDateString(undefined, {month: 'long', day: 'numeric', year: 'numeric'})}
                                             </span>
                                         </div>
                                     </div>
 
-                                    {/* DOUBLE HANDSHAKE INTEREST LOGIC */}
-                                    {batch.interests?.some(i => i.miller_id === auth.user.id) ? (
-                                        <div className="w-full bg-black text-yellow-400 font-black py-4 border-4 border-black shadow-[6px_6px_0px_0px_rgba(34,197,94,1)] text-center uppercase tracking-tighter text-xl flex flex-col gap-1">
-                                            <span>Interest Sent</span>
-                                            <span className="text-[10px] text-white/50 tracking-[0.2em]">Awaiting Farmer Approval</span>
-                                        </div>
-                                    ) : (
-                                        <button 
-                                            onClick={() => handleInquiry(batch.id)}
-                                            disabled={processing}
-                                            className="w-full bg-yellow-400 hover:bg-black hover:text-yellow-400 text-black font-black py-4 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all uppercase tracking-tighter text-xl flex items-center justify-center gap-2 group disabled:opacity-50"
-                                        >
-                                            {processing ? '...' : (
-                                                <>
-                                                    <span>I AM INTERESTED</span>
-                                                    <span className="group-hover:translate-x-2 transition-transform">→</span>
-                                                </>
-                                            )}
-                                        </button>
-                                    )}
+                                    <button 
+                                        onClick={() => handleInquiry(batch.id)}
+                                        disabled={processing}
+                                        className="w-full bg-yellow-400 hover:bg-black hover:text-yellow-400 text-black font-black py-4 border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all uppercase tracking-tighter text-xl flex items-center justify-center gap-2 group disabled:opacity-50"
+                                    >
+                                        {processing ? '...' : (
+                                            <>
+                                                <span>I AM INTERESTED</span>
+                                                <span className="group-hover:translate-x-2 transition-transform">→</span>
+                                            </>
+                                        )}
+                                    </button>
                                 </div>
                             </div>
                         ))}

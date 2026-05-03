@@ -5,10 +5,11 @@ export default function CreateHarvest({ auth }: any) {
     // 1. Added price_per_kg and condition to the form state
     const { data, setData, post, processing, errors, reset } = useForm({
         rice_variety: '',
+        number_of_bags: '',
+        total_weight: '',
         harvest_date: '',
+        price_per_kg: '',
         condition: 'fresh', // Default to Fresh/Wet
-        location: '', // Manual input
-        total_sacks: '', // Estimated count
     });
 
     const submit = (e: React.FormEvent) => {
@@ -25,122 +26,120 @@ export default function CreateHarvest({ auth }: any) {
             <div className="py-12 bg-gray-50 min-h-screen">
                 <div className="max-w-4xl mx-auto sm:px-6 lg:px-8">
                     {/* Header with Neobrutalist style */}
-                    <div className="flex items-center gap-3 mb-10">
-                        <div className="w-3 h-10 bg-green-600 border-2 border-black"></div>
-                        <h2 className="text-4xl font-black uppercase tracking-tighter text-gray-900">
-                            Post Harvest
+                    <div className="flex items-center gap-2 mb-8">
+                        <div className="w-2 h-8 bg-green-600 border border-black"></div>
+                        <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900">
+                            Register New Harvest
                         </h2>
                     </div>
 
-                    <div className="bg-white border-4 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] p-10">
-                        <form onSubmit={submit} className="space-y-8">
+                    <div className="bg-white border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] p-8">
+                        <form onSubmit={submit} className="space-y-6">
                             
                             {/* Rice Variety */}
                             <div className="space-y-2">
-                                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Rice Variety (e.g. RC218, Dinorado)</label>
+                                <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Rice Variety (e.g. RC218, Dinorado)</label>
                                 <input 
                                     type="text" 
-                                    className="w-full border-4 border-black p-4 font-black text-xl focus:ring-0 focus:border-green-600 placeholder-gray-200"
+                                    className="w-full border-4 border-black p-3 font-bold focus:ring-0 focus:border-green-600 placeholder-gray-300"
                                     value={data.rice_variety}
                                     onChange={e => setData('rice_variety', e.target.value)}
                                     placeholder="Enter variety..."
                                     required
                                 />
-                                {errors.rice_variety && <div className="text-red-600 text-[10px] font-black italic uppercase tracking-widest">{errors.rice_variety}</div>}
+                                {errors.rice_variety && <div className="text-red-600 text-xs font-black italic">{errors.rice_variety}</div>}
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                {/* Harvest Date */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Number of Bags */}
                                 <div className="space-y-2">
-                                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Harvest Date</label>
-                                    <div className="relative">
-                                        <input 
-                                            type="date" 
-                                            className="w-full border-4 border-black p-4 font-black text-xl focus:ring-0 focus:border-green-600"
-                                            value={data.harvest_date}
-                                            onChange={e => setData('harvest_date', e.target.value)}
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Manual Pickup Location */}
-                                <div className="space-y-2">
-                                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Pickup Location / Landmark</label>
-                                    <input 
-                                        type="text" 
-                                        className="w-full border-4 border-black p-4 font-black text-xl focus:ring-0 focus:border-green-600 placeholder-gray-200"
-                                        value={data.location}
-                                        onChange={e => setData('location', e.target.value)}
-                                        placeholder="e.g. Purok 3, Near Chapel..."
-                                        required
-                                    />
-                                    {errors.location && <div className="text-red-600 text-[10px] font-black italic uppercase tracking-widest">{errors.location}</div>}
-                                </div>
-                            </div>
-
-                            {/* Estimated Sacks */}
-                            <div className="space-y-2">
-                                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Estimated Total Sacks</label>
-                                <div className="flex items-center gap-4">
+                                    <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Number of Bags</label>
                                     <input 
                                         type="number" 
-                                        min="1"
-                                        className="w-full md:w-1/3 border-4 border-black p-4 font-black text-2xl focus:ring-0 focus:border-green-600 placeholder-gray-200"
-                                        value={data.total_sacks}
-                                        onChange={e => setData('total_sacks', e.target.value)}
-                                        placeholder="0"
+                                        className="w-full border-4 border-black p-3 font-bold focus:ring-0 focus:border-green-600"
+                                        value={data.number_of_bags}
+                                        onChange={e => setData('number_of_bags', e.target.value)}
                                         required
                                     />
-                                    <div className="bg-black text-white px-6 py-4 font-black uppercase tracking-widest text-sm border-2 border-black">
-                                        Sacks
-                                    </div>
                                 </div>
-                                <p className="text-[10px] text-gray-400 font-bold italic tracking-wider">* This helps the Miller/Driver plan for the right truck size.</p>
-                                {errors.total_sacks && <div className="text-red-600 text-[10px] font-black italic uppercase tracking-widest">{errors.total_sacks}</div>}
+
+                                {/* Total Weight */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Total Weight (kg)</label>
+                                    <input 
+                                        type="number" 
+                                        step="0.01"
+                                        className="w-full border-4 border-black p-3 font-bold focus:ring-0 focus:border-green-600"
+                                        value={data.total_weight}
+                                        onChange={e => setData('total_weight', e.target.value)}
+                                        required
+                                    />
+                                </div>
                             </div>
 
-                            {/* --- PALAY CONDITION SELECTION --- */}
-                            <div className="space-y-3 pt-6 border-t-2 border-gray-100">
-                                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Palay Condition (Important for Miller)</label>
-                                <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Price Per KG */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Asking Price Per KG (₱)</label>
+                                    <input 
+                                        type="number" 
+                                        className="w-full border-4 border-black p-3 font-bold focus:ring-0 focus:border-green-600"
+                                        value={data.price_per_kg}
+                                        onChange={e => setData('price_per_kg', e.target.value)}
+                                        required
+                                    />
+                                </div>
+
+                                {/* Harvest Date */}
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Harvest Date</label>
+                                    <input 
+                                        type="date" 
+                                        className="w-full border-4 border-black p-3 font-bold focus:ring-0 focus:border-green-600"
+                                        value={data.harvest_date}
+                                        onChange={e => setData('harvest_date', e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            {/* --- NEW: PALAY CONDITION SELECTION --- */}
+                            <div className="space-y-3 pt-4 border-t-2 border-gray-100">
+                                <label className="block text-xs font-black uppercase tracking-widest text-gray-600">Palay Condition (Important for Miller)</label>
+                                <div className="grid grid-cols-2 gap-4">
                                     <button 
                                         type="button"
                                         onClick={() => setData('condition', 'fresh')}
-                                        className={`py-5 border-4 border-black font-black uppercase transition-all flex items-center justify-center gap-2 ${
-                                            data.condition === 'fresh' 
-                                            ? 'bg-yellow-400 text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]' 
-                                            : 'bg-white text-gray-300 border-gray-100 shadow-none'
+                                        className={`py-4 border-4 border-black font-black uppercase transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${
+                                            data.condition === 'fresh' ? 'bg-yellow-400 text-black' : 'bg-white text-gray-400 border-gray-200 shadow-none'
                                         }`}
                                     >
-                                        <span className={data.condition === 'fresh' ? 'opacity-100' : 'opacity-30'}>🌾</span> Fresh / Wet
+                                        🌾 Fresh / Wet
                                     </button>
                                     <button 
                                         type="button"
                                         onClick={() => setData('condition', 'ready')}
-                                        className={`py-5 border-4 border-black font-black uppercase transition-all flex items-center justify-center gap-2 ${
-                                            data.condition === 'ready' 
-                                            ? 'bg-green-500 text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]' 
-                                            : 'bg-white text-gray-300 border-gray-100 shadow-none'
+                                        className={`py-4 border-4 border-black font-black uppercase transition-all shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] ${
+                                            data.condition === 'ready' ? 'bg-green-500 text-black' : 'bg-white text-gray-400 border-gray-200 shadow-none'
                                         }`}
                                     >
-                                        <span className={data.condition === 'ready' ? 'opacity-100' : 'opacity-30'}>☀️</span> Ready to Mill
+                                        ☀️ Ready to Mill
                                     </button>
                                 </div>
-                                <p className="text-[10px] font-black uppercase text-gray-400 italic tracking-widest mt-2">
+                                <p className="text-[10px] font-bold text-gray-400 uppercase italic">
                                     {data.condition === 'fresh' 
                                         ? "* Notified as freshly harvested. Requires drying." 
                                         : "* Notified as dried and ready for immediate milling."}
                                 </p>
                             </div>
 
-                            <div className="pt-10">
+                            <div className="flex items-center justify-end mt-8 pt-6">
                                 <button 
                                     type="submit" 
                                     disabled={processing}
-                                    className="w-full bg-black text-white font-black py-6 px-10 border-b-[8px] border-green-500 hover:bg-gray-900 transition-all uppercase tracking-[0.3em] text-xl active:border-b-0 active:translate-y-2"
+                                    className="w-full bg-black hover:bg-green-600 text-white hover:text-black font-black py-5 px-10 border-4 border-black shadow-[8px_8px_0px_0px_rgba(34,197,94,1)] transition-all active:shadow-none active:translate-x-[4px] active:translate-y-[4px] uppercase tracking-widest"
                                 >
-                                    {processing ? 'PROCESSING...' : 'POST HARVEST'}
+                                    {processing ? 'PROCESSING...' : 'PUBLISH HARVEST BATCH'}
                                 </button>
                             </div>
                         </form>

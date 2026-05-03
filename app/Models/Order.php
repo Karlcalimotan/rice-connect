@@ -10,7 +10,6 @@ class Order extends Model
     protected $fillable = [
         'retailer_id',
         'miller_id',
-        'driver_id',
         'stock_id',
         'rice_variety',
         'sacks',
@@ -18,8 +17,6 @@ class Order extends Model
         'total_price',
         'shipping_method',
         'delivery_fee',
-        'delivery_status',
-        'delivery_type',
         'status',
     ];
 

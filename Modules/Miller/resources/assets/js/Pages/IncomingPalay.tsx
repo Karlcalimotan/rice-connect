@@ -21,27 +21,30 @@ export default function IncomingPalay({ auth, batches }: any) {
                                 <p className="font-bold text-green-700">Farmer: {batch.user?.first_name} {batch.user?.last_name}</p>
                                 <p className="font-bold text-blue-700">📞 Contact: {batch.user?.contact}</p>
                                 
-                                {batch.status === 'Accepted' && (
+                                {batch.status === 'sold' && (
                                     <div className="mt-4 flex flex-col items-center text-center">
-                                        <div className="px-3 py-1 bg-green-100 border-2 border-green-300 mb-2">
-                                            <p className="text-[10px] font-black text-green-700 uppercase tracking-widest italic animate-bounce">✅ Handshake Complete! Farmer Accepted Interest</p>
-                                        </div>
-                                        <div className="p-3 bg-yellow-50 border-2 border-black w-full mb-2">
-                                            <p className="text-[10px] font-black uppercase text-yellow-800">Coordination Hub</p>
-                                            <p className="font-bold text-sm">Coordinate with: {batch.user?.contact}</p>
+                                        <div className="px-3 py-1 bg-green-100 border border-green-300 mb-2">
+                                            <p className="text-[10px] font-black text-green-700 uppercase tracking-widest italic">✅ Farmer Accepted - Ready for Coordination</p>
                                         </div>
                                         <button 
-                                            onClick={() => window.location.href = `/miller/transport`}
-                                            className="w-full py-3 bg-black text-white font-black uppercase hover:bg-green-600 transition-colors border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                                            onClick={() => window.router && window.router.patch(route('miller.contact_farmer', batch.id))}
+                                            className="w-full py-2 bg-blue-500 text-white font-bold uppercase hover:bg-blue-600 border border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
                                         >
-                                            🚀 GO TO TRANSPORT TAB TO ASSIGN DRIVER
+                                            Contact Farmer
                                         </button>
                                     </div>
                                 )}
-                                {batch.status === 'Interest Pending' && (
-                                    <div className="mt-4 p-4 bg-gray-50 border-4 border-dashed border-gray-300 flex flex-col items-center">
-                                        <span className="text-2xl mb-2">⏳</span>
-                                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest text-center animate-pulse">Waiting for Farmer to Accept handshake...</p>
+                                {batch.status === 'in_transit' && (
+                                    <button 
+                                        onClick={() => window.router && window.router.patch(route('miller.mark_received', batch.id))}
+                                        className="mt-4 w-full py-2 bg-black text-white font-bold uppercase hover:bg-gray-800 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                                    >
+                                        📥 Mark Received
+                                    </button>
+                                )}
+                                {batch.status === 'pending' && (
+                                    <div className="mt-4 p-3 bg-gray-50 border-2 border-dashed border-gray-300 flex flex-col items-center">
+                                        <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest text-center animate-pulse">⏳ Interest Recorded: Waiting for Farmer Acceptance</p>
                                     </div>
                                 )}
                             </div>

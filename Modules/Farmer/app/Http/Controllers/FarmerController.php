@@ -16,11 +16,28 @@ class FarmerController extends Controller
      */
     public function index(): Response
     {
-        $batches = HarvestBatch::with(['buyer', 'interests.miller', 'acceptedMiller'])
+        $batches = HarvestBatch::with('buyer')
             ->where('user_id', Auth::id())
             ->where('hidden_from_farmer', false)
             ->latest()
-            ->get();
+            ->get()
+            ->map(function ($batch) {
+                $arr = $batch->toArray();
+                // Remove sensitive milling/internal fields from Farmer view
+                unset($arr['unpacked_weight_kg'], $arr['total_sacks'], $arr['price_per_sack'], $arr['drying_status']);
+
+                // Once delivered, freeze Farmer-visible status — stop showing Miller stages
+                if (in_array($arr['status'] ?? '', ['delivered', 'processing', 'processed', 'packed', 'for_sale', 'milled'])) {
+                    if ($arr['status'] === 'delivered') {
+                        $arr['status'] = 'delivered';
+                    } else {
+                        // Show a generic 'sold' status for post-sale Miller stages
+                        $arr['status'] = 'sold';
+                    }
+                }
+
+                return $arr;
+            });
 
         return Inertia::render('Farmer::HarvestIndex', [
             'batches' => $batches,
@@ -68,7 +85,10 @@ class FarmerController extends Controller
 
     $validated = $request->validate([
         'rice_variety' => 'required|string|max:255',
+        'number_of_bags' => 'required|integer|min:1',
+        'total_weight' => 'required|numeric|min:1',
         'harvest_date' => 'required|date',
+        'price_per_kg' => 'required|numeric',
         'condition' => 'required|in:fresh,ready',
     ]);
 
@@ -84,35 +104,32 @@ class FarmerController extends Controller
 {
     $validated = $request->validate([
         'rice_variety'   => 'required|string',
+        'number_of_bags' => 'required|integer',
+        'total_weight'   => 'required|numeric',
         'harvest_date'   => 'required|date',
-        'condition'      => 'required|in:fresh,ready',
-        'location'       => 'required|string', // Manual input mandatory
-        'total_sacks'    => 'required|integer|min:1',
+        'price_per_kg'   => 'required|numeric',
+        'condition'      => 'required|in:fresh,ready', // <--- Add this validation
     ]);
 
-    HarvestBatch::create([
+   HarvestBatch::create([
         'user_id'        => auth()->id(),
-        'location'       => $validated['location'], 
         'rice_variety'   => $validated['rice_variety'],
+        'number_of_bags' => $validated['number_of_bags'],
+        'total_weight'   => $validated['total_weight'],
         'harvest_date'   => $validated['harvest_date'],
-        'condition'      => $validated['condition'],
-        'total_sacks'    => $validated['total_sacks'],
-        'number_of_bags' => $validated['total_sacks'], // Sync for legacy views
-        'status'         => 'available', // INITIAL STATUS
-        'delivery_status' => 'Pending',
-        'delivery_type'   => 'palay',
-        'total_weight'   => 0,
-        'price_per_kg'   => 0,
+        'price_per_kg'   => $validated['price_per_kg'],
+        'condition'      => $validated['condition'], // <--- Save it here
+        'status'         => 'unsold',
     ]);
 
-    return redirect()->route('farmer.harvest')->with('message', 'Harvest logged successfully! Waiting for pickup.');
+    return redirect()->route('farmer.harvest')->with('message', 'Harvest logged successfully!');
 }
     public function offers()
 {
     // Get batches that have a Miller interested (buyer_id is not null)
     $offers = HarvestBatch::with('buyer') // 'buyer' is the User who is the Miller
         ->where('user_id', auth()->id())
-        ->where('status', 'Interest Pending')
+        ->where('status', 'pending')
         ->get();
 
     return Inertia::render('Farmer::Offers', [
@@ -122,41 +139,26 @@ class FarmerController extends Controller
 
 public function acceptOffer($id)
 {
-    $batch = HarvestBatch::where('user_id', auth()->id())->findOrFail($id);
+    $batch = HarvestBatch::findOrFail($id);
     
-    // Update status to 'Accepted'
-    $batch->update(['status' => 'Accepted']);
+    // Update status to 'sold'
+    $batch->update(['status' => 'sold']);
 
-    return redirect()->back()->with('message', 'Offer accepted! The Palay is now marked as Accepted.');
+    return redirect()->back()->with('message', 'Offer accepted! The Palay is now marked as sold.');
 }
   public function acceptInterest($id)
 {
     $batch = HarvestBatch::where('user_id', auth()->id())->findOrFail($id);
 
-    // Change status from 'pending' to 'Accepted'
+    // Change status from 'pending' to 'sold'
     $batch->update([
-        'status' => 'Accepted'
+        'status' => 'sold'
     ]);
 
-    return redirect()->back()->with('message', 'Agreement reached! Rice successfully sold to the Miller. They will now assign a driver.');
+    return redirect()->back()->with('message', 'Rice successfully sold to the Miller!');
 }
     /**
-     * Phase 3 Handshake: Farmer accepts a specific Miller's interest.
+     * Remaining methods (show, edit, update, destroy) 
+     * should also use Inertia::render when you build those pages.
      */
-    public function acceptHandshake(Request $request, $id)
-    {
-        $request->validate([
-            'miller_id' => 'required|exists:users,id'
-        ]);
-
-        $batch = HarvestBatch::where('user_id', Auth::id())->findOrFail($id);
-
-        $batch->update([
-            'status' => 'Accepted',
-            'accepted_miller_id' => $request->miller_id,
-            'buyer_id' => $request->miller_id, // Sync for legacy buyer-based queries
-        ]);
-
-        return redirect()->back()->with('message', 'Agreement reached! Miller has been accepted.');
-    }
 }

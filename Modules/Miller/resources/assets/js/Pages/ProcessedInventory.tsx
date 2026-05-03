@@ -17,14 +17,19 @@ export default function ProcessedInventory({ auth, inventory }: { auth: any; inv
         const price = window.prompt("Enter Selling Price per SACK (₱):");
         if (price === null) return;
         
-        const priceVal = parseFloat(price);
+        const delivery = window.prompt("Enter Delivery Fee (₱):", "0");
+        if (delivery === null) return;
         
-        if (!isNaN(priceVal) && priceVal > 0) {
+        const priceVal = parseFloat(price);
+        const deliveryVal = parseFloat(delivery);
+        
+        if (!isNaN(priceVal) && priceVal > 0 && !isNaN(deliveryVal) && deliveryVal >= 0) {
             router.post(route('miller.list_for_sale', id), {
                 price_per_sack: priceVal,
+                delivery_fee: deliveryVal
             });
         } else {
-            alert("Please enter a valid numeric amount.");
+            alert("Please enter valid numeric amounts.");
         }
     };
 
@@ -106,17 +111,9 @@ export default function ProcessedInventory({ auth, inventory }: { auth: any; inv
                                                     <span className="text-[10px] font-black uppercase text-gray-400">Price/Sack</span>
                                                     <span className="font-black text-green-600">₱{Number(item.price_per_sack).toLocaleString()}</span>
                                                 </div>
-                                                <div className="flex justify-between items-center">
+                                                <div className="flex justify-between">
                                                     <span className="text-[10px] font-black uppercase text-gray-400">Delivery Fee</span>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="font-black text-blue-600">₱{(Number(item.actual_delivery_fee) || 150).toLocaleString()}</span>
-                                                        <a 
-                                                            href={route('miller.shipping_settings')}
-                                                            className="text-[9px] font-bold text-gray-400 hover:text-blue-600 transition-colors uppercase flex items-center gap-1"
-                                                        >
-                                                            <span>⚙️</span> Edit
-                                                        </a>
-                                                    </div>
+                                                    <span className="font-black text-blue-600">₱{(Number(item.actual_delivery_fee) || 150).toLocaleString()}</span>
                                                 </div>
                                             </>
                                         )}

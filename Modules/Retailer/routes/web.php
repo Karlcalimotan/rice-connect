@@ -20,7 +20,5 @@ Route::middleware(['auth', 'verified'])->prefix('retailer')->group(function () {
     // New: Purchases page with real-time status badges
     Route::get('/my-purchases', [RetailerController::class, 'myPurchases'])
         ->name('retailer.purchases');
-    Route::patch('/my-purchases/{id}/confirm', [RetailerController::class, 'confirmReceived'])
-        ->name('retailer.order.confirm_received');
         
 });

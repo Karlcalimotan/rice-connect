@@ -26,10 +26,11 @@ const FleetManagement: React.FC<FleetManagementProps> = ({ allDrivers, myFleet }
                 {/* MY FLEET */}
                 <div className="space-y-4">
                     <h4 className="text-[10px] font-black uppercase text-emerald-900/40 tracking-[0.3em] px-4">Authorized Drivers ({myFleet.length})</h4>
-                    <div className="bg-white/60 backdrop-blur-xl border-4 border-black p-6 shadow-[10px_10px_0_0_rgba(6,95,70,0.1)] rounded-none">
+                    <div className="glass-card p-6 shadow-[10px_10px_0_0_rgba(6,95,70,0.1)] rounded-none">
                         {myFleet.length === 0 ? (
-                            <div className="py-8 text-center">
-                                <p className="text-sm font-bold text-gray-400 italic">No drivers in your fleet yet.</p>
+                            <div className="glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                                <span className="text-4xl mb-4 opacity-50">🚚</span>
+                                <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No drivers in your fleet yet.</p>
                             </div>
                         ) : (
                             <div className="divide-y-2 divide-gray-100/50">
@@ -58,15 +59,16 @@ const FleetManagement: React.FC<FleetManagementProps> = ({ allDrivers, myFleet }
                 {/* AVAILABLE DRIVERS */}
                 <div className="space-y-4">
                     <h4 className="text-[10px] font-black uppercase text-emerald-900/40 tracking-[0.3em] px-4">Available Network ({availableDrivers.length})</h4>
-                    <div className="bg-emerald-50/30 backdrop-blur-md border-4 border-black border-dashed p-6">
+                    <div className="glass-card p-6">
                         {availableDrivers.length === 0 ? (
-                            <div className="py-8 text-center">
-                                <p className="text-sm font-bold text-gray-400 italic">No other available drivers in the region.</p>
+                            <div className="glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                                <span className="text-4xl mb-4 opacity-50">🔍</span>
+                                <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No other available drivers in the region.</p>
                             </div>
                         ) : (
                             <div className="space-y-4">
                                 {availableDrivers.map((driver) => (
-                                    <div key={driver.id} className="bg-white/80 border-2 border-black p-4 flex justify-between items-center shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all">
+                                    <div key={driver.id} className="bg-white/40 backdrop-blur-sm border-2 border-black p-4 flex justify-between items-center shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-all">
                                         <div className="flex items-center gap-3">
                                             <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-black text-[10px]">
                                                 {driver.first_name[0]}{driver.last_name[0]}
@@ -78,7 +80,7 @@ const FleetManagement: React.FC<FleetManagementProps> = ({ allDrivers, myFleet }
                                         </div>
                                         <button 
                                             onClick={() => handleLinkDriver(driver.id)}
-                                            className="bg-black text-white text-[10px] font-black uppercase px-4 py-2 hover:bg-emerald-600 transition-all border-2 border-black active:translate-x-1 active:translate-y-1"
+                                            className="btn-2026 !px-6 !py-2"
                                         >
                                             Verify & Add
                                         </button>

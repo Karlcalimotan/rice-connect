@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Rice Connect | Seed to Store Synchronization</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -149,26 +150,6 @@
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section id="stats" class="py-12 bg-emerald-900 overflow-hidden relative">
-        <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#fff 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-                <div class="flex flex-col items-center">
-                    <div class="text-5xl font-black text-white mb-2">500+</div>
-                    <div class="text-emerald-300 text-xs font-bold uppercase tracking-[0.3em]">Registered Farmers</div>
-                </div>
-                <div class="flex flex-col items-center">
-                    <div class="text-5xl font-black text-white mb-2">20+</div>
-                    <div class="text-emerald-300 text-xs font-bold uppercase tracking-[0.3em]">Active Millers</div>
-                </div>
-                <div class="flex flex-col items-center border-emerald-800">
-                    <div class="text-5xl font-black text-white mb-2">100+</div>
-                    <div class="text-emerald-300 text-xs font-bold uppercase tracking-[0.3em]">Deliveries Today</div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer class="bg-white py-12 border-t border-gray-100 text-center">

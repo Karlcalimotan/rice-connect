@@ -23,4 +23,5 @@ Route::middleware(['auth', 'verified'])->prefix('retailer')->group(function () {
     Route::patch('/my-purchases/{id}/confirm', [RetailerController::class, 'confirmReceived'])
         ->name('retailer.order.confirm_received');
         
+
 });

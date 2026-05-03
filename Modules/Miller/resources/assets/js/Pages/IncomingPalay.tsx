@@ -9,7 +9,7 @@ export default function IncomingPalay({ auth, batches }: any) {
             header={
                 <div className="flex items-center gap-2">
                     <div className="w-2 h-8 bg-emerald-600 rounded-full"></div>
-                    <h2 className="text-2xl font-black uppercase tracking-tight text-gray-900">Incoming Palay</h2>
+                    <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">Incoming Palay</h2>
                 </div>
             }
         >
@@ -18,7 +18,7 @@ export default function IncomingPalay({ auth, batches }: any) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     
                     {batches.length === 0 ? (
-                        <div className="max-w-3xl mx-auto text-center py-24 bg-white/70 backdrop-blur-2xl border border-white/50 shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[3rem] relative overflow-hidden">
+                        <div className="glass-card max-w-3xl mx-auto text-center py-24 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
                             <div className="relative inline-block p-10 bg-emerald-50/50 backdrop-blur-md rounded-3xl border-2 border-emerald-100 mb-8 rotate-3 shadow-lg">
                                 <span className="text-6xl">🌾</span>
@@ -29,7 +29,7 @@ export default function IncomingPalay({ auth, batches }: any) {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {batches.map((batch: any) => (
-                                <div key={batch.id} className="group relative bg-white/70 backdrop-blur-xl rounded-[2.5rem] overflow-hidden p-8 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 hover:shadow-[0_30px_60px_rgba(5,150,105,0.15)] transition-all duration-500">
+                                <div key={batch.id} className="glass-card group relative p-8">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-emerald-500/10 transition-all"></div>
                                     
                                     <div className="relative mb-6">

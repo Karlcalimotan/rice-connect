@@ -168,4 +168,6 @@ class RetailerController extends Controller
     public function edit($id) { return view('retailer::edit'); }
     public function update(Request $request, $id) {}
     public function destroy($id) {}
+
+
 }

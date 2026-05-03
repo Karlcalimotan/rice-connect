@@ -35,17 +35,17 @@ export default function ShippingSettings({ auth, settings, municipalities, curre
                 <div className="max-w-3xl mx-auto">
                     <div className="flex items-center gap-2 mb-10">
                         <div className="w-2 h-8 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900 leading-none">
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
                             Shipping & Delivery Settings
                         </h2>
                     </div>
 
-                    <div className="bg-white/70 backdrop-blur-xl rounded-[3rem] p-12 border border-white/50 shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden">
+                    <div className="glass-card p-12 overflow-hidden">
                         <form onSubmit={submit} className="space-y-8">
                             {/* Home Municipality */}
                             <div className="space-y-4">
                                 <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/40 px-4">🏠 Miller's Home Municipality</label>
-                                <div className="bg-white/60 backdrop-blur-md border-4 border-black p-6 shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
+                                <div className="glass-card bg-white/30 border-4 border-black p-6 shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
                                     <select
                                         className="w-full bg-transparent border-none p-0 font-black text-xl focus:ring-0"
                                         value={data.municipality_id}
@@ -67,7 +67,7 @@ export default function ShippingSettings({ auth, settings, municipalities, curre
                                 {/* Base Fee */}
                                 <div className="space-y-4">
                                     <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/40 px-4">🚚 Base Delivery Fee</label>
-                                    <div className="bg-white/60 backdrop-blur-md border-4 border-black p-6 shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] transition-all">
+                                    <div className="glass-card bg-white/30 border-4 border-black p-6 shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] transition-all">
                                         <div className="relative">
                                             <span className="absolute left-0 top-1/2 -translate-y-1/2 font-black text-2xl text-emerald-600">₱</span>
                                             <input
@@ -87,7 +87,7 @@ export default function ShippingSettings({ auth, settings, municipalities, curre
                                 {/* Extra Fee */}
                                 <div className="space-y-4">
                                     <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/40 px-4">➕ Extra Fee per Municipality</label>
-                                    <div className="bg-white/60 backdrop-blur-md border-4 border-black p-6 shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] transition-all">
+                                    <div className="glass-card bg-white/30 border-4 border-black p-6 shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] transition-all">
                                         <div className="relative">
                                             <span className="absolute left-0 top-1/2 -translate-y-1/2 font-black text-2xl text-emerald-600">₱</span>
                                             <input

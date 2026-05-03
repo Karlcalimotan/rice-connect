@@ -143,4 +143,6 @@ class DriverController extends Controller
 
         return redirect()->back()->with('message', 'Order marked as Delivered. Waiting for Retailer confirmation.');
     }
+
+
 }

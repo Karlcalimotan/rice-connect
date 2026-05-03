@@ -73,7 +73,7 @@ export default function MyPurchases({ auth, orders }: any) {
                                                     <span className="text-xs font-black uppercase text-emerald-950/40 tracking-widest">Sacks Protocol Yield</span>
                                                 </div>
                                                 
-                                                <div className="mt-8 flex items-center gap-4 p-4 rounded-2xl bg-white/40 border border-white/60 w-fit">
+                                                <div className="mt-8 flex items-center gap-4 p-4 rounded-2xl bg-white/95 border border-white/60 w-fit">
                                                     <div className="w-10 h-10 rounded-xl bg-emerald-950 flex items-center justify-center text-white">
                                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" strokeWidth="2"/></svg>
                                                     </div>
@@ -128,7 +128,7 @@ export default function MyPurchases({ auth, orders }: any) {
                                                 </div>
                                             ) : (
                                                 <div className="mt-12">
-                                                    <div className="bg-emerald-50/50 p-6 rounded-[2rem] border border-emerald-100 flex items-center gap-5">
+                                                    <div className="bg-emerald-50/90 p-6 rounded-[2rem] border border-emerald-100 flex items-center gap-5">
                                                         <div className="w-12 h-12 rounded-2xl bg-white shadow-xl flex items-center justify-center text-emerald-600">
                                                             <svg className="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeWidth="2.5"/></svg>
                                                         </div>

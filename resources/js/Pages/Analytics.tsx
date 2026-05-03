@@ -5,25 +5,110 @@ import React, { useMemo } from 'react';
 // ─── Tiny inline bar chart ─────────────────────────────────────────────────
 function BarChart({ data }: { data: { month: string; value: number }[] }) {
     const max = Math.max(...data.map(d => d.value), 1);
+
+    const points = useMemo(() => {
+        const n = data.length || 1;
+        const padding = 8;
+        const width = 100 - padding * 2;
+        return data.map((d, i) => {
+            const x = padding + (n === 1 ? width / 2 : (i / (n - 1)) * width);
+            const height = Math.max((d.value / max) * 60, d.value > 0 ? 4 : 0.8);
+            const y = 84 - height;
+            return { ...d, x, height, y };
+        });
+    }, [data, max]);
+
+    const linePoints = points.map(p => `${p.x},${p.y}`).join(' ');
+
     return (
-        <div className="flex items-end gap-1.5 h-28 w-full">
-            {data.map((d, i) => (
-                <div key={i} className="flex flex-col items-center flex-1 gap-1 group">
-                    <div className="relative flex-1 w-full flex items-end">
-                        <div
-                            className="w-full rounded-t-lg bg-emerald-500 group-hover:bg-emerald-400 transition-all duration-500 relative"
-                            style={{ height: `${Math.max((d.value / max) * 100, 4)}%` }}
-                        >
-                            {d.value > 0 && (
-                                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-emerald-900 text-white text-[9px] font-black px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                                    {d.value}
-                                </div>
-                            )}
-                        </div>
+        <div className="h-36 w-full rounded-2xl border border-emerald-950/5 bg-white/25 p-3 shadow-[0_20px_40px_rgba(15,23,42,0.04)] backdrop-blur-sm">
+            <div className="mb-2 flex items-center justify-end gap-4 px-1 text-[8px] font-bold uppercase tracking-[0.25em] text-emerald-950/35">
+                <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Bars</span>
+                <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-slate-600" /> Trend</span>
+            </div>
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
+                <defs>
+                    <linearGradient id="barFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#34D399" stopOpacity="0.98" />
+                        <stop offset="100%" stopColor="#059669" stopOpacity="0.92" />
+                    </linearGradient>
+                </defs>
+
+                {/* grid */}
+                {[22, 40, 58, 76, 84].map((y) => (
+                    <line
+                        key={y}
+                        x1="0"
+                        y1={y}
+                        x2="100"
+                        y2={y}
+                        stroke={y === 84 ? 'rgba(15,23,42,0.08)' : 'rgba(15,23,42,0.045)'}
+                        strokeWidth={y === 84 ? 0.8 : 0.5}
+                        strokeDasharray={y === 84 ? '0' : '1.2 2.2'}
+                    />
+                ))}
+
+                {/* bars */}
+                {points.map((p, i) => (
+                    <g key={i}>
+                        <rect
+                            x={p.x - 2.9}
+                            y={84 - p.height}
+                            width={5.8}
+                            height={p.height}
+                            rx={2.1}
+                            fill="url(#barFill)"
+                            stroke="rgba(255,255,255,0.62)"
+                            strokeWidth={0.5}
+                            style={{ filter: 'drop-shadow(0 2px 2px rgba(5,150,105,0.10))' }}
+                        />
+                        <rect
+                            x={p.x - 2.9}
+                            y={84 - p.height}
+                            width={5.8}
+                            height={Math.min(p.height, 8)}
+                            rx={2.1}
+                            fill="rgba(255,255,255,0.16)"
+                        />
+                    </g>
+                ))}
+
+                {points.length > 0 && (
+                    <polyline
+                        points={linePoints}
+                        fill="none"
+                        stroke="rgba(51,65,85,0.92)"
+                        strokeWidth={1.9}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        style={{ filter: 'drop-shadow(0 1px 0 rgba(15,23,42,0.08))' }}
+                    />
+                )}
+
+                {points.map((p, i) => (
+                    <circle
+                        key={`marker-${i}`}
+                        cx={p.x}
+                        cy={p.y}
+                        r={1.5}
+                        fill="#ffffff"
+                        stroke="rgba(51,65,85,0.95)"
+                        strokeWidth={0.7}
+                    />
+                ))}
+
+                {/* y-axis hints */}
+                <text x="1.5" y="18" fill="rgba(15,23,42,0.30)" fontSize="3.4" fontWeight="700">{max.toLocaleString()}</text>
+                <text x="1.5" y="84.5" fill="rgba(15,23,42,0.22)" fontSize="3.4" fontWeight="700">0</text>
+            </svg>
+
+            <div className="mt-2 flex items-center gap-1.5">
+                {points.map((d, i) => (
+                    <div key={i} className="flex-1 text-center">
+                        <span className="text-[8px] font-semibold tracking-[0.2em] text-emerald-950/35 uppercase">{d.month}</span>
                     </div>
-                    <span className="text-[8px] font-black text-emerald-950/30 uppercase">{d.month}</span>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 }

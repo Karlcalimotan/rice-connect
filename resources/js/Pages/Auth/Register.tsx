@@ -90,7 +90,7 @@ export default function Register() {
                     <div className="w-full max-w-xl">
                         <div className="glass-card !bg-white !p-12 !rounded-[3rem] shadow-[0_40px_80px_-20px_rgba(6,95,70,0.1)] border border-white relative z-10">
                             <div className="mb-10">
-                                <h2 className="text-4xl font-black text-emerald-950 tracking-tight mb-3 italic uppercase">Join Network</h2>
+                                <h2 className="text-4xl font-black text-emerald-950 tracking-tight mb-3 italic uppercase">Sign Up</h2>
                                 <p className="text-sm text-emerald-900/40 font-bold uppercase tracking-widest leading-relaxed">
                                     Create your partner account to access the platform.
                                 </p>

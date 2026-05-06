@@ -97,7 +97,10 @@ export default function Authenticated({
                             {user.role === 'farmer' && (
                                 <>
                                     <NavLink href={route('farmer.harvest')} active={route().current('farmer.harvest')} onClick={handleNavClick}>
-                                        <Icons.Harvest /> <span>Harvest Log</span>
+                                        <Icons.Harvest /> <span>Field Management</span>
+                                    </NavLink>
+                                    <NavLink href={route('farmer.harvest')} active={route().current('farmer.harvest')} onClick={handleNavClick}>
+                                        <Icons.Console /> <span>Harvest Logs</span>
                                     </NavLink>
                                     <NavLink href={route('farmer.harvest.create')} active={route().current('farmer.harvest.create')} onClick={handleNavClick}>
                                         <Icons.Console /> <span>Post Yield</span>
@@ -107,11 +110,14 @@ export default function Authenticated({
 
                             {user.role === 'miller' && (
                                 <>
-                                    <NavLink href={route('miller.marketplace')} active={route().current('miller.marketplace')} onClick={handleNavClick}>
-                                        <Icons.Market /> <span>Acquisition</span>
+                                    <NavLink href={route('miller.incoming')} active={route().current('miller.incoming')} onClick={handleNavClick}>
+                                        <Icons.Market /> <span>Queue Management</span>
                                     </NavLink>
                                     <NavLink href={route('miller.inventory')} active={route().current('miller.inventory')} onClick={handleNavClick}>
-                                        <Icons.Inventory /> <span>Warehouse</span>
+                                        <Icons.Inventory /> <span>Milling Efficiency</span>
+                                    </NavLink>
+                                    <NavLink href={route('miller.marketplace')} active={route().current('miller.marketplace')} onClick={handleNavClick}>
+                                        <Icons.Market /> <span>Acquisition</span>
                                     </NavLink>
                                     <NavLink href={route('miller.orders')} active={route().current('miller.orders')} onClick={handleNavClick}>
                                         <Icons.Orders /> <span>Fulfillment</span>
@@ -124,11 +130,14 @@ export default function Authenticated({
 
                             {user.role === 'retailer' && (
                                 <>
+                                    <NavLink href={route('retailer.purchases')} active={route().current('retailer.purchases')} onClick={handleNavClick}>
+                                        <Icons.Orders /> <span>Inventory Tracking</span>
+                                    </NavLink>
+                                    <NavLink href={route('retailer.orders')} active={route().current('retailer.orders')} onClick={handleNavClick}>
+                                        <Icons.Orders /> <span>My Orders</span>
+                                    </NavLink>
                                     <NavLink href={route('retailer.marketplace')} active={route().current('retailer.marketplace')} onClick={handleNavClick}>
                                         <Icons.Market /> <span>Marketplace</span>
-                                    </NavLink>
-                                    <NavLink href={route('retailer.purchases')} active={route().current('retailer.purchases')} onClick={handleNavClick}>
-                                        <Icons.Orders /> <span>Order Flow</span>
                                     </NavLink>
                                 </>
                             )}
@@ -142,10 +151,10 @@ export default function Authenticated({
                             {user.role === 'admin' && (
                                 <>
                                     <NavLink href={route('admin.dashboard')} active={route().current('admin.dashboard')} onClick={handleNavClick}>
-                                        <Icons.Console /> <span>Global Monitor</span>
+                                        <Icons.Console /> <span>Market Watch</span>
                                     </NavLink>
                                     <NavLink href={route('admin.municipalities')} active={route().current('admin.municipalities')} onClick={handleNavClick}>
-                                        <Icons.Logistics /> <span>Regional Mapping</span>
+                                        <Icons.Logistics /> <span>Location Tracker</span>
                                     </NavLink>
                                 </>
                             )}
@@ -210,23 +219,25 @@ export default function Authenticated({
                                         </div>
                                         <div className="flex flex-col items-start">
                                             <span className="text-sm font-extrabold text-emerald-950 truncate max-w-[120px] leading-tight mb-1">{user.first_name}</span>
-                                            <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest leading-none">Identity Holder</span>
+                                            <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest leading-none">
+                                                {user.role === 'farmer' ? 'Farmer' : user.role === 'miller' ? 'Miller' : user.role === 'retailer' ? 'Retailer' : user.role === 'driver' ? 'Driver' : 'Admin'}
+                                            </span>
                                         </div>
                                         <svg className="h-4 w-4 text-emerald-300 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" strokeWidth="3"/></svg>
                                     </button>
                                 </Dropdown.Trigger>
                                 <Dropdown.Content contentClasses="py-6 bg-white/90 backdrop-blur-3xl border border-white rounded-[3rem] shadow-[0_40px_80px_rgba(6,95,70,0.15)] mt-6 ring-0">
                                     <div className="px-10 py-6 border-b border-emerald-950/5 mb-4 text-left">
-                                        <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-2">Connected Instance</p>
+                                        <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-2">Logged in as</p>
                                         <p className="text-[12px] font-extrabold text-emerald-950 truncate leading-none">{user.email}</p>
                                     </div>
                                     <div className="px-3 space-y-1">
                                         <Dropdown.Link href={route('profile.edit')} className="px-8 py-4 rounded-[1.5rem] hover:bg-emerald-50 font-extrabold text-emerald-950/80 hover:text-emerald-950 transition-all">
-                                            Access Profile
+                                            My Account Settings
                                         </Dropdown.Link>
                                         <div className="mx-6 h-px bg-emerald-950/5"></div>
                                         <Dropdown.Link href={route('logout')} method="post" as="button" className="px-8 py-4 rounded-[1.5rem] hover:bg-rose-50 font-black text-rose-600 uppercase text-[10px] tracking-[0.2em] transition-all">
-                                            Terminate Session
+                                            Log Out
                                         </Dropdown.Link>
                                     </div>
                                 </Dropdown.Content>

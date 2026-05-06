@@ -48,84 +48,91 @@ export default function MunicipalitiesManager({ auth, municipalities }: { auth: 
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="Municipality Management" />
-            <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="p-6 bg-transparent min-h-screen">
                 <div className="max-w-4xl mx-auto">
-                    <div className="flex items-center gap-2 mb-8">
-                        <div className="w-2 h-8 bg-red-600 border border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900">
-                            Municipality Logistics Manager
-                        </h2>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                        <div>
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="w-1.5 h-6 bg-rose-600 rounded-full shadow-[0_0_15px_rgba(225,29,72,0.4)]"></div>
+                                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-rose-800/60">Logistics Index</p>
+                            </div>
+                            <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
+                                Municipality Hubs
+                            </h2>
+                        </div>
                     </div>
 
                     {/* Form Section */}
-                    <div className="bg-white border-4 border-black p-6 mb-10 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                        <h3 className="text-xl font-black uppercase mb-4 text-gray-800">
-                            {editingId ? 'Edit Municipality' : 'Add New Municipality'}
-                        </h3>
-                        <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">Municipality Name</label>
-                                <input 
-                                    type="text"
-                                    className="w-full border-4 border-black p-3 font-bold text-lg focus:ring-0 focus:border-red-600"
-                                    value={data.name}
-                                    onChange={e => setData('name', e.target.value)}
-                                    placeholder="e.g. Leon"
-                                />
-                                {errors.name && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase">{errors.name}</p>}
-                            </div>
-                            <div>
-                                <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">Distance Index</label>
-                                <input 
-                                    type="number"
-                                    className="w-full border-4 border-black p-3 font-bold text-lg focus:ring-0 focus:border-red-600"
-                                    value={data.distance_index}
-                                    onChange={e => setData('distance_index', e.target.value)}
-                                    placeholder="Index #"
-                                />
-                                {errors.distance_index && <p className="text-red-500 text-[10px] font-bold mt-1 uppercase">{errors.distance_index}</p>}
-                            </div>
-                            <div className="flex items-end gap-2">
-                                <button 
-                                    disabled={processing}
-                                    className="flex-1 bg-black text-white font-black py-4 border-2 border-black hover:bg-gray-800 uppercase transition-all"
-                                >
-                                    {editingId ? 'Update' : 'Add Municipality'}
-                                </button>
-                                {editingId && (
+                    <div className="glass-card mb-12 p-2">
+                        <div className="bg-white/40 rounded-[2.5rem] p-10 border border-white/60">
+                            <h3 className="text-[10px] font-black uppercase mb-8 tracking-[0.3em] text-rose-600">
+                                {editingId ? 'Configuration Patch' : 'Register New Hub'}
+                            </h3>
+                            <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="space-y-4">
+                                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950/40">Hub Primary Name</label>
+                                    <input 
+                                        type="text"
+                                        className="input-2026"
+                                        value={data.name}
+                                        onChange={e => setData('name', e.target.value)}
+                                        placeholder="Hub ID"
+                                    />
+                                    {errors.name && <p className="text-rose-500 text-[9px] font-black uppercase tracking-widest mt-2">{errors.name}</p>}
+                                </div>
+                                <div className="space-y-4">
+                                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-emerald-950/40">Distance Indexing</label>
+                                    <input 
+                                        type="number"
+                                        className="input-2026"
+                                        value={data.distance_index}
+                                        onChange={e => setData('distance_index', e.target.value)}
+                                        placeholder="Val"
+                                    />
+                                    {errors.distance_index && <p className="text-rose-500 text-[9px] font-black uppercase tracking-widest mt-2">{errors.distance_index}</p>}
+                                </div>
+                                <div className="flex items-end gap-3">
                                     <button 
-                                        type="button"
-                                        onClick={cancelEdit}
-                                        className="bg-gray-200 text-black font-black py-4 px-4 border-2 border-black hover:bg-gray-300 uppercase transition-all"
+                                        disabled={processing}
+                                        className="btn-2026 flex-1 !rounded-2xl"
                                     >
-                                        Cancel
+                                        {editingId ? 'Push Update' : 'Register Hub'}
                                     </button>
-                                )}
-                            </div>
-                        </form>
+                                    {editingId && (
+                                        <button 
+                                            type="button"
+                                            onClick={cancelEdit}
+                                            className="px-6 py-4 rounded-2xl bg-white/60 text-emerald-950/40 border border-white/80 font-black uppercase text-[10px] tracking-widest hover:bg-white transition-all"
+                                        >
+                                            Abort
+                                        </button>
+                                    )}
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
                     {/* Table Section */}
-                    <div className="bg-white border-4 border-black overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                        <table className="w-full text-left">
-                            <thead className="bg-gray-900 text-white">
-                                <tr>
-                                    <th className="p-4 uppercase font-black tracking-widest text-[10px]">Index</th>
-                                    <th className="p-4 uppercase font-black tracking-widest text-[10px]">Municipality</th>
-                                    <th className="p-4 uppercase font-black tracking-widest text-[10px] text-right">Actions</th>
+                    <div className="glass-card shadow-2xl p-2 overflow-hidden">
+                        <table className="w-full text-left border-separate border-spacing-y-2">
+                            <thead>
+                                <tr className="bg-emerald-950/90 text-white overflow-hidden rounded-[2rem]">
+                                    <th className="p-6 uppercase font-black tracking-widest text-[9px] rounded-l-2xl">Index</th>
+                                    <th className="p-6 uppercase font-black tracking-widest text-[9px]">Municipality</th>
+                                    <th className="p-6 uppercase font-black tracking-widest text-[9px] text-right rounded-r-2xl">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y-2 divide-black">
+                            <tbody className="divide-y divide-white/10">
                                 {municipalities.map(m => (
-                                    <tr key={m.id} className="hover:bg-red-50 transition-colors">
-                                        <td className="p-4 font-black text-xl italic text-red-600">#{m.distance_index}</td>
-                                        <td className="p-4 font-black uppercase text-gray-900">{m.name}</td>
-                                        <td className="p-4 text-right flex justify-end gap-2">
+                                    <tr key={m.id} className="hover:bg-gray-50/50 transition-colors">
+                                        <td className="p-6 font-black text-3xl tracking-tighter italic text-rose-600 drop-shadow-sm opacity-60">#{m.distance_index}</td>
+                                        <td className="p-4 font-extrabold uppercase text-emerald-950 text-sm">{m.name}</td>
+                                        <td className="p-4 text-right flex justify-end gap-3">
                                             <button 
                                                 onClick={() => startEdit(m)}
-                                                className="bg-blue-600 text-white p-2 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-none active:translate-x-[1px] active:translate-y-[1px] transition-all"
+                                                className="w-10 h-10 flex items-center justify-center bg-white/60 text-emerald-950 border border-white/80 rounded-xl shadow-lg hover:bg-white transition-all duration-300"
                                             >
-                                                ✏️
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" strokeWidth="2.5"/></svg>
                                             </button>
                                             <button 
                                                 onClick={() => {
@@ -133,9 +140,9 @@ export default function MunicipalitiesManager({ auth, municipalities }: { auth: 
                                                         destroy(route('admin.municipalities.destroy', m.id));
                                                     }
                                                 }}
-                                                className="bg-white text-black p-2 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] active:shadow-none active:translate-x-[1px] active:translate-y-[1px] transition-all"
+                                                className="w-10 h-10 flex items-center justify-center bg-rose-50 text-rose-700 border border-rose-200 rounded-xl shadow-sm hover:bg-rose-100 transition-all duration-300"
                                             >
-                                                🗑️
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" strokeWidth="2.5"/></svg>
                                             </button>
                                         </td>
                                     </tr>

@@ -194,7 +194,7 @@ class MillerController extends Controller
             'final_price_per_kg' => $validated['final_price_per_kg'],
             'price_per_kg' => $validated['final_price_per_kg'], // Sync for legacy views
             'total_weight' => $batch->actual_weight_kg, // Sync
-            'delivery_status' => 'Received',
+            'delivery_status' => 'Completed',
             'status' => 'received',
             'drying_status' => 'received',
         ]);
@@ -438,9 +438,7 @@ class MillerController extends Controller
         ]);
 
         return redirect()->back()->with('message', 'Payment authorized! The driver has been given the go-signal to pay the farmer and start transit.');
-    }
-
-    public function updateShippingSettings(Request $request)
+    }    public function updateShippingSettings(Request $request)
     {
         $request->validate([
             'base_delivery_fee' => 'required|numeric|min:0',

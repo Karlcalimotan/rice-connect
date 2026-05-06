@@ -16,10 +16,21 @@ class SupplyChainSeeder extends Seeder
     public function run(): void
     {
         // Create users
+        $admin = User::create([
+            'first_name' => 'System',
+            'last_name' => 'Admin',
+            'email' => 'admin@rice.com',
+            'username' => 'admin',
+            'role' => 'admin',
+            'contact' => '09000000000',
+            'password' => Hash::make('password'),
+        ]);
+
         $farmer = User::create([
             'first_name' => 'Farmer',
             'last_name' => 'Joe',
             'email' => 'farmer@example.test',
+            'username' => 'farmer',
             'role' => 'farmer',
             'contact' => '09170000001',
             'password' => Hash::make('password'),
@@ -29,6 +40,7 @@ class SupplyChainSeeder extends Seeder
             'first_name' => 'Miller',
             'last_name' => 'Mary',
             'email' => 'miller@example.test',
+            'username' => 'miller',
             'role' => 'miller',
             'contact' => '09170000002',
             'password' => Hash::make('password'),
@@ -38,6 +50,7 @@ class SupplyChainSeeder extends Seeder
             'first_name' => 'Retailer',
             'last_name' => 'Rex',
             'email' => 'retailer@example.test',
+            'username' => 'retailer',
             'role' => 'retailer',
             'contact' => '09170000003',
             'password' => Hash::make('password'),
@@ -47,6 +60,7 @@ class SupplyChainSeeder extends Seeder
             'first_name' => 'Driver',
             'last_name' => 'Dan',
             'email' => 'driver@example.test',
+            'username' => 'driver',
             'role' => 'driver',
             'contact' => '09170000004',
             'password' => Hash::make('password'),

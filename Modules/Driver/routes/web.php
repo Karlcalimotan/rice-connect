@@ -10,4 +10,6 @@ Route::middleware(['auth', 'verified'])->prefix('driver')->group(function () {
     Route::post('/palay/{id}/arrive', [DriverController::class, 'arriveAtMiller'])->name('driver.palay.arrive');
     Route::post('/rice/{id}/start', [DriverController::class, 'startTrip'])->name('driver.rice.start_trip');
     Route::post('/rice/{id}/arrive', [DriverController::class, 'arriveAtDestination'])->name('driver.rice.arrive');
+    
+
 });

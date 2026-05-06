@@ -33,33 +33,33 @@ export default function MillerOrders({ auth, orders }: any) {
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="Customer Orders" />
-            <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="p-6 bg-transparent min-h-screen">
                 <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center gap-2 mb-8">
-                        <div className="w-2 h-8 bg-purple-600 border border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter text-gray-900">
-                            📋 Customer Orders
+                    <div className="flex items-center gap-2 mb-10">
+                        <div className="w-2 h-8 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]"></div>
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
+                            Customer Orders
                         </h2>
                     </div>
 
                     {orders.length > 0 ? (
-                        <div className="bg-white border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] overflow-x-auto">
+                        <div className="glass-card overflow-hidden shadow-2xl">
                             <table className="w-full text-left border-collapse">
                                 <thead>
-                                    <tr className="border-b-4 border-black bg-gray-100">
-                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest">Order</th>
-                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest">Retailer</th>
-                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest">Variety</th>
-                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-center">Sacks</th>
-                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-center">Total</th>
-                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-center">Shipping</th>
-                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-center">Status</th>
-                                        <th className="p-4 font-black uppercase text-[10px] tracking-widest text-center">Actions</th>
+                                    <tr className="border-b border-white/20 bg-emerald-700/20">
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-[0.2em] text-emerald-50">Order</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-[0.2em] text-emerald-50">Retailer</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-[0.2em] text-emerald-50">Variety</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-[0.2em] text-emerald-50 text-center">Sacks</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-[0.2em] text-emerald-50 text-center">Total</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-[0.2em] text-emerald-50 text-center">Shipping</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-[0.2em] text-emerald-50 text-center">Status</th>
+                                        <th className="p-6 font-black uppercase text-[10px] tracking-[0.2em] text-emerald-50 text-center">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-white/10">
                                     {orders.map((order: any) => (
-                                        <tr key={order.id} className="border-b-2 border-gray-100 hover:bg-gray-50 transition-colors">
+                                        <tr key={order.id} className="border-b border-white/10 hover:bg-white/20 transition-colors">
                                             <td className="p-4 text-xs font-black text-gray-400">#{order.id}</td>
                                             <td className="p-4">
                                                 <p className="font-bold text-sm">{order.retailer_first_name} {order.retailer_last_name}</p>
@@ -132,10 +132,9 @@ export default function MillerOrders({ auth, orders }: any) {
                             </table>
                         </div>
                     ) : (
-                        <div className="py-20 bg-white border-4 border-dashed border-gray-300 text-center">
-                            <p className="text-gray-300 text-6xl mb-4">📋</p>
-                            <p className="text-gray-400 font-black uppercase tracking-widest text-xl">No Orders Yet</p>
-                            <p className="text-gray-300 font-bold">List your rice for sale and wait for retailer orders.</p>
+                        <div className="glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                            <span className="text-4xl mb-4 opacity-50">📋</span>
+                            <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No Orders Yet. List your rice for sale and wait for retailer orders.</p>
                         </div>
                     )}
                 </div>

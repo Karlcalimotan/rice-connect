@@ -14,7 +14,11 @@ const DeliveryStatusStepper: React.FC<DeliveryStatusStepperProps> = ({ status, t
     ];
 
     const getCurrentStep = () => {
-        return steps.findIndex(s => s.key === status);
+        if (status === 'Pending' || status === 'Payment Pending' || status === 'Payment Authorized') return 0;
+        if (status === 'In Transit') return 1;
+        if (status === 'Delivered' || status === 'Received') return 2;
+        if (status === 'Confirmed Received' || status === 'Completed') return 3;
+        return 0;
     };
 
     const currentStepIndex = getCurrentStep();

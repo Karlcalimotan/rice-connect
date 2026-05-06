@@ -10,14 +10,26 @@ export default function NavLink({
         <Link
             {...props}
             className={
-                'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none ' +
+                'relative flex items-center px-6 py-4 rounded-[1.5rem] text-[13px] font-black uppercase tracking-widest transition-all duration-500 overflow-hidden group ' +
                 (active
-                    ? 'border-indigo-400 text-gray-900 focus:border-indigo-700'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 focus:border-gray-300 focus:text-gray-700') +
-                className
+                    ? 'bg-emerald-950 text-white shadow-[0_15px_30px_-5px_rgba(6,78,59,0.3)] border-white/10'
+                    : 'text-emerald-900/60 hover:bg-emerald-50 hover:text-emerald-950') +
+                ' ' + className
             }
         >
-            {children}
+            {active && (
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-emerald-400 rounded-r-full shadow-[4px_0_15px_rgba(52,211,153,0.5)]"></span>
+            )}
+            
+            <span className={`relative z-10 flex items-center gap-3 transition-transform duration-500 ${active ? 'translate-x-1' : 'group-hover:translate-x-1'}`}>
+                {children}
+            </span>
+
+            {/* Subtle Inner Glow for Active */}
+            {active && (
+                <span className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></span>
+            )}
         </Link>
     );
 }
+

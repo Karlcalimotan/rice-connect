@@ -31,89 +31,95 @@ export default function ShippingSettings({ auth, settings, municipalities, curre
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="Shipping Settings" />
-            <div className="p-6 bg-gray-50 min-h-screen">
+            <div className="p-6 bg-transparent min-h-screen">
                 <div className="max-w-3xl mx-auto">
-                    <div className="flex items-center gap-2 mb-8">
-                        <div className="w-2 h-8 bg-blue-600 border border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter text-blue-800">
+                    <div className="flex items-center gap-2 mb-10">
+                        <div className="w-2 h-8 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]"></div>
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
                             Shipping & Delivery Settings
                         </h2>
                     </div>
 
-                    <div className="bg-white border-4 border-black p-8 shadow-[12px_12px_0px_0px_rgba(30,64,175,1)]">
-                        <form onSubmit={submit} className="space-y-6">
+                    <div className="glass-card p-12 overflow-hidden">
+                        <form onSubmit={submit} className="space-y-8">
                             {/* Home Municipality */}
-                            <div>
-                                <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 italic">🏠 Miller's Home Municipality</label>
-                                <select
-                                    className="w-full border-4 border-black p-4 font-bold text-lg focus:ring-0 focus:border-blue-600 bg-gray-50"
-                                    value={data.municipality_id}
-                                    onChange={e => setData('municipality_id', e.target.value)}
-                                >
-                                    <option value="">Select your home municipality...</option>
-                                    {municipalities.map(m => (
-                                        <option key={m.id} value={m.id}>{m.name}</option>
-                                    ))}
-                                </select>
-                                {errors.municipality_id && <p className="text-red-500 text-xs font-bold mt-1 uppercase italic">{errors.municipality_id}</p>}
-                                <p className="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-widest italic leading-tight">
+                            <div className="space-y-4">
+                                <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/40 px-4">🏠 Miller's Home Municipality</label>
+                                <div className="glass-card bg-white/30 border-4 border-black p-6 shadow-[8px_8px_0_0_rgba(0,0,0,1)]">
+                                    <select
+                                        className="w-full bg-transparent border-none p-0 font-black text-xl focus:ring-0"
+                                        value={data.municipality_id}
+                                        onChange={e => setData('municipality_id', e.target.value)}
+                                    >
+                                        <option value="">Select your home municipality...</option>
+                                        {municipalities.map(m => (
+                                            <option key={m.id} value={m.id}>{m.name}</option>
+                                        ))}
+                                    </select>
+                                    {errors.municipality_id && <p className="text-red-500 text-[10px] font-black mt-2 uppercase italic tracking-widest">{errors.municipality_id}</p>}
+                                </div>
+                                <p className="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-widest italic px-4 leading-tight">
                                     Determines 'Step 0' distance. Shipping is ₱0.00 within the same municipality.
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {/* Base Fee */}
-                                <div>
-                                    <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 italic">🚚 Base Delivery Fee (Step 1)</label>
-                                    <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-400">₱</span>
-                                        <input
-                                            type="number"
-                                            className="w-full border-4 border-black p-4 pl-10 font-bold text-lg focus:ring-0 focus:border-blue-600 bg-gray-50"
-                                            value={data.base_delivery_fee}
-                                            onChange={e => setData('base_delivery_fee', e.target.value)}
-                                        />
+                                <div className="space-y-4">
+                                    <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/40 px-4">🚚 Base Delivery Fee</label>
+                                    <div className="glass-card bg-white/30 border-4 border-black p-6 shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] transition-all">
+                                        <div className="relative">
+                                            <span className="absolute left-0 top-1/2 -translate-y-1/2 font-black text-2xl text-emerald-600">₱</span>
+                                            <input
+                                                type="number"
+                                                className="w-full bg-transparent border-none p-0 pl-10 font-black text-3xl focus:ring-0"
+                                                value={data.base_delivery_fee}
+                                                onChange={e => setData('base_delivery_fee', e.target.value)}
+                                            />
+                                        </div>
+                                        {errors.base_delivery_fee && <p className="text-red-500 text-[10px] font-black mt-2 uppercase italic tracking-widest">{errors.base_delivery_fee}</p>}
+                                        <p className="text-[9px] text-gray-400 mt-4 font-bold uppercase tracking-widest italic leading-tight">
+                                            Fee for delivering to the immediate next municipality.
+                                        </p>
                                     </div>
-                                    {errors.base_delivery_fee && <p className="text-red-500 text-xs font-bold mt-1 uppercase italic">{errors.base_delivery_fee}</p>}
-                                    <p className="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-widest italic leading-tight">
-                                        Fee for delivering to the immediate next municipality.
-                                    </p>
                                 </div>
 
                                 {/* Extra Fee */}
-                                <div>
-                                    <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2 italic">➕ Extra Fee per Municipality</label>
-                                    <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-gray-400">₱</span>
-                                        <input
-                                            type="number"
-                                            className="w-full border-4 border-black p-4 pl-10 font-bold text-lg focus:ring-0 focus:border-blue-600 bg-gray-50"
-                                            value={data.extra_fee_per_municipality}
-                                            onChange={e => setData('extra_fee_per_municipality', e.target.value)}
-                                        />
+                                <div className="space-y-4">
+                                    <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/40 px-4">➕ Extra Fee per Municipality</label>
+                                    <div className="glass-card bg-white/30 border-4 border-black p-6 shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] transition-all">
+                                        <div className="relative">
+                                            <span className="absolute left-0 top-1/2 -translate-y-1/2 font-black text-2xl text-emerald-600">₱</span>
+                                            <input
+                                                type="number"
+                                                className="w-full bg-transparent border-none p-0 pl-10 font-black text-3xl focus:ring-0"
+                                                value={data.extra_fee_per_municipality}
+                                                onChange={e => setData('extra_fee_per_municipality', e.target.value)}
+                                            />
+                                        </div>
+                                        {errors.extra_fee_per_municipality && <p className="text-red-500 text-[10px] font-black mt-2 uppercase italic tracking-widest">{errors.extra_fee_per_municipality}</p>}
+                                        <p className="text-[9px] text-gray-400 mt-4 font-bold uppercase tracking-widest italic leading-tight">
+                                            Added for every additional municipality jump beyond the first.
+                                        </p>
                                     </div>
-                                    {errors.extra_fee_per_municipality && <p className="text-red-500 text-xs font-bold mt-1 uppercase italic">{errors.extra_fee_per_municipality}</p>}
-                                    <p className="text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-widest italic leading-tight">
-                                        Added for every additional municipality jump beyond the first.
-                                    </p>
                                 </div>
                             </div>
 
                             {/* Summary Mockup */}
-                            <div className="bg-blue-50 border-2 border-dashed border-blue-300 p-4">
-                                <h4 className="text-[10px] font-black uppercase text-blue-600 tracking-widest mb-3">Calculation Preview:</h4>
-                                <div className="space-y-1">
-                                    <div className="flex justify-between text-xs font-bold uppercase">
-                                        <span>Same Municipality:</span>
-                                        <span className="text-green-600">₱0.00</span>
+                            <div className="bg-emerald-50/50 rounded-2xl p-6 border border-emerald-100/50">
+                                <h4 className="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Calculation Preview:</h4>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between text-xs font-black uppercase tracking-widest">
+                                        <span className="text-gray-400">Same Municipality:</span>
+                                        <span className="text-emerald-600">₱0.00</span>
                                     </div>
-                                    <div className="flex justify-between text-xs font-bold uppercase">
-                                        <span>Next Municipality:</span>
-                                        <span className="text-blue-700">₱{Number(data.base_delivery_fee || 0).toFixed(2)}</span>
+                                    <div className="flex justify-between text-xs font-black uppercase tracking-widest">
+                                        <span className="text-gray-400">Next Municipality:</span>
+                                        <span className="text-gray-900 font-black">₱{Number(data.base_delivery_fee || 0).toFixed(2)}</span>
                                     </div>
-                                    <div className="flex justify-between text-xs font-bold uppercase">
-                                        <span>2 Jumps Away:</span>
-                                        <span className="text-blue-700">₱{(Number(data.base_delivery_fee || 0) + Number(data.extra_fee_per_municipality || 0)).toFixed(2)}</span>
+                                    <div className="flex justify-between text-xs font-black uppercase tracking-widest">
+                                        <span className="text-gray-400">2 Jumps Away:</span>
+                                        <span className="text-gray-900 font-black">₱{(Number(data.base_delivery_fee || 0) + Number(data.extra_fee_per_municipality || 0)).toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -121,9 +127,9 @@ export default function ShippingSettings({ auth, settings, municipalities, curre
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="w-full bg-blue-700 text-white font-black py-4 border-4 border-black hover:bg-blue-800 uppercase transition-all shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+                                className="w-full bg-gray-900 text-white font-black py-5 rounded-2xl uppercase tracking-widest text-sm hover:bg-black transition-all shadow-xl disabled:opacity-50"
                             >
-                                {processing ? 'Updating...' : '💾 Save Settings'}
+                                {processing ? 'Updating...' : 'Save Settings'}
                             </button>
                         </form>
                     </div>

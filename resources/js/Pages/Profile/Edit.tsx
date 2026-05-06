@@ -19,9 +19,15 @@ export default function Edit({
         >
             <Head title="Profile" />
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+            <div className="py-12 bg-transparent">
+                <div className="mx-auto max-w-7xl space-y-12 sm:px-6 lg:px-8">
+                    <div className="glass-header px-4 sm:px-0">
+                        <div className="glass-header-icon"></div>
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
+                            Identity Space
+                        </h2>
+                    </div>
+                    <div className="glass-card p-8 sm:p-16">
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
@@ -29,11 +35,11 @@ export default function Edit({
                         />
                     </div>
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <div className="glass-card p-8 sm:p-16">
                         <UpdatePasswordForm className="max-w-xl" />
                     </div>
 
-                    <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <div className="glass-card p-8 sm:p-16 border-rose-500/10">
                         <DeleteUserForm className="max-w-xl" />
                     </div>
                 </div>

@@ -53,11 +53,11 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
         <AuthenticatedLayout auth={auth}>
             <Head title="Logistics & Transport" />
 
-            <div className="py-12 bg-gray-50 min-h-screen">
+            <div className="py-12 bg-transparent min-h-screen">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="flex items-center gap-3 mb-10">
                         <div className="w-3 h-10 bg-black border-2 border-green-500"></div>
-                        <h2 className="text-4xl font-black uppercase tracking-tighter text-gray-900">
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
                             Transport Hub
                         </h2>
                     </div>
@@ -71,27 +71,43 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                             </div>
 
                             {inbound.length === 0 ? (
-                                <div className="p-8 border-4 border-dashed border-gray-300 text-center text-gray-400 font-bold uppercase">No inbound logistics active.</div>
+                                <div className="glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                                    <span className="text-4xl mb-4 opacity-50">🌾</span>
+                                    <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No inbound logistics active.</p>
+                                </div>
                             ) : (
                                 inbound.map((batch: any) => (
-                                    <div key={batch.id} className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-                                        <div className="flex justify-between items-start mb-4">
+                                    <div key={batch.id} className="glass-card group relative p-8">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-emerald-500/10 transition-all"></div>
+                                        
+                                        <div className="relative flex justify-between items-start mb-6">
                                             <div>
-                                                <h4 className="text-xl font-black uppercase">{batch.rice_variety}</h4>
-                                                <p className="text-xs font-bold text-gray-500 uppercase italic">From: {batch.user?.municipality || 'Unknown'}</p>
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="h-2 w-2 rounded-full bg-orange-500 animate-pulse"></span>
+                                                    <h4 className="text-2xl font-black uppercase tracking-tighter text-gray-900 leading-none">{batch.rice_variety}</h4>
+                                                </div>
+                                                <div className="space-y-1 mt-4">
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">🚜</span>
+                                                        Farmer: <span className="text-gray-900">{batch.user?.first_name} {batch.user?.last_name}</span>
+                                                    </p>
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">📍</span>
+                                                        Origin: <span className="text-gray-900">{batch.user?.municipality || 'Unknown'}</span>
+                                                    </p>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <p className="font-black text-sm uppercase">Farmer: {batch.user?.first_name} {batch.user?.last_name}</p>
-                                                <p className="text-[10px] font-bold text-blue-600">{batch.user?.contact}</p>
+                                                <span className="bg-orange-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Inbound Palay</span>
                                             </div>
                                         </div>
 
                                         <DeliveryStatusStepper status={batch.delivery_status || 'Pending'} type="palay" />
 
                                         {batch.delivery_status === 'Payment Pending' && (
-                                            <div className="mt-6 p-4 bg-yellow-50 border-4 border-black">
+                                            <div className="mt-6 p-4 glass-card !bg-yellow-400/20 border-4 border-black">
                                                 <p className="text-xs font-black uppercase mb-3 text-yellow-700 underline decoration-black decoration-4 offset-4">Authorization Required</p>
-                                                <div className="flex justify-between items-end mb-6 bg-white p-4 border-2 border-black">
+                                                <div className="flex justify-between items-end mb-6 bg-white/40 backdrop-blur-sm p-4 border-2 border-black">
                                                     <div>
                                                         <p className="text-[10px] font-black uppercase text-gray-500">Driver Logged:</p>
                                                         <p className="text-lg font-black">{batch.actual_weight_kg} kg @ ₱{batch.suggested_price_per_kg}/kg</p>
@@ -103,7 +119,7 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                 </div>
                                                 <button 
                                                     onClick={() => router.post(route('miller.palay.authorize', batch.id))}
-                                                    className="w-full bg-green-500 text-black font-black py-4 uppercase hover:bg-black hover:text-white transition-all border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:shadow-none translate-y-[-2px]"
+                                                    className="btn-2026 w-full text-center !py-4"
                                                 >
                                                     Authorize Payment & Start Transit
                                                 </button>
@@ -113,10 +129,19 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                             </div>
                                         )}
 
+                                        {batch.delivery_status === 'Payment Authorized' && (
+                                            <div className="mt-6 p-5 glass-card !bg-green-400/20 border-4 border-black border-dashed flex flex-col items-center">
+                                                <span className="text-2xl mb-2">💳</span>
+                                                <p className="text-[10px] font-black text-green-700 uppercase tracking-widest text-center">
+                                                    Payment Authorized! Waiting for Driver to finalize pickup and start transit.
+                                                </p>
+                                            </div>
+                                        )}
+
                                         {batch.delivery_status === 'Pending' && (
                                             <div className="mt-6 space-y-4">
                                                 {!batch.driver_id ? (
-                                                    <div className="p-4 border-4 border-black bg-gray-100 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                                                    <div className="p-4 glass-card !bg-white/30 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                                                         <label className="block text-[10px] font-black uppercase mb-1">Assign Truck (My Fleet)</label>
                                                         <div className="flex gap-2">
                                                             <select 
@@ -131,7 +156,7 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                             </select>
                                                             <button 
                                                                 onClick={() => handleAssignDriver(batch.id, 'palay')}
-                                                                className="bg-black text-white px-4 font-black uppercase text-xs"
+                                                                className="btn-2026 !px-6 !py-2"
                                                             >
                                                                 Assign
                                                             </button>
@@ -139,7 +164,7 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                         <p className="mt-2 text-[9px] font-bold text-gray-400 uppercase italic">Only verified drivers appear here.</p>
                                                     </div>
                                                 ) : (
-                                                    <div className="p-4 bg-yellow-50 border-4 border-black border-dashed">
+                                                    <div className="p-4 glass-card !bg-yellow-400/20 border-4 border-black border-dashed">
                                                         <p className="text-xs font-black uppercase mb-3 text-yellow-700 underline decoration-black decoration-4 offset-4">Phase 2: Driver Verification</p>
                                                         {batch.driver_id === auth.user.id ? (
                                                             <>
@@ -165,7 +190,7 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                                 </div>
                                                                 <button 
                                                                     onClick={() => handleConfirmPickup(batch.id)}
-                                                                    className="w-full bg-black text-white font-black py-3 uppercase hover:bg-green-600 hover:text-black transition-colors"
+                                                                    className="btn-2026 w-full text-center !bg-green-600 hover:!bg-green-700 !py-4"
                                                                 >
                                                                     Log Weight & Start Transit
                                                                 </button>
@@ -184,7 +209,7 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                         )}
 
                                         {batch.delivery_status === 'In Transit' && (
-                                            <div className="mt-6 p-4 bg-blue-50 border-4 border-black border-dashed flex flex-col items-center">
+                                            <div className="mt-6 p-4 glass-card !bg-blue-400/20 border-4 border-black border-dashed flex flex-col items-center">
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <span className="text-2xl animate-pulse">🚚</span>
                                                     <p className="font-black uppercase text-blue-800 tracking-widest text-xs">In Transit to Station</p>
@@ -195,8 +220,8 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                             </div>
                                         )}
 
-                                        {batch.delivery_status === 'Received' && (
-                                            <div className="mt-6 p-4 bg-green-50 border-4 border-black border-dashed">
+                                        {(batch.delivery_status === 'Received' && !batch.final_price_per_kg) && (
+                                            <div className="mt-6 p-4 glass-card !bg-green-400/20 border-4 border-black border-dashed">
                                                 <div className="flex justify-between items-end mb-4">
                                                     <div>
                                                         <p className="text-[10px] font-black uppercase text-gray-500">Driver Logged:</p>
@@ -227,8 +252,8 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                             </div>
                                         )}
 
-                                        {batch.delivery_status === 'Received' && (
-                                            <div className="mt-4 p-4 bg-gray-100 border-2 border-black border-dashed flex items-center justify-between">
+                                        {(batch.final_price_per_kg) && (
+                                            <div className="mt-4 p-4 glass-card !bg-white/30 border-2 border-black border-dashed flex items-center justify-between">
                                                 <div>
                                                     <p className="text-[10px] font-black uppercase text-gray-500">Final Transaction:</p>
                                                     <p className="font-black">₱{((batch.actual_weight_kg || 0) * (batch.final_price_per_kg || 0)).toLocaleString()}</p>
@@ -249,18 +274,34 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                             </div>
 
                             {outbound.length === 0 ? (
-                                <div className="p-8 border-4 border-dashed border-gray-300 text-center text-gray-400 font-bold uppercase">No outbound deliveries.</div>
+                                <div className="glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                                    <span className="text-4xl mb-4 opacity-50">📦</span>
+                                    <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No outbound deliveries.</p>
+                                </div>
                             ) : (
                                 outbound.map((order: any) => (
-                                    <div key={order.id} className="bg-white border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(34,197,94,1)]">
-                                        <div className="flex justify-between items-start mb-4">
+                                    <div key={order.id} className="glass-card group relative p-8">
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-blue-500/10 transition-all"></div>
+
+                                        <div className="relative flex justify-between items-start mb-6">
                                             <div>
-                                                <h4 className="text-xl font-black uppercase">{order.rice_variety}</h4>
-                                                <p className="text-xs font-bold text-gray-500 uppercase italic">To: {order.retailer?.municipality || 'Unknown'}</p>
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+                                                    <h4 className="text-2xl font-black uppercase tracking-tighter text-gray-900 leading-none">{order.rice_variety}</h4>
+                                                </div>
+                                                <div className="space-y-1 mt-4">
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">🏬</span>
+                                                        Retailer: <span className="text-gray-900">{order.retailer?.first_name} {order.retailer?.last_name}</span>
+                                                    </p>
+                                                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                                                        <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">📍</span>
+                                                        To: <span className="text-gray-900">{order.retailer?.municipality || 'Unknown'}</span>
+                                                    </p>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <p className="font-black text-sm uppercase">Retailer: {order.retailer?.first_name} {order.retailer?.last_name}</p>
-                                                <p className="text-[10px] font-bold text-green-600">Qty: {order.sacks} Sacks</p>
+                                                <span className="bg-blue-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Outbound Rice</span>
                                             </div>
                                         </div>
 
@@ -269,7 +310,7 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                         {order.delivery_status === 'Pending' && (
                                             <div className="mt-6 space-y-4">
                                                 {!order.driver_id ? (
-                                                    <div className="p-4 border-4 border-black bg-gray-100">
+                                                    <div className="p-4 glass-card !bg-white/30 border-4 border-black">
                                                         <label className="block text-[10px] font-black uppercase mb-1">Assign Truck (My Fleet)</label>
                                                         <div className="flex gap-2">
                                                             <select 
@@ -284,7 +325,7 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                             </select>
                                                             <button 
                                                                 onClick={() => handleAssignDriver(order.id, 'rice')}
-                                                                className="bg-black text-white px-4 font-black uppercase text-xs"
+                                                                className="btn-2026 !px-6 !py-2"
                                                             >
                                                                 Assign
                                                             </button>
@@ -293,7 +334,7 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                 ) : (
                                                      <div className="space-y-4">
                                                          {order.delivery_status === 'Pending' && (
-                                                             <div className="bg-yellow-100 border-4 border-black p-3 animate-pulse flex items-center justify-center gap-2">
+                                                             <div className="glass-card !bg-yellow-400/20 border-4 border-black p-3 animate-pulse flex items-center justify-center gap-2">
                                                                  <span className="text-lg">⏳</span>
                                                                  <p className="text-xs font-black uppercase text-yellow-800">Waiting for Driver to start trip...</p>
                                                              </div>
@@ -301,10 +342,10 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                          <button 
                                                              onClick={() => handleDispatch(order.id)}
                                                              disabled={order.delivery_status !== 'In Transit' || order.status === 'dispatched'}
-                                                             className={`w-full font-black py-4 uppercase transition-all border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${
+                                                             className={`btn-2026 w-full text-center !py-4 ${
                                                                  (order.delivery_status === 'In Transit' && order.status !== 'dispatched')
-                                                                 ? 'bg-blue-600 text-white hover:bg-black hover:shadow-none translate-x-[4px] translate-y-[4px]'
-                                                                 : 'bg-gray-200 text-gray-400 cursor-not-allowed grayscale'
+                                                                 ? '!bg-blue-600 hover:!bg-blue-700'
+                                                                 : '!bg-gray-400 !text-gray-200 cursor-not-allowed shadow-none'
                                                              }`}
                                                          >
                                                              🚚 {order.status === 'dispatched' ? 'Already Dispatched' : (order.delivery_status === 'In Transit' ? 'Dispatch for Delivery' : 'Locked: Driver Must Start')}
@@ -315,13 +356,13 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                         )}
 
                                         {order.delivery_status === 'In Transit' && (
-                                            <div className="mt-6 p-4 border-4 border-black border-dashed flex items-center justify-center animate-pulse bg-blue-50">
+                                            <div className="mt-6 p-4 glass-card !bg-blue-400/20 border-4 border-black border-dashed flex items-center justify-center animate-pulse">
                                                 <p className="font-black uppercase text-blue-800 tracking-widest text-sm">🚚 In Transit to Retailer</p>
                                             </div>
                                         )}
 
                                         {order.delivery_status === 'Received' && (
-                                            <div className="mt-6 p-4 bg-green-50 border-4 border-black border-dashed flex items-center justify-between">
+                                            <div className="mt-6 p-4 glass-card !bg-green-400/20 border-4 border-black border-dashed flex items-center justify-between">
                                                 <p className="font-black uppercase text-sm">Waiting for Retailer Signature</p>
                                             </div>
                                         )}

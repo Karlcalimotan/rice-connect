@@ -50,14 +50,18 @@ export default function UpdatePasswordForm({
 
     return (
         <section className={className}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">
-                    Update Password
-                </h2>
-
-                <p className="mt-1 text-sm text-gray-600">
-                    Ensure your account is using a long, random password to stay
-                    secure.
+            <header className="mb-10">
+                <div className="flex items-center gap-3 mb-2">
+                    <div className="w-1 h-4 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]"></div>
+                    <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-900/60">
+                        Security Protocol
+                    </h2>
+                </div>
+                <h3 className="text-3xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
+                    Vault Credentials
+                </h3>
+                <p className="mt-4 text-[11px] font-bold text-emerald-950/40 uppercase tracking-widest leading-relaxed">
+                    Ensure your account is using a long, random password to maintain cryptographic integrity.
                 </p>
             </header>
 

@@ -10,21 +10,22 @@ export default function Offers({ auth, offers }: any) {
     return (
         <AuthenticatedLayout auth={auth}>
             <Head title="Handshake Offers" />
-            <div className="p-8 bg-gray-50 min-h-screen">
+            <div className="p-8 bg-transparent min-h-screen">
                 <div className="max-w-4xl mx-auto">
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-2 h-10 bg-yellow-400 border-2 border-black"></div>
-                        <h2 className="text-3xl font-black uppercase tracking-tighter">Mill Handshake Offers</h2>
+                    <div className="flex items-center gap-2 mb-10">
+                        <div className="w-2 h-8 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]"></div>
+                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">Mill Handshake Offers</h2>
                     </div>
 
                     {offers.length === 0 ? (
-                        <div className="bg-white border-4 border-dashed border-gray-300 p-12 text-center text-gray-400 font-bold uppercase">
-                            No active offers or interests from millers.
+                        <div className="glass-card p-12 text-center flex flex-col items-center justify-center border-dashed border-2 border-emerald-900/10">
+                            <span className="text-4xl mb-4 opacity-50">🤝</span>
+                            <p className="text-emerald-950/40 font-black uppercase tracking-widest text-[10px]">No active offers. Waiting for millers...</p>
                         </div>
                     ) : (
                         <div className="space-y-6">
                             {offers.map((batch: any) => (
-                                <div key={batch.id} className="border-4 border-black p-6 bg-white shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+                                <div key={batch.id} className="glass-card p-8 relative overflow-hidden">
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
                                             <p className="text-[10px] font-black uppercase text-gray-400">Palay Variety</p>

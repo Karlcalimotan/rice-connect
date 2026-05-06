@@ -59,10 +59,10 @@ export default function DeleteUserForm({
                     </h2>
                 </div>
                 <h3 className="text-3xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
-                    Terminate Identity
+                    Delete My Account
                 </h3>
                 <p className="mt-4 text-[11px] font-bold text-emerald-950/40 uppercase tracking-widest leading-relaxed">
-                    Once your account is deleted, all resources and historical data will be permanently purged from the sequence.
+                    Warning: Deleting your account will permanently remove all your harvest records, sales history, and personal data. This cannot be undone.
                 </p>
             </header>
 
@@ -73,14 +73,11 @@ export default function DeleteUserForm({
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
                 <form onSubmit={deleteUser} className="p-6">
                     <h2 className="text-lg font-medium text-gray-900">
-                        Are you sure you want to delete your account?
+                        Are you sure you want to leave Rice Connect?
                     </h2>
 
                     <p className="mt-1 text-sm text-gray-600">
-                        Once your account is deleted, all of its resources and
-                        data will be permanently deleted. Please enter your
-                        password to confirm you would like to permanently delete
-                        your account.
+                        Warning: Deleting your account will permanently remove all your harvest records, sales history, and personal data. Please enter your password to confirm you would like to permanently delete your account.
                     </p>
 
                     <div className="mt-6">

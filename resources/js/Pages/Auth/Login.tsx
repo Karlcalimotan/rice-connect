@@ -83,9 +83,9 @@ export default function Login({ status, canResetPassword }: { status?: string, c
                 <div className="w-full max-w-md mx-auto">
                     <div className="glass-card !bg-white !p-12 !rounded-[3rem] shadow-[0_40px_80px_-20px_rgba(6,95,70,0.1)] border border-white relative z-10">
                         <div className="mb-10">
-                            <h2 className="text-4xl font-black text-emerald-950 tracking-tight mb-3 italic uppercase">Sign In</h2>
+                            <h2 className="text-4xl font-black text-emerald-950 tracking-tight mb-3 italic uppercase">Welcome Back</h2>
                             <p className="text-sm text-emerald-900/40 font-bold uppercase tracking-widest leading-relaxed">
-                                Enter your credentials to access your secure portal.
+                                Log in to manage your rice business.
                             </p>
                         </div>
 
@@ -93,7 +93,7 @@ export default function Login({ status, canResetPassword }: { status?: string, c
 
                         <form onSubmit={submit} className="space-y-6">
                             <div>
-                                <InputLabel htmlFor="login_id" value="Username or System ID" className="!text-emerald-950/40 !font-black !uppercase !tracking-widest !text-[10px] mb-3 ml-2" />
+                                <InputLabel htmlFor="login_id" value="Email or Phone Number" className="!text-emerald-950/40 !font-black !uppercase !tracking-widest !text-[10px] mb-3 ml-2" />
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-emerald-900/20 group-focus-within:text-emerald-600 transition-colors">
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
@@ -107,7 +107,7 @@ export default function Login({ status, canResetPassword }: { status?: string, c
                                         autoComplete="username"
                                         isFocused={true}
                                         onChange={(e) => setData('login_id', e.target.value)}
-                                        placeholder="e.g. FARMER-101"
+                                        placeholder="e.g. farmer@example.com"
                                     />
                                 </div>
                                 <InputError message={errors.login_id} className="mt-2 ml-2" />
@@ -158,7 +158,7 @@ export default function Login({ status, canResetPassword }: { status?: string, c
                                 className="!w-full !py-6 !bg-emerald-600 hover:!bg-emerald-700 !text-white !font-black !rounded-2xl !transition-all !shadow-2xl !shadow-emerald-200 !transform hover:!scale-[0.98] active:!scale-95 !uppercase !tracking-[0.2em] !text-sm !flex !justify-center !border-none" 
                                 disabled={processing}
                             >
-                                Sign In to Portal
+                                Log In
                             </PrimaryButton>
                         </form>
 

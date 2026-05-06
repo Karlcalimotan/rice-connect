@@ -45,7 +45,7 @@ export default function Welcome({
                                     href={route('register')}
                                     className="px-6 py-2 bg-white text-black font-black uppercase text-xs rounded-full hover:bg-green-500 transition-all shadow-lg active:scale-95"
                                 >
-                                    Join Network
+                                    Sign Up
                                 </Link>
                             </>
                         )}

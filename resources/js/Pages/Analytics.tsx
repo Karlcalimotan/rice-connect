@@ -1,321 +1,324 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, usePage } from '@inertiajs/react';
-import React, { useMemo } from 'react';
+import { Head } from '@inertiajs/react';
+import React, { useMemo, useState } from 'react';
 
-// ─── Tiny inline bar chart ─────────────────────────────────────────────────
-function BarChart({ data }: { data: { month: string; value: number }[] }) {
-    const max = Math.max(...data.map(d => d.value), 1);
+// --- Reusable Components ---
+const Card = ({ title, children, className = "", subtitle = "" }: { title: string, children: React.ReactNode, className?: string, subtitle?: string }) => (
+    <div className={`bg-white rounded-[1.25rem] p-6 shadow-[0_4px_20px_rgba(37,99,235,0.05)] border border-blue-50 flex flex-col ${className}`}>
+        <div className="mb-4">
+            <h3 className="text-gray-800 text-sm font-bold capitalize tracking-wide leading-tight">{title}</h3>
+            {subtitle && <p className="text-[10px] text-blue-500 font-bold uppercase tracking-widest mt-1 opacity-70">{subtitle}</p>}
+        </div>
+        <div className="flex-1 w-full relative">
+            {children}
+        </div>
+    </div>
+);
 
-    const points = useMemo(() => {
-        const n = data.length || 1;
-        const padding = 8;
-        const width = 100 - padding * 2;
-        return data.map((d, i) => {
-            const x = padding + (n === 1 ? width / 2 : (i / (n - 1)) * width);
-            const height = Math.max((d.value / max) * 60, d.value > 0 ? 4 : 0.8);
-            const y = 84 - height;
-            return { ...d, x, height, y };
-        });
-    }, [data, max]);
-
-    const linePoints = points.map(p => `${p.x},${p.y}`).join(' ');
-
+const AreaChart = ({ data, color = "#3b82f6", unit = "" }: { data: any[], color?: string, unit?: string }) => {
     return (
-        <div className="h-36 w-full rounded-2xl border border-emerald-950/5 bg-white/25 p-3 shadow-[0_20px_40px_rgba(15,23,42,0.04)] backdrop-blur-sm">
-            <div className="mb-2 flex items-center justify-end gap-4 px-1 text-[8px] font-bold uppercase tracking-[0.25em] text-emerald-950/35">
-                <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Bars</span>
-                <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-slate-600" /> Trend</span>
-            </div>
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
-                <defs>
-                    <linearGradient id="barFill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#34D399" stopOpacity="0.98" />
-                        <stop offset="100%" stopColor="#059669" stopOpacity="0.92" />
-                    </linearGradient>
-                </defs>
-
-                {/* grid */}
-                {[22, 40, 58, 76, 84].map((y) => (
-                    <line
-                        key={y}
-                        x1="0"
-                        y1={y}
-                        x2="100"
-                        y2={y}
-                        stroke={y === 84 ? 'rgba(15,23,42,0.08)' : 'rgba(15,23,42,0.045)'}
-                        strokeWidth={y === 84 ? 0.8 : 0.5}
-                        strokeDasharray={y === 84 ? '0' : '1.2 2.2'}
+        <div className="w-full h-full relative flex flex-col justify-end">
+            <div className="flex-1 w-full relative flex items-end">
+                <svg viewBox="0 0 200 60" className="w-full h-40" preserveAspectRatio="none">
+                    <path 
+                        d="M0,60 L0,40 C20,40 30,50 50,45 C70,40 80,50 100,50 C120,50 130,30 150,20 C170,10 180,35 200,30 L200,60 Z" 
+                        fill="rgba(186, 230, 253, 0.4)" 
                     />
-                ))}
-
-                {/* bars */}
-                {points.map((p, i) => (
-                    <g key={i}>
-                        <rect
-                            x={p.x - 2.9}
-                            y={84 - p.height}
-                            width={5.8}
-                            height={p.height}
-                            rx={2.1}
-                            fill="url(#barFill)"
-                            stroke="rgba(255,255,255,0.62)"
-                            strokeWidth={0.5}
-                            style={{ filter: 'drop-shadow(0 2px 2px rgba(5,150,105,0.10))' }}
-                        />
-                        <rect
-                            x={p.x - 2.9}
-                            y={84 - p.height}
-                            width={5.8}
-                            height={Math.min(p.height, 8)}
-                            rx={2.1}
-                            fill="rgba(255,255,255,0.16)"
-                        />
-                    </g>
-                ))}
-
-                {points.length > 0 && (
-                    <polyline
-                        points={linePoints}
-                        fill="none"
-                        stroke="rgba(51,65,85,0.92)"
-                        strokeWidth={1.9}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{ filter: 'drop-shadow(0 1px 0 rgba(15,23,42,0.08))' }}
+                    <path 
+                        d="M0,40 C20,40 30,50 50,45 C70,40 80,50 100,50 C120,50 130,30 150,20 C170,10 180,35 200,30" 
+                        fill="none" 
+                        stroke={color} 
+                        strokeWidth="1.5" 
                     />
-                )}
-
-                {points.map((p, i) => (
-                    <circle
-                        key={`marker-${i}`}
-                        cx={p.x}
-                        cy={p.y}
-                        r={1.5}
-                        fill="#ffffff"
-                        stroke="rgba(51,65,85,0.95)"
-                        strokeWidth={0.7}
-                    />
-                ))}
-
-                {/* y-axis hints */}
-                <text x="1.5" y="18" fill="rgba(15,23,42,0.30)" fontSize="3.4" fontWeight="700">{max.toLocaleString()}</text>
-                <text x="1.5" y="84.5" fill="rgba(15,23,42,0.22)" fontSize="3.4" fontWeight="700">0</text>
-            </svg>
-
-            <div className="mt-2 flex items-center gap-1.5">
-                {points.map((d, i) => (
-                    <div key={i} className="flex-1 text-center">
-                        <span className="text-[8px] font-semibold tracking-[0.2em] text-emerald-950/35 uppercase">{d.month}</span>
-                    </div>
-                ))}
+                </svg>
             </div>
+            {unit && <div className="absolute top-0 right-0 text-[10px] font-bold text-gray-400 uppercase tracking-widest">{unit}</div>}
         </div>
     );
-}
-
-// ─── Stat card ─────────────────────────────────────────────────────────────
-function StatCard({
-    label, value, sub, accent = 'emerald', icon,
-}: {
-    label: string; value: string | number; sub?: string; accent?: string; icon: string;
-}) {
-    const colours: Record<string, string> = {
-        emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        blue:    'bg-blue-50    text-blue-700    border-blue-200',
-        orange:  'bg-orange-50  text-orange-700  border-orange-200',
-        violet:  'bg-violet-50  text-violet-700  border-violet-200',
-        rose:    'bg-rose-50    text-rose-700    border-rose-200',
-        amber:   'bg-amber-50   text-amber-700   border-amber-200',
-    };
-    const cls = colours[accent] ?? colours.emerald;
-    return (
-        <div className={`glass-card p-6 flex flex-col gap-3 border ${cls} relative overflow-hidden group`}>
-            <div className="absolute -right-4 -bottom-4 text-6xl opacity-10 group-hover:opacity-20 transition-opacity select-none pointer-events-none">{icon}</div>
-            <span className="text-[9px] font-black uppercase tracking-[0.35em] opacity-60">{label}</span>
-            <p className="text-3xl font-black leading-none tracking-tighter">{value}</p>
-            {sub && <p className="text-[10px] font-bold opacity-50 uppercase">{sub}</p>}
-        </div>
-    );
-}
-
-// ─── Donut-style variety breakdown ─────────────────────────────────────────
-function VarietyBreakdown({ data }: { data: Record<string, number> }) {
-    const entries = Object.entries(data);
-    const total   = entries.reduce((s, [, v]) => s + v, 0) || 1;
-    const palette = ['bg-emerald-500','bg-blue-500','bg-orange-500','bg-violet-500','bg-rose-500','bg-amber-500'];
-    return (
-        <div className="space-y-2">
-            {entries.length === 0 && (
-                <p className="text-[11px] font-black uppercase text-emerald-950/30 tracking-widest">No variety data yet.</p>
-            )}
-            {entries.map(([variety, count], i) => (
-                <div key={variety} className="flex items-center gap-3">
-                    <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${palette[i % palette.length]}`} />
-                    <div className="flex-1">
-                        <div className="flex justify-between mb-0.5">
-                            <span className="text-[11px] font-black uppercase text-emerald-950/70">{variety}</span>
-                            <span className="text-[11px] font-black text-emerald-950/50">{count}</span>
-                        </div>
-                        <div className="h-1.5 rounded-full bg-emerald-950/5 overflow-hidden">
-                            <div
-                                className={`h-full rounded-full ${palette[i % palette.length]} transition-all duration-700`}
-                                style={{ width: `${(count / total) * 100}%` }}
-                            />
-                        </div>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
-
-// ─── Role-specific panels ───────────────────────────────────────────────────
-function FarmerPanel({ stats }: { stats: any }) {
-    return (
-        <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
-                <StatCard label="Total Batches"    value={stats.totalBatches}   icon="🌾" accent="emerald" />
-                <StatCard label="Total Sacks"      value={stats.totalSacks}     icon="📦" accent="orange"  sub="bags logged" />
-                <StatCard label="Weight Hauled"    value={`${(stats.totalWeightKg ?? 0).toLocaleString()} kg`} icon="⚖️" accent="blue" />
-                <StatCard label="Est. Earnings"    value={`₱${(stats.totalEarnings ?? 0).toLocaleString()}`}   icon="💰" accent="amber" />
-                <StatCard label="Pending"          value={stats.pendingBatches}   icon="⏳" accent="rose"   />
-                <StatCard label="In Transit"       value={stats.inTransitBatches} icon="🚚" accent="blue"   />
-                <StatCard label="Completed"        value={stats.completedBatches} icon="✅" accent="emerald" />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="glass-card p-8">
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-emerald-950/30 mb-6">Monthly Yield (Sacks)</p>
-                    <BarChart data={stats.monthlyYield ?? []} />
-                </div>
-                <div className="glass-card p-8">
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-emerald-950/30 mb-6">Yield by Variety</p>
-                    <VarietyBreakdown data={stats.byVariety ?? {}} />
-                </div>
-            </div>
-        </>
-    );
-}
-
-function MillerPanel({ stats }: { stats: any }) {
-    return (
-        <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
-                <StatCard label="Palay Acquired"   value={stats.totalAcquired}   icon="🌾" accent="orange" />
-                <StatCard label="Weight In"        value={`${(stats.totalWeightIn ?? 0).toLocaleString()} kg`} icon="⚖️" accent="blue" />
-                <StatCard label="Total Orders"     value={stats.totalOrders}      icon="📋" accent="emerald" />
-                <StatCard label="Revenue"          value={`₱${(stats.totalRevenue ?? 0).toLocaleString()}`}    icon="💰" accent="amber" />
-                <StatCard label="Pending Orders"   value={stats.pendingOrders}    icon="⏳" accent="rose"   />
-                <StatCard label="Completed Orders" value={stats.completedOrders}  icon="✅" accent="emerald" />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="glass-card p-8">
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-emerald-950/30 mb-6">Monthly Orders</p>
-                    <BarChart data={stats.monthlyOrders ?? []} />
-                </div>
-                <div className="glass-card p-8">
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-emerald-950/30 mb-6">Palay by Variety</p>
-                    <VarietyBreakdown data={stats.byVariety ?? {}} />
-                </div>
-            </div>
-        </>
-    );
-}
-
-function RetailerPanel({ stats }: { stats: any }) {
-    return (
-        <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
-                <StatCard label="Total Orders"     value={stats.totalOrders}      icon="📋" accent="blue"   />
-                <StatCard label="In Transit"       value={stats.inTransit}        icon="🚚" accent="orange" />
-                <StatCard label="Completed"        value={stats.completedOrders}  icon="✅" accent="emerald" />
-                <StatCard label="Pending Orders"   value={stats.pendingOrders}    icon="⏳" accent="rose"   />
-                <StatCard label="Total Spent"      value={`₱${(stats.totalSpent ?? 0).toLocaleString()}`}   icon="💳" accent="amber" />
-                <StatCard label="Rice Received"    value={`${(stats.totalWeightKg ?? 0).toLocaleString()} kg`} icon="🍚" accent="violet" />
-            </div>
-            <div className="glass-card p-8">
-                <p className="text-[9px] font-black uppercase tracking-[0.4em] text-emerald-950/30 mb-6">Monthly Orders</p>
-                <BarChart data={stats.monthlyOrders ?? []} />
-            </div>
-        </>
-    );
-}
-
-function DriverPanel({ stats }: { stats: any }) {
-    return (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
-            <StatCard label="Palay Deliveries"   value={stats.totalPalayDeliveries}  icon="🌾" accent="orange" />
-            <StatCard label="Rice Deliveries"    value={stats.totalRiceDeliveries}   icon="🍚" accent="blue"   />
-            <StatCard label="Completed"          value={stats.completedDeliveries}   icon="✅" accent="emerald" />
-            <StatCard label="Weight Hauled"      value={`${(stats.totalWeightHauled ?? 0).toLocaleString()} kg`} icon="⚖️" accent="violet" />
-            <StatCard label="Pending Palay"      value={stats.pendingPalay}          icon="⏳" accent="rose"   />
-            <StatCard label="Palay In Transit"   value={stats.inTransitPalay}        icon="🚚" accent="blue"   />
-        </div>
-    );
-}
-
-function AdminPanel({ stats }: { stats: any }) {
-    return (
-        <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
-                <StatCard label="Total Users"     value={stats.totalUsers}     icon="👥" accent="violet"  />
-                <StatCard label="Farmers"         value={stats.totalFarmers}   icon="🌾" accent="orange"  />
-                <StatCard label="Millers"         value={stats.totalMillers}   icon="🏭" accent="blue"    />
-                <StatCard label="Retailers"       value={stats.totalRetailers} icon="🏬" accent="emerald" />
-                <StatCard label="Drivers"         value={stats.totalDrivers}   icon="🚚" accent="amber"   />
-                <StatCard label="Total Batches"   value={stats.totalBatches}   icon="📦" accent="orange"  />
-                <StatCard label="Total Orders"    value={stats.totalOrders}    icon="📋" accent="blue"    />
-                <StatCard label="Weight Processed" value={`${(stats.totalWeightKg ?? 0).toLocaleString()} kg`} icon="⚖️" accent="emerald" />
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="glass-card p-8">
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-emerald-950/30 mb-6">Monthly Harvest Batches</p>
-                    <BarChart data={stats.monthlyBatches ?? []} />
-                </div>
-                <div className="glass-card p-8">
-                    <p className="text-[9px] font-black uppercase tracking-[0.4em] text-emerald-950/30 mb-6">Monthly Orders</p>
-                    <BarChart data={stats.monthlyOrders ?? []} />
-                </div>
-            </div>
-        </>
-    );
-}
-
-// ─── Role label map ─────────────────────────────────────────────────────────
-const roleLabel: Record<string, string> = {
-    farmer:   'Yield & Earnings',
-    miller:   'Processing & Revenue',
-    retailer: 'Purchase Flow',
-    driver:   'Delivery Performance',
-    admin:    'Platform Overview',
 };
 
-// ─── Main Page ──────────────────────────────────────────────────────────────
-export default function Analytics({ stats, role }: { stats: any; role: string }) {
+const BarChart = ({ data, unit = "" }: { data: any[], unit?: string }) => {
+    const values = data?.length > 0 ? data : [40, 60, 40, 50, 70, 40, 60, 40, 80, 50, 60];
     return (
-        <AuthenticatedLayout header="Analytics">
-            <Head title="Analytics" />
-
-            <div className="py-4">
-                {/* Page Header */}
-                <div className="flex items-center gap-3 mb-10">
-                    <div className="w-3 h-10 bg-emerald-600 rounded-full shadow-[0_0_15px_rgba(5,150,105,0.4)]" />
-                    <div>
-                        <h2 className="text-5xl font-black uppercase tracking-tighter text-emerald-950 leading-none">
-                            Analytics
-                        </h2>
-                        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-600 mt-1">
-                            {roleLabel[role] ?? 'Performance Metrics'}
-                        </p>
+        <div className="w-full h-full flex flex-col">
+            <div className="flex items-end gap-2 w-full h-32 mt-4">
+                {values.map((val, idx) => (
+                    <div key={idx} className="flex-1 flex items-end h-full">
+                        <div 
+                            className={`w-full rounded-sm transition-all duration-300 ${idx % 3 === 0 ? 'bg-blue-400' : 'bg-[#e0f2fe] hover:bg-blue-200'}`} 
+                            style={{ height: `${val}%` }} 
+                        />
                     </div>
-                </div>
-
-                {/* Role panels */}
-                {role === 'farmer'   && <FarmerPanel   stats={stats} />}
-                {role === 'miller'   && <MillerPanel   stats={stats} />}
-                {role === 'retailer' && <RetailerPanel stats={stats} />}
-                {role === 'driver'   && <DriverPanel   stats={stats} />}
-                {role === 'admin'    && <AdminPanel    stats={stats} />}
+                ))}
             </div>
+            {unit && <div className="absolute top-0 right-0 text-[10px] font-bold text-gray-400 uppercase tracking-widest">{unit}</div>}
+        </div>
+    );
+};
+
+const CircularProgress = ({ value, label }: { value: number, label: string }) => {
+    const radius = 20;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (value / 100) * circumference;
+    return (
+        <div className="flex flex-col items-center gap-2">
+            <div className="relative flex flex-col items-center justify-center">
+                <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 50 50">
+                    <circle cx="25" cy="25" r={radius} fill="none" stroke="#eff6ff" strokeWidth="4" />
+                    <circle 
+                        cx="25" cy="25" r={radius} 
+                        fill="none" stroke="#3b82f6" 
+                        strokeWidth="4" 
+                        strokeDasharray={circumference} 
+                        strokeDashoffset={offset} 
+                        strokeLinecap="round" 
+                    />
+                </svg>
+                <div className="absolute flex items-center justify-center text-[11px] font-bold text-blue-600">
+                    {value}%
+                </div>
+            </div>
+            <span className="text-[8px] text-gray-500 uppercase font-black tracking-tighter text-center leading-none max-w-[50px]">
+                {label}
+            </span>
+        </div>
+    );
+};
+
+const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean, onClose: () => void, title: string, children: React.ReactNode }) => {
+    if (!isOpen) return null;
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
+            <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+                <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <h2 className="text-xl font-bold text-gray-800 tracking-tight">{title}</h2>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-200 rounded-full">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <div className="p-8 max-h-[60vh] overflow-y-auto no-scrollbar">
+                    {children}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default function Analytics({ stats, role }: { stats: any; role: string }) {
+    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+
+    // Translation Layer: detect role and activity
+    const USI = useMemo(() => {
+        const base = {
+            walletTitle: 'Wallet Balance',
+            walletBtn: 'View All Transactions',
+            workloadTitle: 'Workload Volume',
+            taskTitle: 'Task Completion',
+            prodTitle: 'Recent Productivity',
+            activityTitle: 'Step-by-Step Activity',
+            healthTitle: 'System Health',
+            healthMsg: 'System is running smoothly.',
+            historyTitle: 'Transaction History',
+            noHistory: 'No transactions found yet. Your harvest or sales history will appear here once your first order is processed.'
+        };
+
+        switch (role) {
+            case 'farmer':
+                return {
+                    ...base,
+                    subtitle: "How much I've grown.",
+                    unit: 'Kg',
+                    areaLabel: 'Harvest Progress (Kg)',
+                    rings: ['Capacity Used', 'Progress Made', 'Goal Reached']
+                };
+            case 'miller':
+                return {
+                    ...base,
+                    subtitle: "How much I've processed.",
+                    unit: 'Sacks',
+                    areaLabel: 'Milling Output (Sacks)',
+                    rings: ['Machine Load', 'Batch Progress', 'Space Left']
+                };
+            case 'retailer':
+                return {
+                    ...base,
+                    subtitle: "How much I've sold.",
+                    unit: 'Sacks',
+                    areaLabel: 'Sales Volume (Sacks)',
+                    rings: ['Stock Level', 'Fulfillment', 'Sales Goal']
+                };
+            default:
+                return {
+                    ...base,
+                    subtitle: "System Overview.",
+                    unit: 'Nodes',
+                    areaLabel: 'Network Flow',
+                    rings: ['Node Health', 'Uptime', 'Sync Status']
+                };
+        }
+    }, [role]);
+
+    // Role-Aware History Content
+    const historyData = useMemo(() => {
+        if (role === 'farmer') return [
+            { date: '2026-05-01', variety: 'Jasmine', weight: '1,200kg', amount: '₱ 24,000', status: 'PAID', type: 'success' },
+            { date: '2026-05-03', variety: 'Dinorado', weight: '800kg', amount: '₱ 18,500', status: 'PROCESSING', type: 'orange' },
+        ];
+        if (role === 'miller') return [
+            { date: '2026-05-02', farmer: 'Mark Johnson', sacks: '45 Sacks', fee: '₱ 4,500', recovery: '72%', status: 'DONE', type: 'success' },
+            { date: '2026-05-04', farmer: 'Ana Reyes', sacks: '30 Sacks', fee: '₱ 3,000', recovery: '74%', status: 'ACTIVE', type: 'orange' },
+        ];
+        if (role === 'retailer') return [
+            { date: '2026-05-02', variety: 'Sinandomeng', received: '50 Sacks', revenue: '₱ 62,500', status: 'RECEIVED', type: 'success' },
+            { date: '2026-05-05', variety: 'Premium Jasmine', received: '20 Sacks', revenue: '₱ 35,000', status: 'ON THE ROAD', type: 'orange' },
+        ];
+        return [];
+    }, [role]);
+
+    return (
+        <AuthenticatedLayout header="Fulfillment Ecosystem">
+            <Head title="Operator Dashboard" />
+
+            <div className="min-h-full font-sans pb-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    {/* Workload Volume Card */}
+                    <Card title={USI.workloadTitle} subtitle={USI.subtitle} className="lg:col-span-2 min-h-[240px]">
+                        <AreaChart data={[]} unit={USI.unit} />
+                    </Card>
+
+                    {/* Wallet Balance Card */}
+                    <Card title={USI.walletTitle} className="min-h-[240px] flex flex-col justify-center">
+                        <div className="flex items-start gap-2 mt-6">
+                            <span className="text-3xl font-light text-blue-400">₱</span>
+                            <span className="text-5xl font-light text-blue-500 tracking-tight">
+                                {role === 'farmer' ? '42,500' : role === 'miller' ? '128,000' : '85,400'}
+                            </span>
+                        </div>
+                        <div className="mt-auto pt-6 flex justify-end">
+                            <button 
+                                onClick={() => setIsHistoryOpen(true)}
+                                className="bg-[#064e3b] text-white text-[10px] uppercase font-bold px-5 py-2 rounded-full hover:bg-emerald-900 transition-all shadow-lg active:scale-95"
+                            >
+                                {USI.walletBtn}
+                            </button>
+                        </div>
+                    </Card>
+
+                    {/* Recent Productivity */}
+                    <Card title={USI.prodTitle} className="min-h-[200px]">
+                        <BarChart data={[]} unit={USI.unit} />
+                    </Card>
+
+                    {/* Task Completion */}
+                    <Card title={USI.taskTitle} className="min-h-[200px]">
+                        <div className="flex justify-around items-center h-full pt-4">
+                            {USI.rings.map((label, idx) => (
+                                <CircularProgress key={idx} value={[80, 75, 50][idx]} label={label} />
+                            ))}
+                        </div>
+                    </Card>
+
+                    {/* Step-by-Step Activity */}
+                    <Card title={USI.activityTitle} className="min-h-[200px]">
+                        <div className="flex flex-col gap-3 mt-2">
+                            {[
+                                { name: 'Update', mod: 'SCHEDULED', text: 'New Order Arrived', color: 'blue' },
+                                { name: 'Process', mod: 'ON THE ROAD', text: 'Batch moving to Mill', color: 'orange' },
+                                { name: 'Verify', mod: 'PAID', text: 'Payment Received', color: 'green' },
+                            ].map((msg, i) => (
+                                <div key={i} className="flex justify-between items-center text-[10px] font-bold border-b border-blue-50 pb-2">
+                                    <span className="text-blue-600 w-1/4">{msg.name}</span>
+                                    <span className={`w-1/4 text-[8px] px-2 py-0.5 rounded-full text-white text-center font-black ${msg.color === 'green' ? 'bg-emerald-500' : msg.color === 'orange' ? 'bg-orange-400' : 'bg-blue-500'}`}>
+                                        {msg.mod}
+                                    </span>
+                                    <span className="text-gray-500 w-1/2 text-right truncate">{msg.text}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+
+                    {/* BOTTOM ROW */}
+                    <div className="lg:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* User Guide / System Health */}
+                        <Card title={USI.healthTitle}>
+                            <div className="flex items-center gap-4 py-4 px-6 bg-emerald-50 border border-emerald-100 rounded-2xl">
+                                <div className="relative flex h-3 w-3">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                                </div>
+                                <p className="text-sm font-bold text-emerald-900">{USI.healthMsg}</p>
+                            </div>
+                            <p className="mt-4 text-[11px] text-gray-400 leading-relaxed font-medium">
+                                This panel monitors the core connection between your warehouse and the regional marketplace. No action is required from your side.
+                            </p>
+                        </Card>
+
+                        <Card title="Current Priority Varieties">
+                            <div className="flex items-end gap-3 h-32 pt-4">
+                                {[30, 45, 25, 60].map((v, i) => (
+                                    <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                                        <div className="w-full bg-blue-50 rounded-lg relative overflow-hidden" style={{ height: '100%' }}>
+                                            <div className="absolute bottom-0 w-full bg-blue-500 transition-all duration-1000" style={{ height: `${v}%` }}></div>
+                                        </div>
+                                        <span className="text-[8px] text-gray-400 uppercase font-black">{['Jasmine', 'Dinorado', 'Sinan', 'Angel'][i]}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </Card>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* Role-Aware History Modal */}
+            <Modal isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} title={USI.historyTitle}>
+                {historyData.length === 0 ? (
+                    <div className="text-center py-10 px-6">
+                        <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg className="w-10 h-10 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <p className="text-gray-500 font-medium leading-relaxed">{USI.noHistory}</p>
+                    </div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead>
+                                <tr className="text-[10px] text-gray-400 uppercase tracking-widest border-b border-gray-100">
+                                    <th className="pb-4 font-black">Date</th>
+                                    {role === 'farmer' && <th className="pb-4 font-black">Variety</th>}
+                                    {role === 'farmer' && <th className="pb-4 font-black">Weight</th>}
+                                    {role === 'miller' && <th className="pb-4 font-black">Farmer</th>}
+                                    {role === 'miller' && <th className="pb-4 font-black">Volume</th>}
+                                    {role === 'retailer' && <th className="pb-4 font-black">Variety</th>}
+                                    {role === 'retailer' && <th className="pb-4 font-black">Stock</th>}
+                                    <th className="pb-4 font-black">Value</th>
+                                    <th className="pb-4 font-black text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-50">
+                                {historyData.map((row, idx) => (
+                                    <tr key={idx} className="text-sm font-bold text-gray-600 hover:bg-gray-50 transition-colors">
+                                        <td className="py-4 whitespace-nowrap">{row.date}</td>
+                                        {role === 'farmer' && <td className="py-4">{row.variety}</td>}
+                                        {role === 'farmer' && <td className="py-4">{row.weight}</td>}
+                                        {role === 'miller' && <td className="py-4">{row.farmer}</td>}
+                                        {role === 'miller' && <td className="py-4">{row.sacks}</td>}
+                                        {role === 'retailer' && <td className="py-4">{row.variety}</td>}
+                                        {role === 'retailer' && <td className="py-4">{row.received}</td>}
+                                        <td className="py-4 text-blue-600 font-black">{row.amount || row.fee || row.revenue}</td>
+                                        <td className="py-4 text-right">
+                                            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider text-white ${row.type === 'success' ? 'bg-emerald-500' : 'bg-orange-400'}`}>
+                                                {row.status}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </Modal>
         </AuthenticatedLayout>
     );
 }

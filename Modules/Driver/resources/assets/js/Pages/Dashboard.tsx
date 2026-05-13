@@ -65,6 +65,12 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                                                         <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">📞</span>
                                                         Contact: <span className="text-blue-600">{batch.user?.contact}</span>
                                                     </p>
+                                                    {batch.scheduled_pickup_date && (
+                                                        <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5 mt-2">
+                                                            <span className="w-4 h-4 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-[8px]">📅</span>
+                                                            Scheduled: <span className="text-orange-600">{new Date(batch.scheduled_pickup_date).toLocaleDateString()}</span>
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
                                             <div className="text-right">
@@ -186,6 +192,12 @@ export default function Dashboard({ auth, palayAssignments, riceAssignments, his
                                                         <span className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-[8px]">📞</span>
                                                         Contact: <span className="text-blue-600">{order.retailer?.contact}</span>
                                                     </p>
+                                                    {order.scheduled_delivery_date && (
+                                                        <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5 mt-2">
+                                                            <span className="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[8px]">📅</span>
+                                                            Scheduled: <span className="text-blue-600">{new Date(order.scheduled_delivery_date).toLocaleDateString()}</span>
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
                                             <div className="text-right">

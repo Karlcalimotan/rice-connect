@@ -43,6 +43,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/municipalities', [AdminController::class, 'storeMunicipality'])->name('admin.municipalities.store');
     Route::patch('/admin/municipalities/{id}', [AdminController::class, 'updateMunicipality'])->name('admin.municipalities.update');
     Route::delete('/admin/municipalities/{id}', [AdminController::class, 'destroyMunicipality'])->name('admin.municipalities.destroy');
+
+    // Notifications
+    Route::post('/notifications/{id}/mark-as-read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark_as_read');
 });
 
 require __DIR__.'/auth.php';

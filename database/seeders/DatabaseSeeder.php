@@ -15,11 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call([
+            MunicipalitySeeder::class,
+            SupplyChainSeeder::class,
+        ]);
 
         User::factory()->create([
-            'name' => 'Marycamille1616',
+            'first_name' => 'Mary',
+            'last_name' => 'Camille',
             'email' => 'camillemary213@gmail.com',
+            'username' => 'Marycamille1616',
+            'contact' => '09123456789',
         ]);
     }
 }

@@ -76,24 +76,35 @@ export default function HarvestIndex({ auth, batches }: { auth: any, batches: an
                                                 {batch.harvest_date}
                                             </td>
                                             <td className="p-6">
-                                                <div className="flex justify-center">
-                                                    {batch.delivery_status === 'Pending' && (
-                                                        <span className="text-[10px] font-black uppercase bg-yellow-100 text-yellow-800 border-2 border-yellow-400 px-3 py-1.5 whitespace-nowrap">
-                                                            Waiting for Driver Weight
-                                                        </span>
-                                                    )}
-                                                    {batch.delivery_status === 'In Transit' && (
-                                                        <span className="text-[10px] font-black uppercase bg-blue-50 text-blue-600 border-2 border-blue-400 px-3 py-1.5">
-                                                            Heading to Mill
-                                                        </span>
-                                                    )}
-                                                    {batch.delivery_status === 'Received' && (
-                                                        <span className="text-[10px] font-black uppercase bg-emerald-950 text-white px-5 py-2 rounded-full shadow-lg shadow-emerald-200">
-                                                            LOGISTIC SECURED
-                                                        </span>
-                                                    )}
-                                                    {!batch.delivery_status && (
-                                                        <span className="text-[10px] text-gray-300 uppercase font-black italic">--</span>
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <div className="flex justify-center w-full">
+                                                        {batch.delivery_status === 'Pending' && (
+                                                            <span className="text-[10px] font-black uppercase bg-yellow-100 text-yellow-800 border-2 border-yellow-400 px-3 py-1.5 whitespace-nowrap">
+                                                                Waiting for Driver Weight
+                                                            </span>
+                                                        )}
+                                                        {batch.delivery_status === 'In Transit' && (
+                                                            <span className="text-[10px] font-black uppercase bg-blue-50 text-blue-600 border-2 border-blue-400 px-3 py-1.5">
+                                                                Heading to Mill
+                                                            </span>
+                                                        )}
+                                                        {batch.delivery_status === 'Received' && (
+                                                            <span className="text-[10px] font-black uppercase bg-emerald-950 text-white px-5 py-2 rounded-full shadow-lg shadow-emerald-200">
+                                                                LOGISTIC SECURED
+                                                            </span>
+                                                        )}
+                                                        {!batch.delivery_status && !batch.scheduled_pickup_date && (
+                                                            <span className="text-[10px] text-gray-300 uppercase font-black italic">--</span>
+                                                        )}
+                                                    </div>
+                                                    
+                                                    {batch.scheduled_pickup_date && batch.delivery_status !== 'Received' && (
+                                                        <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-2 flex flex-col items-center w-full">
+                                                            <span className="text-[8px] font-black uppercase tracking-widest text-emerald-950/40">Scheduled Pickup</span>
+                                                            <span className="text-xs font-extrabold text-emerald-700">
+                                                                {new Date(batch.scheduled_pickup_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                            </span>
+                                                        </div>
                                                     )}
                                                 </div>
                                             </td>

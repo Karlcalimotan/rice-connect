@@ -127,15 +127,29 @@ export default function MyPurchases({ auth, orders }: any) {
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <div className="mt-12">
-                                                    <div className="bg-emerald-50/90 p-6 rounded-[2rem] border border-emerald-100 flex items-center gap-5">
-                                                        <div className="w-12 h-12 rounded-2xl bg-white shadow-xl flex items-center justify-center text-emerald-600">
+                                                <div className="mt-12 flex flex-col md:flex-row gap-4 items-stretch">
+                                                    <div className="flex-1 bg-emerald-50/90 p-6 rounded-[2rem] border border-emerald-100 flex items-center gap-5">
+                                                        <div className="w-12 h-12 rounded-2xl bg-white shadow-xl flex items-center justify-center text-emerald-600 shrink-0">
                                                             <svg className="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeWidth="2.5"/></svg>
                                                         </div>
                                                         <p className="font-extrabold uppercase text-emerald-950/50 text-xs tracking-widest">
                                                             {order.delivery_status === 'In Transit' ? "Status: Dispatch courier is currently inbound." : "Status: Awaiting warehouse dispatch protocol."}
                                                         </p>
                                                     </div>
+                                                    
+                                                    {order.scheduled_delivery_date && (
+                                                        <div className="flex-1 bg-white p-6 rounded-[2rem] border-2 border-emerald-500/20 shadow-lg shadow-emerald-500/5 flex items-center gap-5 group hover:border-emerald-500/50 transition-colors">
+                                                            <div className="w-12 h-12 rounded-2xl bg-emerald-50 shadow-inner flex items-center justify-center text-emerald-600 shrink-0">
+                                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                                            </div>
+                                                            <div>
+                                                                <p className="font-black uppercase text-emerald-950/40 text-[9px] tracking-[0.2em] mb-1">Scheduled Arrival</p>
+                                                                <p className="font-extrabold uppercase text-emerald-950 text-lg tracking-tight leading-none">
+                                                                    {new Date(order.scheduled_delivery_date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>

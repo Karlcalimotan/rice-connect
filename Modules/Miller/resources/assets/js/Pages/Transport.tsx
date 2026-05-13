@@ -19,6 +19,14 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
         type: ''
     });
 
+    const { data: pickupScheduling, setData: setPickupScheduling, post: postPickupSchedule } = useForm({
+        scheduled_pickup_date: '',
+    });
+
+    const { data: deliveryScheduling, setData: setDeliveryScheduling, post: postDeliverySchedule } = useForm({
+        scheduled_delivery_date: '',
+    });
+
     const handleConfirmPickup = (id: number) => {
         postPalay(route('miller.palay.confirm_pickup', id));
     };
@@ -40,6 +48,18 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
 
     const handleDispatch = (id: number) => {
         router.post(route('miller.order.dispatch', id));
+    };
+
+    const handleSchedulePickup = (id: number) => {
+        postPickupSchedule(route('miller.palay.schedule_pickup', id), {
+            onSuccess: () => setPickupScheduling('scheduled_pickup_date', ''),
+        });
+    };
+
+    const handleScheduleDelivery = (id: number) => {
+        postDeliverySchedule(route('miller.order.schedule_delivery', id), {
+            onSuccess: () => setDeliveryScheduling('scheduled_delivery_date', ''),
+        });
     };
 
     React.useEffect(() => {
@@ -97,8 +117,18 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
+                                            <div className="text-right flex flex-col items-end gap-2">
                                                 <span className="bg-orange-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Inbound Palay</span>
+                                                {batch.scheduled_pickup_date && (
+                                                    <span className={`text-[8px] font-black px-2 py-1 border rounded uppercase tracking-wider ${
+                                                        batch.schedule_is_read 
+                                                        ? 'bg-gray-100 text-gray-500 border-gray-300' 
+                                                        : 'bg-rose-100 text-rose-800 border-rose-300 animate-pulse'
+                                                    }`}>
+                                                        {batch.schedule_is_read ? '✓ Scheduled: ' : '📅 Scheduled: '}
+                                                        {new Date(batch.scheduled_pickup_date).toLocaleDateString()}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
 
@@ -140,6 +170,30 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
 
                                         {batch.delivery_status === 'Pending' && (
                                             <div className="mt-6 space-y-4">
+                                                {/* Inbound Scheduling Picker */}
+                                                <div className="p-4 glass-card !bg-emerald-50 border-2 border-black">
+                                                    <label className="block text-[10px] font-black uppercase mb-1 text-emerald-900">🗓️ Schedule Inbound Pickup</label>
+                                                    <div className="flex gap-2">
+                                                        <input 
+                                                            type="date" 
+                                                            className="flex-1 border-2 border-black p-2 font-black text-xs rounded-lg"
+                                                            value={pickupScheduling.scheduled_pickup_date}
+                                                            onChange={e => setPickupScheduling('scheduled_pickup_date', e.target.value)}
+                                                        />
+                                                        <button 
+                                                            onClick={() => handleSchedulePickup(batch.id)}
+                                                            className="bg-black text-white px-4 py-2 font-black text-[10px] uppercase rounded-lg hover:bg-emerald-600 transition-colors"
+                                                        >
+                                                            Set
+                                                        </button>
+                                                    </div>
+                                                    {batch.scheduled_pickup_date && (
+                                                        <p className="mt-2 text-[10px] font-black text-emerald-600 uppercase">
+                                                            Current Schedule: {new Date(batch.scheduled_pickup_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                                        </p>
+                                                    )}
+                                                </div>
+
                                                 {!batch.driver_id ? (
                                                     <div className="p-4 glass-card !bg-white/30 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
                                                         <label className="block text-[10px] font-black uppercase mb-1">Assign Truck (My Fleet)</label>
@@ -300,8 +354,18 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
+                                            <div className="text-right flex flex-col items-end gap-2">
                                                 <span className="bg-blue-600 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Outbound Rice</span>
+                                                {order.scheduled_delivery_date && (
+                                                    <span className={`text-[8px] font-black px-2 py-1 border rounded uppercase tracking-wider ${
+                                                        order.schedule_is_read 
+                                                        ? 'bg-gray-100 text-gray-500 border-gray-300' 
+                                                        : 'bg-rose-100 text-rose-800 border-rose-300 animate-pulse'
+                                                    }`}>
+                                                        {order.schedule_is_read ? '✓ Scheduled: ' : '📅 Scheduled: '}
+                                                        {new Date(order.scheduled_delivery_date).toLocaleDateString()}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
 
@@ -309,6 +373,30 @@ export default function Transport({ auth, inbound, outbound, allDrivers, myFleet
 
                                         {order.delivery_status === 'Pending' && (
                                             <div className="mt-6 space-y-4">
+                                                {/* Outbound Scheduling Picker */}
+                                                <div className="p-4 glass-card !bg-blue-50 border-2 border-black">
+                                                    <label className="block text-[10px] font-black uppercase mb-1 text-blue-900">🗓️ Schedule Outbound Delivery</label>
+                                                    <div className="flex gap-2">
+                                                        <input 
+                                                            type="date" 
+                                                            className="flex-1 border-2 border-black p-2 font-black text-xs rounded-lg"
+                                                            value={deliveryScheduling.scheduled_delivery_date}
+                                                            onChange={e => setDeliveryScheduling('scheduled_delivery_date', e.target.value)}
+                                                        />
+                                                        <button 
+                                                            onClick={() => handleScheduleDelivery(order.id)}
+                                                            className="bg-black text-white px-4 py-2 font-black text-[10px] uppercase rounded-lg hover:bg-blue-600 transition-colors"
+                                                        >
+                                                            Set
+                                                        </button>
+                                                    </div>
+                                                    {order.scheduled_delivery_date && (
+                                                        <p className="mt-2 text-[10px] font-black text-blue-600 uppercase">
+                                                            Current Schedule: {new Date(order.scheduled_delivery_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                                        </p>
+                                                    )}
+                                                </div>
+
                                                 {!order.driver_id ? (
                                                     <div className="p-4 glass-card !bg-white/30 border-4 border-black">
                                                         <label className="block text-[10px] font-black uppercase mb-1">Assign Truck (My Fleet)</label>

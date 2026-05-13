@@ -21,6 +21,7 @@ class Order extends Model
         'delivery_status',
         'delivery_type',
         'status',
+        'scheduled_delivery_date',
     ];
 
     protected $casts = [

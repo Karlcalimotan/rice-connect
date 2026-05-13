@@ -45,6 +45,7 @@ class HarvestBatch extends Model
         'hidden_from_farmer',
         'location',
         'accepted_miller_id',
+        'scheduled_pickup_date',
     ];
 
     public function acceptedMiller(): BelongsTo

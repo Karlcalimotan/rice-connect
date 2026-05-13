@@ -16,50 +16,45 @@ class SupplyChainSeeder extends Seeder
     public function run(): void
     {
         // Create users
-        $admin = User::create([
+        $admin = User::updateOrCreate(['email' => 'admin@rice.com'], [
             'first_name' => 'System',
             'last_name' => 'Admin',
-            'email' => 'admin@rice.com',
             'username' => 'admin',
             'role' => 'admin',
             'contact' => '09000000000',
             'password' => Hash::make('password'),
         ]);
 
-        $farmer = User::create([
+        $farmer = User::updateOrCreate(['email' => 'farmer@example.test'], [
             'first_name' => 'Farmer',
             'last_name' => 'Joe',
-            'email' => 'farmer@example.test',
             'username' => 'farmer',
             'role' => 'farmer',
             'contact' => '09170000001',
             'password' => Hash::make('password'),
         ]);
 
-        $miller = User::create([
+        $miller = User::updateOrCreate(['email' => 'miller@example.test'], [
             'first_name' => 'Miller',
             'last_name' => 'Mary',
-            'email' => 'miller@example.test',
             'username' => 'miller',
             'role' => 'miller',
             'contact' => '09170000002',
             'password' => Hash::make('password'),
         ]);
 
-        $retailer = User::create([
+        $retailer = User::updateOrCreate(['email' => 'retailer@example.test'], [
             'first_name' => 'Retailer',
             'last_name' => 'Rex',
-            'email' => 'retailer@example.test',
             'username' => 'retailer',
             'role' => 'retailer',
             'contact' => '09170000003',
             'password' => Hash::make('password'),
         ]);
 
-        $driver = User::create([
+        $driver = User::updateOrCreate(['email' => 'driver@example.test'], [
             'first_name' => 'Driver',
             'last_name' => 'Dan',
-            'email' => 'driver@example.test',
             'username' => 'driver',
             'role' => 'driver',
             'contact' => '09170000004',
@@ -108,16 +103,26 @@ class SupplyChainSeeder extends Seeder
         // Miller lists for sale with price per sack
         $batch->update(['price_per_sack' => 1500.00, 'price_per_kg' => 1500.00 / 50, 'status' => 'for_sale']);
 
+        // Create Finished Rice Stock entry
+        $stock = \App\Models\FinishedRiceStock::create([
+            'miller_id' => $batch->buyer_id,
+            'rice_variety' => $batch->rice_variety,
+            'total_sacks' => $batch->total_sacks,
+            'unpacked_weight_kg' => $batch->unpacked_weight_kg,
+            'price_per_sack' => $batch->price_per_sack,
+            'low_stock_threshold' => 10,
+        ]);
+
         // Retailer places an order for 1 sack
         $requestedSacks = 1;
-        DB::transaction(function () use ($retailer, $batch, $requestedSacks) {
-            HarvestBatch::where('id', $batch->id)->decrement('total_sacks', $requestedSacks);
-            HarvestBatch::where('id', $batch->id)->decrement('unpacked_weight_kg', $requestedSacks * 50);
+        DB::transaction(function () use ($retailer, $batch, $stock, $requestedSacks) {
+            $stock->decrement('total_sacks', $requestedSacks);
+            $stock->decrement('unpacked_weight_kg', $requestedSacks * 50);
 
             DB::table('orders')->insert([
                 'retailer_id' => $retailer->id,
                 'miller_id' => $batch->buyer_id,
-                'batch_id' => $batch->id,
+                'stock_id' => $stock->id,
                 'rice_variety' => $batch->rice_variety,
                 'sacks' => $requestedSacks,
                 'total_weight' => $requestedSacks * 50,

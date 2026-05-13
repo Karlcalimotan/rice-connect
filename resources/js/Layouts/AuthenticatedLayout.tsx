@@ -24,6 +24,24 @@ export default function Authenticated({
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user as any;
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [showHistory, setShowHistory] = useState(false);
+    const [localNotifications, setLocalNotifications] = useState(user?.notifications || []);
+
+    useEffect(() => {
+        setLocalNotifications(user?.notifications || []);
+    }, [user?.notifications]);
+
+    const handleMarkAsRead = (id: string) => {
+        setLocalNotifications((prev: any) => 
+            prev.map((n: any) => n.id === id ? { ...n, notification_status: 'read' } : n)
+        );
+        import('@inertiajs/react').then(({ router }) => {
+            router.post(route('notifications.mark_as_read', id), {}, {
+                preserveScroll: true,
+                preserveState: true,
+            });
+        });
+    };
 
     const handleNavClick = () => {
         if (window.innerWidth < 1024) {
@@ -71,7 +89,7 @@ export default function Authenticated({
                     </button>
                 </div>
 
-                <div className="px-6 pb-20 space-y-10 relative">
+                <div className="px-6 pb-20 space-y-8 relative">
                     {/* Brand Banner (Custom Crafted) */}
                     <div className="p-8 bg-[#064e3b] rounded-[2.5rem] shadow-[0_20px_40px_rgba(6,78,59,0.2)] relative overflow-hidden group">
                         <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-emerald-400 opacity-20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
@@ -80,7 +98,7 @@ export default function Authenticated({
                         <p className="text-[10px] text-emerald-400 font-bold mt-3 border-t border-white/10 pt-3">v2.0.26 Build</p>
                     </div>
 
-                    <nav className="space-y-10">
+                    <nav className="space-y-8">
                         {/* Principal Navigation */}
                         <div className="space-y-2">
                             <p className="text-[9px] font-black text-emerald-950/20 uppercase px-4 tracking-[0.5em] mb-4">Core Interface</p>
@@ -93,12 +111,8 @@ export default function Authenticated({
                         {/* Role-Specific Workspace */}
                         <div className="space-y-2">
                             <p className="text-[9px] font-black text-emerald-950/20 uppercase px-4 tracking-[0.5em] mb-4">Operations</p>
-                            
                             {user.role === 'farmer' && (
                                 <>
-                                    <NavLink href={route('farmer.harvest')} active={route().current('farmer.harvest')} onClick={handleNavClick}>
-                                        <Icons.Harvest /> <span>Field Management</span>
-                                    </NavLink>
                                     <NavLink href={route('farmer.harvest')} active={route().current('farmer.harvest')} onClick={handleNavClick}>
                                         <Icons.Console /> <span>Harvest Logs</span>
                                     </NavLink>
@@ -207,8 +221,93 @@ export default function Authenticated({
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                                 </div>
-                                <span className="text-[10px] font-black text-emerald-800 uppercase tracking-[0.2em]">Real-time Sync Active</span>
+                            {/* Notification Bell */}
+                            <div className="relative group">
+                                <button className="p-3 bg-white shadow-sm border border-emerald-50 rounded-full relative hover:shadow-md transition-all active:scale-95">
+                                    <svg className="w-5 h-5 text-emerald-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                    {localNotifications?.filter((n: any) => n.notification_status === 'unread').length > 0 && (
+                                        <span className="absolute top-0 right-0 h-4 w-4 bg-rose-500 text-white text-[8px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-sm animate-bounce">
+                                            {localNotifications.filter((n: any) => n.notification_status === 'unread').length}
+                                        </span>
+                                    )}
+                                </button>
+                                
+                                {/* Dropdown for Notifications */}
+                                <div className="absolute right-0 mt-4 w-80 bg-white/95 backdrop-blur-3xl border border-emerald-50 rounded-[2rem] shadow-[0_30px_60px_rgba(6,95,70,0.15)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 z-50 p-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <p className="text-[10px] font-black text-emerald-900 uppercase tracking-widest">Alerts Center</p>
+                                        <span className="text-[8px] font-black bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded uppercase">Real-time</span>
+                                    </div>
+                                    <div className="space-y-6 max-h-96 overflow-y-auto no-scrollbar">
+                                        {/* 1. UNREAD SECTION: Action Required */}
+                                        <div className="space-y-3">
+                                            <p className="text-[8px] font-black text-rose-500 uppercase tracking-[0.2em] px-2 mb-2">Action Required</p>
+                                            {localNotifications?.filter((n: any) => n.notification_status === 'unread').length > 0 ? (
+                                                localNotifications.filter((n: any) => n.notification_status === 'unread').map((n: any) => (
+                                                    <div 
+                                                        key={n.id} 
+                                                        className="p-4 rounded-2xl border-2 border-emerald-100 bg-emerald-50/50 hover:bg-emerald-50 transition-all cursor-pointer group/item shadow-sm hover:shadow-md"
+                                                        onClick={() => handleMarkAsRead(n.id)}
+                                                    >
+                                                        <div className="flex justify-between items-start gap-3">
+                                                            <p className="text-xs font-bold text-emerald-950 leading-snug">{n.data?.message}</p>
+                                                            <span className="shrink-0 bg-rose-500 text-white text-[7px] font-black px-2 py-1 rounded uppercase animate-pulse whitespace-nowrap shadow-sm">
+                                                                {n.data?.date ? new Date(n.data.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'NEW'}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-[9px] text-emerald-500 mt-2 font-black uppercase tracking-widest italic">
+                                                            {new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        </p>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div className="py-4 text-center border-2 border-dashed border-emerald-950/5 rounded-2xl bg-gray-50/30">
+                                                    <p className="text-[9px] font-black text-emerald-950/20 uppercase tracking-[0.2em]">All Caught Up</p>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* 2. READ SECTION: History Toggle */}
+                                        {localNotifications?.filter((n: any) => n.notification_status === 'read').length > 0 && (
+                                            <div className="pt-4 border-t border-emerald-950/5">
+                                                <button 
+                                                    onClick={() => setShowHistory(!showHistory)}
+                                                    className="w-full flex items-center justify-between px-2 py-2 text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] hover:text-emerald-600 transition-colors"
+                                                >
+                                                    <span>Logistics History ({localNotifications.filter((n: any) => n.notification_status === 'read').length})</span>
+                                                    <svg className={`w-3 h-3 transition-transform ${showHistory ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M19 9l-7 7-7-7" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                                    </svg>
+                                                </button>
+                                                
+                                                {showHistory && (
+                                                    <div className="space-y-3 mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                                                        {localNotifications.filter((n: any) => n.notification_status === 'read').map((n: any) => (
+                                                            <div 
+                                                                key={n.id} 
+                                                                className="p-3 rounded-xl border border-gray-100 bg-gray-50 opacity-60 grayscale transition-all"
+                                                            >
+                                                                <div className="flex justify-between items-start gap-3">
+                                                                    <p className="text-[11px] font-bold text-gray-600 leading-tight">{n.data?.message}</p>
+                                                                    <span className="shrink-0 text-emerald-600 text-xs font-black">✓</span>
+                                                                </div>
+                                                                <p className="text-[8px] text-gray-400 mt-1.5 font-black uppercase tracking-widest">
+                                                                    {new Date(n.created_at).toLocaleDateString()} • {new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                                </p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
+
+                            <span className="text-[10px] font-black text-emerald-800 uppercase tracking-[0.2em]">Real-time Sync Active</span>
+                        </div>
 
                             {/* User Profile Menu with 2026 Premium Pill */}
                             <Dropdown>

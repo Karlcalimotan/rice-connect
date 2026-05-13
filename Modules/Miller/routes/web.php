@@ -50,6 +50,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/miller/orders/{id}/dispatch', [MillerController::class, 'dispatchDelivery'])->name('miller.order.dispatch');
     Route::post('/miller/orders/{id}/delivered', [MillerController::class, 'markDelivered'])->name('miller.order.delivered');
 
+    // Scheduling
+    Route::post('/miller/palay/schedule-pickup/{id}', [MillerController::class, 'schedulePickup'])->name('miller.palay.schedule_pickup');
+    Route::post('/miller/orders/schedule-delivery/{id}', [MillerController::class, 'scheduleDelivery'])->name('miller.order.schedule_delivery');
+
     // 6. Shipping & Delivery Settings
     Route::get('/miller/shipping-settings', [MillerController::class, 'shippingSettings'])->name('miller.shipping_settings');
     Route::patch('/miller/shipping-settings', [MillerController::class, 'updateShippingSettings'])->name('miller.shipping_settings.update');

@@ -339,6 +339,29 @@ class MillerController extends Controller
             ->latest()
             ->get();
 
+        // Compute read status for badges
+        $inbound->each(function($batch) {
+            if ($batch->scheduled_pickup_date) {
+                $batch->schedule_is_read = !$batch->user->unreadNotifications()
+                    ->where('type', \App\Notifications\PickupScheduledNotification::class)
+                    ->where('data', 'like', '%"id":' . $batch->id . '%')
+                    ->exists();
+            } else {
+                $batch->schedule_is_read = false;
+            }
+        });
+
+        $outbound->each(function($order) {
+            if ($order->scheduled_delivery_date) {
+                $order->schedule_is_read = !$order->retailer->unreadNotifications()
+                    ->where('type', \App\Notifications\DeliveryScheduledNotification::class)
+                    ->where('data', 'like', '%"id":' . $order->id . '%')
+                    ->exists();
+            } else {
+                $order->schedule_is_read = false;
+            }
+        });
+
         // 3. All Drivers (for discovery/linking)
         $allDrivers = \App\Models\User::where('role', 'driver')->get();
 
@@ -466,5 +489,34 @@ class MillerController extends Controller
         ]);
 
         return redirect()->back()->with('message', 'Shipping settings updated successfully!');
+    }
+    public function schedulePickup(Request $request, $id)
+    {
+        $request->validate([
+            'scheduled_pickup_date' => 'required|date',
+        ]);
+
+        $batch = HarvestBatch::where('accepted_miller_id', auth()->id())->findOrFail($id);
+        $batch->update(['scheduled_pickup_date' => $request->scheduled_pickup_date]);
+
+        // Notify Farmer
+        $batch->user->notify(new \App\Notifications\PickupScheduledNotification($request->scheduled_pickup_date, $batch->id));
+
+        return redirect()->back()->with('message', 'Pickup scheduled successfully!');
+    }
+
+    public function scheduleDelivery(Request $request, $id)
+    {
+        $request->validate([
+            'scheduled_delivery_date' => 'required|date',
+        ]);
+
+        $order = \App\Models\Order::where('miller_id', auth()->id())->findOrFail($id);
+        $order->update(['scheduled_delivery_date' => $request->scheduled_delivery_date]);
+
+        // Notify Retailer
+        $order->retailer->notify(new \App\Notifications\DeliveryScheduledNotification($request->scheduled_delivery_date, $order->id));
+
+        return redirect()->back()->with('message', 'Delivery scheduled successfully!');
     }
 }
